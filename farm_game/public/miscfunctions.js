@@ -1,23 +1,25 @@
 
 function start(){
-    startButton.hide();
-    optionsButton.hide();
-    creditsButton.hide();
-    clearButton.hide();
-    Controls_Interact_button.hide();
-    Controls_Eat_button.hide();
-    Controls_Up_button.hide();
-    Controls_Down_button.hide();
-    Controls_Left_button.hide();
-    Controls_Right_button.hide();
-    Controls_Special_button.hide();
-    Controls_Quest_button.hide();
-    title_screen = false;
-    if(localData.get('Day_curLvl_Dif') == null){
-        dificulty_screen = true;
-    }
-    paused = false;
-    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+    triggerMenuFadeOut(() => {
+        startButton.hide();
+        optionsButton.hide();
+        creditsButton.hide();
+        clearButton.hide();
+        Controls_Interact_button.hide();
+        Controls_Eat_button.hide();
+        Controls_Up_button.hide();
+        Controls_Down_button.hide();
+        Controls_Left_button.hide();
+        Controls_Right_button.hide();
+        Controls_Special_button.hide();
+        Controls_Quest_button.hide();
+        title_screen = false;
+        if(localData.get('Day_curLvl_Dif') == null){
+            dificulty_screen = true;
+        }
+        paused = false;
+        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+    });
 }
 
 /*

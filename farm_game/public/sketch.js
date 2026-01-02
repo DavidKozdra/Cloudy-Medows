@@ -67,6 +67,22 @@ function triggerTravelTransition(callback) {
     }, 2000);
 }
 
+// Menu fade transition trigger
+function triggerMenuFadeOut(callback) {
+    const overlay = document.getElementById('menuOverlay');
+    overlay.classList.add('active');
+    
+    // Call callback at peak fade (500ms in)
+    setTimeout(() => {
+        if (callback) callback();
+    }, 500);
+    
+    // Remove overlay after animation completes
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 1000);
+}
+
 function draw() {
     musicplayer.update()
 
