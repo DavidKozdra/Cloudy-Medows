@@ -669,20 +669,10 @@ function preload() {
 
 }
 
-// Fullscreen functionality
+// Fullscreen functionality by default
 function setupFullscreen() {
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    const gameContainer = document.getElementById('game-container');
-    
-    // Check if button exists before adding listeners
-    if (!fullscreenBtn) {
-        console.error('Fullscreen button not found');
-        return;
-    }
-    
-    // Toggle fullscreen on button click
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-    
+    toggleFullscreen()
+    resizeCanvasForFullscreen();
     // Also allow F11 key (but prevent default browser fullscreen)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'F11') {
@@ -691,23 +681,7 @@ function setupFullscreen() {
         }
     });
     
-    // Update button text and resize canvas when fullscreen changes
-    document.addEventListener('fullscreenchange', () => {
-        updateFullscreenButton();
-        resizeCanvasForFullscreen();
-    });
-    document.addEventListener('webkitfullscreenchange', () => {
-        updateFullscreenButton();
-        resizeCanvasForFullscreen();
-    });
-    document.addEventListener('mozfullscreenchange', () => {
-        updateFullscreenButton();
-        resizeCanvasForFullscreen();
-    });
-    document.addEventListener('msfullscreenchange', () => {
-        updateFullscreenButton();
-        resizeCanvasForFullscreen();
-    });
+
 }
 
 function toggleFullscreen() {
@@ -740,17 +714,13 @@ function toggleFullscreen() {
 }
 
 function resizeCanvasForFullscreen() {
-    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
-                         document.mozFullScreenElement || document.msFullscreenElement;
-    
-    const canvas = document.querySelector('canvas');
-    if (!canvas) return;
-    
-    if (isFullscreen) {
+        const canvas = document.querySelector('canvas');
+        if (!canvas) return;
+        
         // Calculate scale to fill screen while maintaining aspect ratio
         const scaleX = window.innerWidth / canvasWidth;
         const scaleY = window.innerHeight / canvasHeight;
-        const scale = Math.max(scaleX, scaleY) * .8; // Use max to fill screen completely
+        const scale = Math.max(scaleX, scaleY) * .7; // Use max to fill screen completely
         
         // Apply CSS transform to scale canvas
         canvas.style.width = (canvasWidth * scale) + 'px';
@@ -759,26 +729,7 @@ function resizeCanvasForFullscreen() {
         canvas.style.left = '50%';
         canvas.style.top = '50%';
         canvas.style.transform = 'translate(-50%, -50%)';
-    } else {
-        // Restore original canvas size
-        canvas.style.width = canvasWidth + 'px';
-        canvas.style.height = canvasHeight + 'px';
-        canvas.style.position = '';
-        canvas.style.left = '';
-        canvas.style.top = '';
-        canvas.style.transform = '';
-    }
-}
-
-function updateFullscreenButton() {
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    if (!fullscreenBtn) return; // Guard against null
-    
-    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
-                         document.mozFullScreenElement || document.msFullscreenElement;
-    
-    fullscreenBtn.textContent = isFullscreen ? '⛶' : '⛶'; // Can use different icons if desired
-    fullscreenBtn.title = isFullscreen ? 'Exit Fullscreen (F11)' : 'Toggle Fullscreen (F11)';
+  
 }
 
 function setup() {
