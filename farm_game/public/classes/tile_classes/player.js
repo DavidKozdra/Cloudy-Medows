@@ -455,6 +455,13 @@ class Player extends MoveableEntity {
                 temp_move_bool = this.looking(currentLevel_x, currentLevel_y).move_bool;
                 this.talking = this.looking(currentLevel_x, currentLevel_y);
                 this.oldlooking_name = this.looking(currentLevel_x, currentLevel_y).name;
+                
+                // Dispatch NPC interaction event for quest system
+                if(this.talking.class == 'NPC' || this.talking.class == 'Shop'){
+                    window.dispatchEvent(new CustomEvent('npcInteraction', {
+                        detail: { npcName: this.talking.name }
+                    }));
+                }
                 return;
             }
             else if(this.looking(currentLevel_x, currentLevel_y).class == "PayToMoveEntity"){
@@ -956,8 +963,11 @@ function takeInput() {
             if (millis() - player.lastinteractMili > 200) {
                 if (player.talking.class == 'NPC'){
                     if(player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].quest != -1){
-                        player.quests.push(player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].quest);
+                        let newQuest = player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].quest;
+                        player.quests.push(newQuest);
                         player.current_quest = player.quests.length - 1;
+                        // Check if any goals were already completed in the past
+                        newQuest.checkPastProgress();
                         player.talking.dialouges[player.talking.current_dialouge].new_phrase = [];
                         let phrase = "You already helped me with this.";
                         for(let i = 0; i < phrase.length; i++){

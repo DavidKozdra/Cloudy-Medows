@@ -207,7 +207,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 20dvh;
+    max-height: 40dvh;
     overflow-y: auto;
 }
 

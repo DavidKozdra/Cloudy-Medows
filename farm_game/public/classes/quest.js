@@ -147,6 +147,19 @@ class Quest {
         const titleDiv = document.createElement('div');
         titleDiv.className = 'quest-title';
         titleDiv.textContent = this.name;
+        
+        // Add completed indicator to title if quest is done
+        if (this.done) {
+            titleDiv.style.textDecoration = 'none';
+            titleDiv.style.opacity = '0.85';
+            const completedBadge = document.createElement('span');
+            completedBadge.textContent = ' ✓';
+            completedBadge.style.color = 'rgb(50, 200, 50)';
+            completedBadge.style.fontWeight = 'bold';
+            completedBadge.style.fontSize = '18px';
+            titleDiv.appendChild(completedBadge);
+        }
+        
         container.appendChild(titleDiv);
         
         // Create progress bar container
@@ -162,13 +175,21 @@ class Quest {
         // Create progress fill
         const progressFill = document.createElement('div');
         progressFill.className = 'quest-progress-fill';
-        const progress = (this.current_Goal / this.goals.length) * 100;
+        
+        // Calculate progress based on completed goals
+        let completedGoals = 0;
+        for (let i = 0; i < this.goals.length; i++) {
+            if (this.goals[i].done) {
+                completedGoals++;
+            }
+        }
+        const progress = (completedGoals / this.goals.length) * 100;
         progressFill.style.width = progress + '%';
         
         if (this.failed) {
             progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
-        } else if (this.goals[this.current_Goal] === undefined) {
-            progressFill.style.backgroundColor = 'rgb(0, 255, 0)';
+        } else if (this.done || completedGoals === this.goals.length) {
+            progressFill.style.backgroundColor = 'rgb(50, 200, 50)';
         } else {
             progressFill.style.backgroundColor = 'rgb(255, 255, 0)';
         }
@@ -182,18 +203,23 @@ class Quest {
         if (this.failed) {
             statusDiv.textContent = 'Failed';
             statusDiv.style.color = 'rgb(255, 0, 0)';
-        } else if (this.goals[this.current_Goal] === undefined) {
+        } else if (this.done) {
             // Quest completed
+            statusDiv.textContent = 'Completed';
+            statusDiv.style.color = 'rgb(50, 200, 50)';
+            statusDiv.style.fontWeight = 'bold';
+        } else if (this.goals[this.current_Goal] === undefined) {
+            // Quest completed but with unclaimed rewards
             if (this.reward_item !== 0 || this.reward_coins !== 0) {
                 statusDiv.textContent = 'Rewards Ready';
                 statusDiv.style.color = 'rgb(255, 255, 0)';
             } else {
-                statusDiv.textContent = 'Done';
-                statusDiv.style.color = 'rgb(0, 255, 0)';
+                statusDiv.textContent = 'Completed';
+                statusDiv.style.color = 'rgb(50, 200, 50)';
             }
         } else {
-            // Show current goal
-            //statusDiv.textContent = this.goals[this.current_Goal].name;
+            // Show active status
+            statusDiv.textContent = `${this.current_Goal}/${this.goals.length} goals`;
             statusDiv.style.color = 'rgb(255, 255, 255)';
         }
         
@@ -309,21 +335,83 @@ class Quest {
     getGoalImagePath(goal){
         // Return appropriate image path based on goal type
         if (goal.class === 'TalkingGoal' && goal.npc_name) {
-            return `images/npc/${goal.npc_name.toLowerCase()}.png`;
+            return this.map_quest_images('npc', goal.npc_name);
         } else if (goal.class === 'HaveGoal' && goal.item_name) {
-            return `images/items/${goal.item_name.toLowerCase()}.png`;
+            return this.map_quest_images('items', goal.item_name);
         } else if (goal.class === 'SellGoal' && goal.item_name) {
-            return `images/items/${goal.item_name.toLowerCase()}.png`;
+            return this.map_quest_images('items', goal.item_name);
         } else if (goal.class === 'LocationGoal' && goal.level_name) {
-            return `images/tiles/grass.png`; // placeholder
+            return 'images/tiles/grass_tile.png'; // Use existing grass tile
         } else if (goal.class === 'OneTileCheck' && goal.tile_name) {
-            return `images/tiles/${goal.tile_name.toLowerCase()}.png`;
+            return this.map_quest_images('tiles', goal.tile_name);
+        } else if (goal.class === 'FundingGoal') {
+            return 'images/ui/coin.png'; // Show coin for money goals
         }
-        return 'images/ui/default.png';
+        return 'images/ui/Chat_Icon.png'; // Safe default that exists
     }
     
     getItemImagePath(itemName){
-        return `images/items/${itemName.toLowerCase()}.png`;
+        return this.map_quest_images('items', itemName);
+    }
+    
+    map_quest_images(folder, name){
+        // Create a mapping of known items to their actual image files
+        const itemMap = {
+            'flower seed': 'SeedBagFlower',
+            'flowerseed': 'SeedBagFlower',
+            'wheat seed': 'seedbag_sp',
+            'corn seed': 'Corn_item',
+            'tomato seed': 'tomato_bag',
+            'strawberry seed': 'SeedBag_Stawberry',
+            'watermelon seed': 'seedbagwatermelon',
+            'hemp seed': 'hemp_bag',
+            'ladybug': 'ladybug',
+            'ladybugs': 'ladybug',
+            'hot dog': 'HotDog',
+            'hotdog': 'HotDog',
+            'chest': 'Chest',
+            'sprinkler': 'Sprinkler',
+            'full course': 'FullCourse',
+            'robot': 'robot',
+            'hemp': 'hemp',
+            'corn': 'Corn_item',
+            'tomato': 'tomato',
+            'strawberry': 'Stawberry',
+            'watermelon': 'watermelon'
+        };
+        
+        const tileMap = {
+            'grass': 'grass_tile',
+            'concrete': 'concrete_tile',
+            'dirt': 'dirt_tile',
+            'plot': 'plot_tile'
+        };
+        
+        const npcMap = {
+            'rick': 'cowboy_rick',
+            'deb': 'deb',
+            'mira': 'mira',
+            'oldmanj': 'old_man_j',
+            'mario': 'mario',
+            'jake': 'Jake'
+        };
+        
+        // Normalize the name
+        const normalized = name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_-]/g, '');
+        
+        // Try to find in the appropriate map
+        let mapped = null;
+        if (folder === 'items') {
+            mapped = itemMap[normalized] || itemMap[name.toLowerCase()];
+        } else if (folder === 'tiles') {
+            mapped = tileMap[normalized] || tileMap[name.toLowerCase()];
+        } else if (folder === 'npc') {
+            mapped = npcMap[normalized] || npcMap[name.toLowerCase()];
+        }
+        
+        // If we found a mapping, use it; otherwise use the normalized name
+        const filename = mapped || normalized;
+        return `images/${folder}/${filename}.png`;
     }
     
     getGoalTypeEmoji(goal){
@@ -336,6 +424,86 @@ class Quest {
             'OneTileCheck': '🔨'
         };
         return emojiMap[goal.class] || '❓';
+    }
+    
+    createRewardsCard(){
+        const card = document.createElement('div');
+        card.style.padding = '14px';
+        card.style.marginBottom = '10px';
+        card.style.border = '2px solid rgba(255, 215, 0, 0.5)';
+        card.style.backgroundColor = 'rgba(255, 235, 180, 0.9)';
+        card.style.borderRadius = '4px';
+        card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+        
+        const header = document.createElement('div');
+        header.style.fontSize = '14px';
+        header.style.fontWeight = 'bold';
+        header.style.color = 'rgb(139, 98, 55)';
+        header.style.marginBottom = '10px';
+        header.textContent = '🎁 Rewards';
+        card.appendChild(header);
+        
+        const rewardsContainer = document.createElement('div');
+        rewardsContainer.style.display = 'flex';
+        rewardsContainer.style.flexDirection = 'column';
+        rewardsContainer.style.gap = '8px';
+        
+        // Add item reward with image
+        if (this.reward_item !== 0) {
+            const itemReward = document.createElement('div');
+            itemReward.style.display = 'flex';
+            itemReward.style.alignItems = 'center';
+            itemReward.style.gap = '8px';
+            itemReward.style.padding = '6px';
+            itemReward.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+            itemReward.style.borderRadius = '4px';
+            
+            const itemImg = document.createElement('img');
+            itemImg.src = this.getItemImagePath(this.reward_item.name);
+            itemImg.style.width = '32px';
+            itemImg.style.height = '32px';
+            itemImg.style.imageRendering = 'pixelated';
+            itemReward.appendChild(itemImg);
+            
+            const itemText = document.createElement('span');
+            itemText.textContent = `${this.reward_item.amount}x ${this.reward_item.name}`;
+            itemText.style.fontSize = '13px';
+            itemText.style.color = 'rgb(100, 70, 40)';
+            itemText.style.fontWeight = 'bold';
+            itemReward.appendChild(itemText);
+            
+            rewardsContainer.appendChild(itemReward);
+        }
+        
+        // Add coin reward with icon
+        if (this.reward_coins > 0) {
+            const coinReward = document.createElement('div');
+            coinReward.style.display = 'flex';
+            coinReward.style.alignItems = 'center';
+            coinReward.style.gap = '8px';
+            coinReward.style.padding = '6px';
+            coinReward.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+            coinReward.style.borderRadius = '4px';
+            
+            const coinImg = document.createElement('img');
+            coinImg.src = 'images/ui/coin.png';
+            coinImg.style.width = '28px';
+            coinImg.style.height = '28px';
+            coinImg.style.imageRendering = 'pixelated';
+            coinReward.appendChild(coinImg);
+            
+            const coinText = document.createElement('span');
+            coinText.textContent = `${this.reward_coins} coins`;
+            coinText.style.fontSize = '13px';
+            coinText.style.color = 'rgb(100, 70, 40)';
+            coinText.style.fontWeight = 'bold';
+            coinReward.appendChild(coinText);
+            
+            rewardsContainer.appendChild(coinReward);
+        }
+        
+        card.appendChild(rewardsContainer);
+        return card;
     }
 
 
@@ -352,41 +520,74 @@ class Quest {
             }
         }
     }
+    // Check all goals retroactively when quest is first received
+    checkPastProgress(){
+        // Check all goals to see if any were already completed
+        for(let i = 0; i < this.goals.length; i++){
+            if(!this.goals[i].done){
+                this.goals[i].update();
+            }
+        }
+        
+        // Advance current_Goal to first incomplete goal (for display)
+        while(this.current_Goal < this.goals.length && this.goals[this.current_Goal].done){
+            this.current_Goal += 1;
+        }
+        
+        // Check if quest is already complete
+        if(this.current_Goal >= this.goals.length && !this.done){
+            this.completeQuest();
+        }
+    }
+    
+    completeQuest(){
+        this.done = true;
+        
+        // Dispatch quest completion event
+        window.dispatchEvent(new CustomEvent('questCompleted', {
+            detail: { quest: this }
+        }));
+        
+        // Give item reward if inventory has space
+        if(this.reward_item != 0){
+            if(checkForSpace(player, item_name_to_num(this.reward_item.name))){
+                addItem(player, item_name_to_num(this.reward_item.name), this.reward_item.amount)
+                this.reward_item = 0;
+            }
+        }
+        
+        // Always give coin reward regardless of inventory space
+        if(this.reward_coins > 0){
+            addMoney(this.reward_coins);
+            this.reward_coins = 0;
+        }
+    }
+
     update(){
         if(!this.failed){
-            if(this.goals[this.current_Goal] != undefined){
-                this.goals[this.current_Goal].update()
-                if(this.goals[this.current_Goal].done){
-                    this.current_Goal += 1;
-                    // Dispatch goal completion event
-                    window.dispatchEvent(new CustomEvent('questGoalCompleted', {
-                        detail: { quest: this, goalIndex: this.current_Goal - 1 }
-                    }));
-                    
-                    if(this.current_Goal > this.goals.length-1 && !this.done){
-                        this.done = true;
-                        
-                        // Dispatch quest completion event
-                        window.dispatchEvent(new CustomEvent('questCompleted', {
-                            detail: { quest: this }
-                        }));
-                        
-                        // Give item reward if inventory has space
-                        if(this.reward_item != 0){
-                            if(checkForSpace(player, item_name_to_num(this.reward_item.name))){
-                                addItem(player, item_name_to_num(this.reward_item.name), this.reward_item.amount)
-                                this.reward_item = 0;
-                            }
-                            // If no space, quest stays done but item reward remains claimable
-                        }
-                        
-                        // Always give coin reward regardless of inventory space
-                        if(this.reward_coins > 0){
-                            addMoney(this.reward_coins);
-                            this.reward_coins = 0;
-                        }
-                    }
+            // Check ALL goals, not just current one - goals can complete in any order
+            let allGoalsComplete = true;
+            for(let i = 0; i < this.goals.length; i++){
+                if(!this.goals[i].done){
+                    this.goals[i].update();
                 }
+                if(!this.goals[i].done){
+                    allGoalsComplete = false;
+                }
+            }
+            
+            // Update current_Goal pointer for UI display (first incomplete goal)
+            while(this.current_Goal < this.goals.length && this.goals[this.current_Goal].done){
+                this.current_Goal += 1;
+                // Dispatch goal completion event
+                window.dispatchEvent(new CustomEvent('questGoalCompleted', {
+                    detail: { quest: this, goalIndex: this.current_Goal - 1 }
+                }));
+            }
+            
+            // Complete quest if all goals are done
+            if(allGoalsComplete && !this.done){
+                this.completeQuest();
             }
         }
     }
@@ -401,6 +602,22 @@ class Goal {
     constructor(name){
         this.name = name;
         this.done = false;
+        this.eventListeners = []; // Track event listeners for cleanup
+    }
+    
+    // Register an event listener that will be cleaned up when goal is destroyed
+    addEventListener(eventName, handler){
+        const boundHandler = handler.bind(this);
+        window.addEventListener(eventName, boundHandler);
+        this.eventListeners.push({ eventName, handler: boundHandler });
+    }
+    
+    // Clean up event listeners
+    removeEventListeners(){
+        for(let listener of this.eventListeners){
+            window.removeEventListener(listener.eventName, listener.handler);
+        }
+        this.eventListeners = [];
     }
 
     render(x, y){
@@ -430,10 +647,37 @@ class TalkingGoal extends Goal{  // Talk to _(npc_name)  and Give _(amount) _(it
         this.item_name = item_name;
         this.amount = amount;
         this.class = 'TalkingGoal';
+        
+        // Listen for NPC interaction events
+        this.addEventListener('npcInteraction', (e) => {
+            if(e.detail.npcName === this.npc_name && !this.done){
+                if(this.item_name == 0){
+                    // Just need to talk
+                    this.done = true;
+                } else {
+                    // Need to give item
+                    for(let i = 0; i < player.inv.length; i++){
+                        if(player.inv[i].name == this.item_name && player.inv[i].amount >= this.amount){
+                            player.inv[i].amount -= this.amount;
+                            if(player.inv[i].amount <= 0){
+                                player.inv[i] = 0;
+                            }
+                            this.done = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     update(){
-        if(player.looking(currentLevel_x, currentLevel_y) != undefined && player.talking.name === this.npc_name){
+        // Check if talking to the right NPC (either looking at them OR already in conversation)
+        const isTalkingToNPC = (player.talking != 0 && player.talking.name === this.npc_name) || 
+                               (player.looking(currentLevel_x, currentLevel_y) != undefined && 
+                                player.looking(currentLevel_x, currentLevel_y).name === this.npc_name);
+        
+        if(isTalkingToNPC){
             if(this.item_name != 0){
                 for(let i = 0; i < player.inv.length; i++){
                     if(!this.done && player.inv[i].name == this.item_name && player.inv[i].amount >= this.amount){
@@ -480,11 +724,23 @@ class LocationGoal extends Goal{ // Go to _(level_name)
         super('Go to ' + level_name)
         this.level_name = level_name;
         this.class = 'LocationGoal';
+        
+        // Listen for location visit events
+        this.addEventListener('locationVisited', (e) => {
+            if(e.detail.locationName === this.level_name && !this.done){
+                this.done = true;
+            }
+        });
     }
 
     update(){
+        // Check if player is currently at the location
         if(levels[currentLevel_y][currentLevel_x].name == this.level_name){
-            this.done = true ;
+            this.done = true;
+        }
+        // Also check if player has ever visited this location
+        if(typeof visitedLocations !== 'undefined' && visitedLocations.has(this.level_name)){
+            this.done = true;
         }
     }
 }

@@ -971,6 +971,13 @@ function showQuests(){
                     const card = quest.createGoalCard(goal, g === quest.current_Goal && !goal.done);
                     detailsContainer.appendChild(card);
                 }
+                
+                // Add rewards card if there are rewards
+                if (quest.reward_item !== 0 || quest.reward_coins > 0) {
+                    const rewardsCard = quest.createRewardsCard();
+                    detailsContainer.appendChild(rewardsCard);
+                }
+                
                 detailsContainer.style.display = 'flex';
                 detailsButton.textContent = 'Hide';
             };

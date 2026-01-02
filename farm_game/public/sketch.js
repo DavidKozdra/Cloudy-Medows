@@ -14,6 +14,7 @@ var player;
 var levels = [];
 var currentLevel_y = 2;
 var currentLevel_x = 4;
+var visitedLocations = new Set(); // Track all locations player has visited
 var lastMili = 0;
 var maxHunger = 6;
 var time = 0;
@@ -198,6 +199,13 @@ function draw() {
             // Only update the current level (36x performance improvement)
             const currentLevel = levels[currentLevel_y][currentLevel_x];
             if (currentLevel) {
+                // Track visited location and dispatch event
+                if (!visitedLocations.has(currentLevel.name)) {
+                    visitedLocations.add(currentLevel.name);
+                    window.dispatchEvent(new CustomEvent('locationVisited', {
+                        detail: { locationName: currentLevel.name }
+                    }));
+                }
                 currentLevel.update(currentLevel_x, currentLevel_y);
             }
         }
