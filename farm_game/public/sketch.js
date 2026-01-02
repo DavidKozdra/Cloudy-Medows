@@ -51,6 +51,22 @@ var clear_ticks = 0;
 var clear_y = canvasHeight;
 var extraCount = 0;
 
+// Fast travel CSS animation trigger
+function triggerTravelTransition(callback) {
+    const overlay = document.getElementById('travelOverlay');
+    overlay.classList.add('active');
+    
+    // Call teleport callback at peak fade (1 second in)
+    setTimeout(() => {
+        if (callback) callback();
+    }, 1000);
+    
+    // Remove overlay after animation completes
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 2000);
+}
+
 function draw() {
     musicplayer.update()
 

@@ -927,40 +927,46 @@ function takeInput() {
                 }
                 else if (player.talking.class == 'AirBallon'){
                     if(current_reply == 0){
-                        player.touching.collide = false;
-                        player.pos.x = tileSize*17;
-                        player.pos.y = tileSize*6;
-                        currentLevel_x = 2;
-                        currentLevel_y = 0;
-                        player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
-                        player.oldlooking_name = player.talking.name;
-                        player.talking = 0;
-                        current_reply = 0;
+                        triggerTravelTransition(() => {
+                            player.touching.collide = false;
+                            player.pos.x = tileSize*17;
+                            player.pos.y = tileSize*6;
+                            currentLevel_x = 2;
+                            currentLevel_y = 0;
+                            player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            player.oldlooking_name = player.talking.name;
+                            player.talking = 0;
+                            current_reply = 0;
+                        });
                     }
                     else if (current_reply == 1){
-                        player.touching.collide = false;
-                        player.pos.x = tileSize*17;
-                        player.pos.y = tileSize*6;
-                        currentLevel_x = 3;
-                        currentLevel_y = 3;
-                        player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
-                        player.oldlooking_name = player.talking.name;
-                        player.talking = 0;
-                        current_reply = 0;
+                        triggerTravelTransition(() => {
+                            player.touching.collide = false;
+                            player.pos.x = tileSize*17;
+                            player.pos.y = tileSize*6;
+                            currentLevel_x = 3;
+                            currentLevel_y = 3;
+                            player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            player.oldlooking_name = player.talking.name;
+                            player.talking = 0;
+                            current_reply = 0;
+                        });
                     }
                     else if (current_reply == 2){
-                        player.touching.collide = false;
-                        player.pos.x = tileSize*2;
-                        player.pos.y = tileSize*7;
-                        currentLevel_x = 3;
-                        currentLevel_y = 0;
-                        player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
-                        player.oldlooking_name = player.talking.name;
-                        player.talking = 0;
-                        current_reply = 0;
+                        triggerTravelTransition(() => {
+                            player.touching.collide = false;
+                            player.pos.x = tileSize*2;
+                            player.pos.y = tileSize*7;
+                            currentLevel_x = 3;
+                            currentLevel_y = 0;
+                            player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            player.oldlooking_name = player.talking.name;
+                            player.talking = 0;
+                            current_reply = 0;
+                        });
                     }
                 }
                 lastMili = millis();
