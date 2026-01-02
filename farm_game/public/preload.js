@@ -913,6 +913,25 @@ function setup() {
     questSlider.size((65*6)+45);
     questSlider.hide();
 
+    questCloseButton = createButton('×');
+    questCloseButton.position(0, 0);
+    questCloseButton.mousePressed(() => {
+        player.show_quests = false;
+        questSlider.hide();
+        questCloseButton.hide();
+    });
+    questCloseButton.style('width', '30px');
+    questCloseButton.style('height', '30px');
+    questCloseButton.style('font-size', '24px');
+    questCloseButton.style('font-weight', 'bold');
+    questCloseButton.style('background-color', 'rgba(187, 132, 75, 0.9)');
+    questCloseButton.style('color', 'white');
+    questCloseButton.style('border', '2px solid rgb(149, 108, 65)');
+    questCloseButton.style('border-radius', '3px');
+    questCloseButton.style('padding', '0');
+    questCloseButton.style('line-height', '1');
+    questCloseButton.hide();
+
     clearButton = createButton('Clear Save Data');
     clearButton.position((canvasWidth/2)+165, (canvasHeight/2)+200);
     clearButton.mousePressed(() => {

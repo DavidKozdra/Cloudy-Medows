@@ -392,12 +392,26 @@ function showQuests(){
     strokeWeight(4);
     text('All Quests', (canvasWidth/2) - (width/2)+7, (canvasHeight/8)+7)
     
-    text(String.fromCharCode(quest_key)+ ' To leave', (canvasWidth/2) - (width/2)+370, (canvasHeight/8)+7)
+    // "To close quests" text at bottom, smaller
+    textSize(12);
+    strokeWeight(2);
+    text(String.fromCharCode(quest_key)+ ' to close quests', (canvasWidth/2), (canvasHeight/8) + (65*6) + 25)
 
     pop()
-    questSlider.show()
-    questSlider.position((canvasWidth/2)+(width/2)-190, (canvasHeight/8)+220);
-    questSlider.attribute('max', player.quests.length-6);
+    
+    // Show and position close button
+    questCloseButton.show();
+    questCloseButton.position((canvasWidth/2) + (width/2) - 35, (canvasHeight/8) - 15);
+    
+    // Show slider only if there are more than 6 quests
+    if(player.quests.length > 6){
+        questSlider.show();
+        questSlider.position((canvasWidth/2)+(width/2)-190, (canvasHeight/8)+220);
+        questSlider.attribute('max', max(0, player.quests.length-6));
+    }
+    else{
+        questSlider.hide();
+    }
     for(let i = questSlider.value(); i < (player.quests.length > 6 ? 6 + questSlider.value(): player.quests.length); i++){
         if(player.current_quest == i){
             player.quests[i].render((canvasWidth/2) - (width/2)+5, (canvasHeight/8)+35+((i-questSlider.value())*65), 'yellow', width-10);

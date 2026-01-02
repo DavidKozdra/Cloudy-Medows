@@ -43,6 +43,7 @@ var dif2button;
 var creditsOn = false;
 var current_reply = 0;
 var temp_move_bool = true;
+var questCloseButton;
 var clear_anim = false;
 var clear_movephase = 0;
 var clear_ticks = 0;
@@ -317,6 +318,7 @@ function render_ui() {
         }
         else{
             questSlider.hide();
+            questCloseButton.hide();
         }
         if (player.looking(currentLevel_x, currentLevel_y) != undefined && player.looking(currentLevel_x, currentLevel_y).name == "cart_s" && player.talking == 0) {
             push()
