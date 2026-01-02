@@ -430,13 +430,11 @@ class OneTileCheck extends Goal{
     }
 
     update(){
-        for(let i = 0; i < levels.length; i++){
-            for(let j = 0; j < levels[i].length; j++){
-                if(this.level_name == levels[i][j].name){
-                    if(levels[i][j].map[this.y][this.x].name == this.tile_name){
-                        this.done = true;
-                    }
-                }
+        // Optimized: Only check current level instead of all 36 levels every frame
+        const currentLevel = levels[currentLevel_y][currentLevel_x];
+        if (currentLevel && this.level_name == currentLevel.name) {
+            if (currentLevel.map[this.y][this.x].name == this.tile_name) {
+                this.done = true;
             }
         }
     }

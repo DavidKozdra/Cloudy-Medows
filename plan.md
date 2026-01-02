@@ -142,16 +142,6 @@ Convert from script tags and global variables to ES6 modules with bundler.
    - [sketch.js](farm_game/public/sketch.js): `import { Player } from './classes/tile_classes/player.js'`
    - [miscfunctions.js](farm_game/public/miscfunctions.js): `import { Item, Seed, Tool } from './classes/item.js'`
 
-#### Phase 3: Cleanup
-7. **Remove [index.html](farm_game/public/index.html) script tags**
-   - Delete 20+ `<script src="...">` lines
-   - Keep only Vite's module entry point
-
-8. **Test module resolution**
-   - Run `npm run dev`
-   - Verify hot module replacement works
-   - Check for circular dependencies
-
 ### Success Criteria
 - Single bundled JS file in production
 - No global variables (except p5 instance mode globals)

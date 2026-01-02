@@ -491,7 +491,7 @@ function showQuests(){
             
             // Let the quest render into the DOM element
             questContent.innerHTML = '';
-            player.quests[i].render(questContent, player.current_quest === i ? 'yellow' : null);
+            player.quests[i].renderDOM(questContent, player.current_quest === i ? 'yellow' : null);
             
             questButton.appendChild(questContent);
             questsList.appendChild(questButton);

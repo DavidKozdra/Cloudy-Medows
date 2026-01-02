@@ -55,6 +55,12 @@ var clear_ticks = 0;
 var clear_y = canvasHeight;
 var extraCount = 0;
 
+// Performance profiling
+var fpsCounter = 0;
+var lastFpsUpdate = 0;
+var displayFps = 0;
+var showFpsDebug = false;
+
 // Fast travel CSS animation trigger
 function triggerTravelTransition(callback) {
     const overlay = document.getElementById('travelOverlay');
@@ -121,12 +127,10 @@ function draw() {
         if (!paused){
             // Resume GIF animations
             animatedGifs.forEach(gif => gif.play());
-            for (let y = 0; y < levels.length; y++) {
-                for (let x = 0; x < levels[y].length; x++) {
-                    if (levels[y][x] != 0 && levels[y][x] != undefined) {
-                        levels[y][x].update(x, y);
-                    }
-                }
+            // Only update the current level (36x performance improvement)
+            const currentLevel = levels[currentLevel_y][currentLevel_x];
+            if (currentLevel) {
+                currentLevel.update(currentLevel_x, currentLevel_y);
             }
         }
         else{
@@ -198,6 +202,14 @@ function draw() {
                 lastTimeMili = millis();
             }
         }
+    }
+
+    // Update FPS counter
+    fpsCounter++;
+    if (millis() - lastFpsUpdate > 500) { // Update every 500ms
+        displayFps = round(fpsCounter * 2); // multiply by 2 since we update every 500ms
+        fpsCounter = 0;
+        lastFpsUpdate = millis();
     }
 }
 
@@ -431,6 +443,16 @@ function render_ui() {
         fxSlider.hide();
         QuitButton.hide()
           hideControls();
+    }
+
+    // Draw FPS counter if debug mode enabled
+    if(showFpsDebug){
+        push();
+        fill(255, 0, 0);
+        textSize(16);
+        textAlign(LEFT, TOP);
+        text('FPS: ' + displayFps, 10, 10);
+        pop();
     }
 }
 

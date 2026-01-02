@@ -1022,5 +1022,12 @@ function takeInput() {
                 lastMili = millis();
             }
         }
+        // Debug: Toggle FPS display with F1 key (key code 112)
+        if (keyIsDown(112)) {
+            if (millis() - lastMili > 200) {
+                showFpsDebug = !showFpsDebug;
+                lastMili = millis();
+            }
+        }
     }
 }
