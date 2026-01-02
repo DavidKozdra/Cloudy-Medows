@@ -169,7 +169,7 @@ class Quest {
         
     }
 
-    renderDOM(container, isCurrentQuest){
+    renderDOM(container){
         // Clear container
         container.innerHTML = '';
         
@@ -223,11 +223,11 @@ class Quest {
             }
         } else {
             // Show current goal
-            statusDiv.textContent = this.goals[this.current_Goal].name;
+            //statusDiv.textContent = this.goals[this.current_Goal].name;
             statusDiv.style.color = 'rgb(255, 255, 255)';
         }
         
-        container.appendChild(statusDiv);
+        titleDiv.appendChild(statusDiv);
     }
 
     daily_update(){

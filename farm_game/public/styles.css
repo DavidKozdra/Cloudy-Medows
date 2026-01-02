@@ -225,6 +225,8 @@ button {
     pointer-events: auto;
     position: relative;
     z-index: 1001;
+    display: flex;
+    flex-direction: row;
 }
 
 .quest-item:hover {
