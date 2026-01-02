@@ -1,27 +1,52 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
-    <title>Cloudy Meadows </title>
-    <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.min.js"></script>
     
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloudy Meadows </title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.min.js"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/addons/p5.sound.min.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="images/ui/Title_Screen.gif">
+    <script type="text/javascript" src="localDataStorage-3.0.0.min.js"></script>
+    <script type="text/javascript" src="miscfunctions.js"></script>
+    <script type="text/javascript" src="preload.js"></script>
     <script type="text/javascript" src="sketch.js"></script>
 
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-      
-      body {
-        padding: 10px;
-        background: #000000;
-      }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            padding: 10px;
+            background: #000000;
+        }
     </style>
-     <link rel="stylesheet" href="styles.css">
-     <script src="Audio.js"> </script>
-     
-     <script src="Cloud.js"> </script>
-  </head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="classes/Sound.js"></script>
+    <script src="classes/Cloud.js"></script>
+    <script src="classes/item.js"></script>
+    <script src="classes/level.js"></script>
+    <script src="classes/quest.js"></script>
+    <script src="classes/dialouge.js"></script>
+    <script src="classes/tile_classes/tile.js"></script>
+    <script src="classes/tile_classes/plant.js"></script>
+    <script src="classes/tile_classes/entity.js"></script>
+    <script src="classes/tile_classes/moveable-entity.js"></script>
+    <script src="classes/tile_classes/player.js"></script>
+    <script src="classes/tile_classes/grid-move-entity.js"></script>
+    <script src="classes/tile_classes/free-move-entity.js"></script>
+    <script src="classes/tile_classes/light-move-entity.js"></script>
+    <script src="classes/tile_classes/pay-to-move-entity.js"></script>
+    <script src="classes/tile_classes/npc.js"></script>
+    <script src="classes/tile_classes/shop.js"></script>
+    <script src="classes/tile_classes/chest.js"></script>
+    <script src="classes/tile_classes/robot.js"></script>
+    <script src="classes/tile_classes/air_ballon.js"></script>
+
+ 
+</head>
   <body>
   </body>
 </html>

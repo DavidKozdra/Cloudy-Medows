@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\public"
+    "\\public",
+    "\\public\\classes",
+    "\\public\\classes\\tile_classes"
   ],
-  "SelectedNode": "\\public\\Stawberry.png",
+  "SelectedNode": "\\public\\classes\\tile_classes\\player.js",
   "PreviewInSolutionExplorer": false
 }
