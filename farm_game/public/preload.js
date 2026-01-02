@@ -932,6 +932,20 @@ function setup() {
     questCloseButton.style('line-height', '1');
     questCloseButton.hide();
 
+    // Register all animated GIF images for pause control
+    animatedGifs = [
+        sprinkler_tile_img,
+        water_tile_img,
+        air_ship_img,
+        grinder_tile_img,
+        title_screen_img,
+        save_img,
+        ladybug_img,
+        bee_img,
+        light_bug_img,
+        background_img
+    ];
+
     clearButton = createButton('Clear Save Data');
     clearButton.position((canvasWidth/2)+165, (canvasHeight/2)+200);
     clearButton.mousePressed(() => {

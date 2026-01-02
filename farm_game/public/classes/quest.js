@@ -181,25 +181,22 @@ class Quest {
                     this.current_Goal += 1;
                     if(this.current_Goal > this.goals.length-1 && !this.done){
                         this.done = true;
+                        
+                        // Give item reward if inventory has space
                         if(this.reward_item != 0){
                             if(checkForSpace(player, item_name_to_num(this.reward_item.name))){
                                 addItem(player, item_name_to_num(this.reward_item.name), this.reward_item.amount)
                                 this.reward_item = 0;
-                                if(this.reward_coins > 0){
-                                    player.coins += this.reward_coins;
-                                    player.money_anim = 255;
-                                    player.money_anim_amount += this.reward_coins;
-                                    this.reward_coins = 0;
-                                }
                             }
+                            // If no space, quest stays done but item reward remains claimable
                         }
-                        else{
-                            if(this.reward_coins > 0){
-                                player.coins += this.reward_coins;
-                                player.money_anim = 255;
-                                player.money_anim_amount += this.reward_coins;
-                                this.reward_coins = 0;
-                            }
+                        
+                        // Always give coin reward regardless of inventory space
+                        if(this.reward_coins > 0){
+                            player.coins += this.reward_coins;
+                            player.money_anim = 255;
+                            player.money_anim_amount += this.reward_coins;
+                            this.reward_coins = 0;
                         }
                     }
                 }

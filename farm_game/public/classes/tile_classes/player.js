@@ -183,6 +183,7 @@ class Player extends MoveableEntity {
                         this.deaths += 1;
                         this.transphase = 2;
                         this.ticks = 0;
+                        saveAll(); // Auto-save after respawn
                         this.deathConsequence(dificulty)
                     }
                     text('Respawn in ' + floor((600-this.ticks)/60), canvasWidth/2, (3*canvasHeight)/4);

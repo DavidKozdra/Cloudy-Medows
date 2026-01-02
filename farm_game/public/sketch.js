@@ -44,6 +44,7 @@ var creditsOn = false;
 var current_reply = 0;
 var temp_move_bool = true;
 var questCloseButton;
+var animatedGifs = []; // Track all animated GIF images
 var clear_anim = false;
 var clear_movephase = 0;
 var clear_ticks = 0;
@@ -82,6 +83,8 @@ function draw() {
         levels[currentLevel_y][currentLevel_x].fore_render();
         levels[currentLevel_y][currentLevel_x].render();
         if (!paused){
+            // Resume GIF animations
+            animatedGifs.forEach(gif => gif.play());
             for (let y = 0; y < levels.length; y++) {
                 for (let x = 0; x < levels[y].length; x++) {
                     if (levels[y][x] != 0 && levels[y][x] != undefined) {
@@ -89,6 +92,10 @@ function draw() {
                     }
                 }
             }
+        }
+        else{
+            // Pause GIF animations
+            animatedGifs.forEach(gif => gif.pause());
         }
         player.render();
         if(!player.dead){
