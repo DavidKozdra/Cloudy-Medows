@@ -637,9 +637,11 @@ var currentMappingIndex = 0;  // Track which control we're currently mapping
 
 // Add keydown listener for capturing keys during remapping
 document.addEventListener('keydown', (e) => {
+    console.log('GLOBAL KEYDOWN:', e.key, 'keymapping flag:', keymapping, 'currentMappingIndex:', currentMappingIndex);
+    
     if (keymapping) {
         e.preventDefault();
-        console.log('Key pressed during mapping:', e.key, 'keyCode:', e.keyCode);
+        console.log('✓ Key pressed during mapping:', e.key, 'keyCode:', e.keyCode, 'controlIndex:', currentMappingIndex);
         
         // Dispatch custom event with the captured key
         window.dispatchEvent(new CustomEvent('keymapCapture', {
@@ -649,60 +651,77 @@ document.addEventListener('keydown', (e) => {
                 keyCode: e.keyCode
             }
         }));
+    } else {
+        console.log('✗ keymapping is false, ignoring key');
     }
 });
 
 // Listen for key mapping events
 window.addEventListener('keymapCapture', (e) => {
-    console.log('Key captured for mapping:', e.detail);
+    console.log('✓ keymapCapture event received:', e.detail);
     const { controlIndex, key, keyCode } = e.detail;
+    console.log('Processing control index:', controlIndex, 'key:', key, 'keyCode:', keyCode);
     
     switch(controlIndex) {
         case 1:
             interact_button = keyCode;
             Controls_Interact_button_key = key;
+            console.log('Set Interact to:', key);
             break;
         case 2:
             eat_button = keyCode;
             Controls_Eat_button_key = key;
+            console.log('Set Eat to:', key);
             break;
         case 3:
             move_up_button = keyCode;
             Controls_Up_button_key = key;
+            console.log('Set Up to:', key);
             break;
         case 4:
             move_down_button = keyCode;
             Controls_Down_button_key = key;
+            console.log('Set Down to:', key);
             break;
         case 5:
             move_left_button = keyCode;
             Controls_Left_button_key = key;
+            console.log('Set Left to:', key);
             break;
         case 6:
             move_right_button = keyCode;
             Controls_Right_button_key = key;
+            console.log('Set Right to:', key);
             break;
         case 7:
             special_key = keyCode;
             Controls_Special_button_key = key;
+            console.log('Set Special to:', key);
             break;
         case 8:
             quest_key = keyCode;
             Controls_Quest_button_key = key;
+            console.log('Set Quest to:', key);
             break;
+        default:
+            console.warn('Unknown control index:', controlIndex);
     }
     
     keymapping = false;
     control_set = 0;
+    console.log('keymapping reset to false, saving options...');
     saveOptions();
     
     // Refresh the controls display
     const pauseControlsContainer = document.getElementById('pause-controls-container');
     if (pauseControlsContainer && pauseControlsContainer.style.display !== 'none') {
+        console.log('Refreshing pause controls');
         renderControlButtons(pauseControlsContainer);
     }
     const titleControlsContainer = document.getElementById('title-controls-container');
     if (titleControlsContainer) {
+        console.log('Refreshing title controls');
+        titleControlsContainer.innerHTML = ''; // Clear so it re-renders
         showTitleOptions();
     }
 });

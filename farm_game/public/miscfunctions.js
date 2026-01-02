@@ -336,6 +336,8 @@ function resetControls() {
 }
 
 function renderControlButtons(container) {
+    console.log('renderControlButtons called with container:', container);
+    
     const controlItems = [
         { label: 'Interact:', key: () => Controls_Interact_button_key || 'z', controlIndex: 1 },
         { label: 'Eat:', key: () => Controls_Eat_button_key || 'e', controlIndex: 2 },
@@ -347,12 +349,15 @@ function renderControlButtons(container) {
         { label: 'Quest:', key: () => Controls_Quest_button_key || 'q', controlIndex: 8 }
     ];
     
-    // If container is provided, use it as parent (for pause menu, etc.)
+    // If container is provided, use it as parent (for pause menu, options, etc.)
     if (container) {
+        console.log('Container provided, rendering inline buttons');
         container.innerHTML = '';
         
         for (let i = 0; i < controlItems.length; i++) {
             const item = controlItems[i];
+            console.log('Creating button for:', item.label);
+            
             const row = document.createElement('div');
             row.className = 'control-row';
             row.style.display = 'flex';
@@ -371,11 +376,17 @@ function renderControlButtons(container) {
             const button = document.createElement('button');
             button.className = 'control-button';
             button.style.minWidth = '60px';
+            button.style.cursor = 'pointer';
+            button.style.pointerEvents = 'auto';
             const keyValue = item.key();
             button.textContent = keyValue ? String(keyValue) : '?';
-            button.addEventListener('click', () => {
-                console.log('Control button clicked:', item.label, 'controlIndex:', item.controlIndex);
+            
+            const clickHandler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('CLICK DETECTED - Control button clicked:', item.label, 'controlIndex:', item.controlIndex);
                 console.log('Activating keymapping mode...');
+                console.log('keymapping defined?:', typeof keymapping !== 'undefined');
                 
                 if (typeof keymapping !== 'undefined') {
                     keymapping = true;
@@ -386,11 +397,17 @@ function renderControlButtons(container) {
                 } else {
                     console.error('keymapping variable not defined!');
                 }
-            });
-            row.appendChild(button);
+            };
             
+            button.addEventListener('click', clickHandler);
+            button.addEventListener('mousedown', function(e) {
+                console.log('MOUSEDOWN on button:', item.label);
+            });
+            
+            row.appendChild(button);
             container.appendChild(row);
         }
+        console.log('Inline buttons created, total:', controlItems.length);
         return;
     }
     
@@ -619,33 +636,10 @@ function showTitleOptions(){
         fxSliderDOM.value = fxSlider.value();
     }
     
-    // Update controls list
-    if (controlsContainer) {
-        controlsContainer.innerHTML = '';
-        const controlItems = [
-            { label: 'Interact:', key: () => Controls_Interact_button_key },
-            { label: 'Eat:', key: () => Controls_Eat_button_key },
-            { label: 'Up:', key: () => Controls_Up_button_key },
-            { label: 'Down:', key: () => Controls_Down_button_key },
-            { label: 'Left:', key: () => Controls_Left_button_key },
-            { label: 'Right:', key: () => Controls_Right_button_key },
-            { label: 'Special:', key: () => Controls_Special_button_key },
-            { label: 'Quest:', key: () => Controls_Quest_button_key }
-        ];
-        
-        controlItems.forEach(item => {
-            const row = document.createElement('div');
-            row.className = 'title-control-row';
-            const label = document.createElement('span');
-            label.className = 'title-control-label';
-            label.textContent = item.label;
-            const key = document.createElement('span');
-            key.className = 'title-control-key';
-            key.textContent = item.key();
-            row.appendChild(label);
-            row.appendChild(key);
-            controlsContainer.appendChild(row);
-        });
+    // Only render controls if the container is empty (first time or after reset)
+    if (controlsContainer && controlsContainer.children.length === 0) {
+        console.log('Rendering controls for first time in options');
+        renderControlButtons(controlsContainer);
     }
     
     optionsMenu.style.display = 'flex';
