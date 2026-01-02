@@ -295,14 +295,19 @@ function selectDifficulty(difficulty){
     
     try {
         localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty});
+        console.log('Difficulty saved:', difficulty);
     } catch (e) {
         console.warn('Failed to save difficulty:', e);
     }
-    triggerMenuFadeOut(() => {
-        console.log('Difficulty selected, reloading window...');
-        // Reload the window to ensure clean initialization
-        window.location.reload();
-    });
+    
+    // Proceed directly into the game without showing difficulty screen again
+    hideDifficultyMenu();
+    dificulty_screen = false;
+    title_screen = false;
+    paused = false;
+    
+    console.log('Starting game with difficulty:', difficulty);
+    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
 }
 
 let controlsContainer = null;
