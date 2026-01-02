@@ -6,14 +6,7 @@ function start(){
         creditsButton.hide();
         resetControlsButton.hide();
         clearButton.hide();
-        Controls_Interact_button.hide();
-        Controls_Eat_button.hide();
-        Controls_Up_button.hide();
-        Controls_Down_button.hide();
-        Controls_Left_button.hide();
-        Controls_Right_button.hide();
-        Controls_Special_button.hide();
-        Controls_Quest_button.hide();
+        hideControlButtons();
         title_screen = false;
         if(localData.get('Day_curLvl_Dif') == null){
             dificulty_screen = true;
@@ -65,14 +58,7 @@ function showTitle(){
         fxSlider.hide();
         resetControlsButton.hide();
         clearButton.hide();
-        Controls_Interact_button.hide();
-        Controls_Eat_button.hide();
-        Controls_Up_button.hide();
-        Controls_Down_button.hide();
-        Controls_Left_button.hide();
-        Controls_Right_button.hide();
-        Controls_Special_button.hide();
-        Controls_Quest_button.hide();
+        hideControlButtons();
 
     }
     if(creditsOn){
@@ -170,6 +156,79 @@ function showDificulty(){
     pop();
 }
 
+let controlsContainer = null;
+let controlRows = [];
+
+function renderControlButtons(x, y) {
+    const controlItems = [
+        { label: 'Interact:', key: () => Controls_Interact_button_key, controlIndex: 1 },
+        { label: 'Eat:', key: () => Controls_Eat_button_key, controlIndex: 2 },
+        { label: 'Up:', key: () => Controls_Up_button_key, controlIndex: 3 },
+        { label: 'Down:', key: () => Controls_Down_button_key, controlIndex: 4 },
+        { label: 'Left:', key: () => Controls_Left_button_key, controlIndex: 5 },
+        { label: 'Right:', key: () => Controls_Right_button_key, controlIndex: 6 },
+        { label: 'Special:', key: () => Controls_Special_button_key, controlIndex: 7 },
+        { label: 'Quest:', key: () => Controls_Quest_button_key, controlIndex: 8 }
+    ];
+    
+    if (!controlsContainer) {
+        controlsContainer = document.createElement('div');
+        controlsContainer.className = 'controls-container';
+        document.getElementById('game-container').appendChild(controlsContainer);
+        
+        for (let i = 0; i < controlItems.length; i++) {
+            const item = controlItems[i];
+            const row = document.createElement('div');
+            row.className = 'control-row';
+            
+            const label = document.createElement('div');
+            label.className = 'control-label';
+            label.textContent = item.label;
+            row.appendChild(label);
+            
+            const button = document.createElement('button');
+            button.className = 'control-button';
+            button.addEventListener('click', () => {
+                if (control_set === 0) {
+                    control_set = item.controlIndex;
+                    key = item.key();
+                    lastKey = key;
+                }
+            });
+            row.appendChild(button);
+            
+            controlsContainer.appendChild(row);
+            controlRows.push({ row, button });
+        }
+    }
+    
+    controlsContainer.style.left = x + 'px';
+    controlsContainer.style.top = y + 'px';
+    controlsContainer.style.display = 'flex';
+    
+    for (let i = 0; i < controlItems.length; i++) {
+        const { button } = controlRows[i];
+        const keyValue = controlItems[i].key();
+        const keyLength = keyValue.length;
+        const fontSize = keyLength > 5 ? Math.max(15 - ((keyLength - 5) * 1.5), 8) : 15;
+        
+        button.style.fontSize = fontSize + 'px';
+        button.textContent = keyValue;
+        
+        if (control_set === controlItems[i].controlIndex) {
+            controlRows[i].row.classList.add('highlighted');
+        } else {
+            controlRows[i].row.classList.remove('highlighted');
+        }
+    }
+}
+
+function hideControlButtons() {
+    if (controlsContainer) {
+        controlsContainer.style.display = 'none';
+    }
+}
+
 function showOptions(){
     push()
     stroke(149, 108, 65);
@@ -188,44 +247,8 @@ function showOptions(){
     fxSlider.show();
     musicSlider.position(((4*canvasWidth)/5)-30, (canvasHeight/6)-25);
     fxSlider.position(((4*canvasWidth)/5)-30, (canvasHeight/6)+15);
-    Controls_Interact_button.show();
-    Controls_Eat_button.show();
-    Controls_Up_button.show();
-    Controls_Down_button.show();
-    Controls_Left_button.show();
-    Controls_Right_button.show();
-    Controls_Special_button.show();
-    Controls_Quest_button.show();;
-    Controls_Interact_button.position(((4*canvasWidth)/5)+70, canvasHeight/2-120);
-    Controls_Eat_button.position(((4*canvasWidth)/5)+70, canvasHeight/2-95);
-    Controls_Up_button.position(((4*canvasWidth)/5)+70, canvasHeight/2-70);
-    Controls_Left_button.position(((4*canvasWidth)/5)+70, canvasHeight/2-45);
-    Controls_Down_button.position(((4*canvasWidth)/5)+70, canvasHeight/2-20);
-    Controls_Right_button.position(((4*canvasWidth)/5)+70, canvasHeight/2+5);
-    Controls_Special_button.position(((4*canvasWidth)/5)+70, canvasHeight/2 + 30);
-    Controls_Quest_button.position(((4*canvasWidth)/5)+70, canvasHeight/2 + 55);
-    if(control_set != 0){
-        fill(255, 255, 0);
-        rect(((4*canvasWidth)/5)+97, ((canvasHeight/2)-127) + (25*(control_set-1)), 90, 20);
-    }
-    textSize(15);
-    fill(0);
-    noStroke();
-    text('Interact:', ((4*canvasWidth)/5)-12, canvasHeight/2-127);
-    text('Eat:', ((4*canvasWidth)/5)-12, canvasHeight/2-102);
-    text('Up:', ((4*canvasWidth)/5)-12, canvasHeight/2-77);
-    text('Left:', ((4*canvasWidth)/5)-12, canvasHeight/2-52);
-    text('Down:', ((4*canvasWidth)/5)-12, canvasHeight/2-27);
-    text('Right:', ((4*canvasWidth)/5)-12, canvasHeight/2-2);
-    text('Special:', ((4*canvasWidth)/5)-12, canvasHeight/2+23);
-    text('Quest:', ((4*canvasWidth)/5)-12, canvasHeight/2+48);
-
-    let button_key_array = [Controls_Interact_button_key, Controls_Eat_button_key, Controls_Up_button_key, Controls_Down_button_key, Controls_Left_button_key, Controls_Right_button_key, Controls_Special_button_key, Controls_Quest_button_key];
-    for(let i = 0; i < button_key_array.length; i++){
-        textSize(15 - (button_key_array[i].length > 5 ? ((button_key_array[i].length-5) * 1.5):0));
-        text(button_key_array[i], ((4*canvasWidth)/5)+97, (canvasHeight/2-127) + (i*25));
-    }
     
+    renderControlButtons(((4*canvasWidth)/5)-80, canvasHeight/2-127);
 
     resetControlsButton.show();
     clearButton.show();
@@ -258,44 +281,7 @@ function showPaused(){
     image(music_note_img, (canvasWidth/2)-65, (canvasHeight/5));
     image(fx_img, (canvasWidth/2)-65, (canvasHeight/5)+40);
 
-    Controls_Interact_button.show();
-    Controls_Eat_button.show();
-    Controls_Up_button.show();
-    Controls_Down_button.show();
-    Controls_Left_button.show();
-    Controls_Right_button.show();
-    Controls_Special_button.show();
-    Controls_Quest_button.show();;
-    Controls_Interact_button.position(((2*canvasWidth)/5)+102, canvasHeight/2-95);
-    Controls_Eat_button.position(((2*canvasWidth)/5)+102, canvasHeight/2-70);
-    Controls_Up_button.position(((2*canvasWidth)/5)+102, canvasHeight/2-45);
-    Controls_Left_button.position(((2*canvasWidth)/5)+102, canvasHeight/2-20);
-    Controls_Down_button.position(((2*canvasWidth)/5)+102, canvasHeight/2+5);
-    Controls_Right_button.position(((2*canvasWidth)/5)+102, canvasHeight/2+30);
-    Controls_Special_button.position(((2*canvasWidth)/5)+102, canvasHeight/2+55);
-    Controls_Quest_button.position(((2*canvasWidth)/5)+102, canvasHeight/2 + 80);
-    
-    if(control_set != 0){
-        fill(255, 255, 0);
-        rect(((2*canvasWidth)/5)+129, ((canvasHeight/2)-102) + (25*(control_set-1)), 90, 20);
-    }
-    textSize(15);
-    fill(0);
-    noStroke();
-    text('Interact:', ((2*canvasWidth)/5)+20, canvasHeight/2-102);
-    text('Eat:', ((2*canvasWidth)/5)+20, canvasHeight/2-77);
-    text('Up:', ((2*canvasWidth)/5)+20, canvasHeight/2-52);
-    text('Left:', ((2*canvasWidth)/5)+20, canvasHeight/2-27);
-    text('Down:', ((2*canvasWidth)/5)+20, canvasHeight/2-2);
-    text('Right:', ((2*canvasWidth)/5)+20, canvasHeight/2+23);
-    text('Special:', ((2*canvasWidth)/5)+20, canvasHeight/2+48);
-    text('Quest:', ((2*canvasWidth)/5)+20, canvasHeight/2+73);
-
-    let button_key_array = [Controls_Interact_button_key, Controls_Eat_button_key, Controls_Up_button_key, Controls_Down_button_key, Controls_Left_button_key, Controls_Right_button_key, Controls_Special_button_key, Controls_Quest_button_key];
-    for(let i = 0; i < button_key_array.length; i++){
-        textSize(15 - (button_key_array[i].length > 5 ? ((button_key_array[i].length-5) * 1.5):0));
-        text(button_key_array[i], ((2*canvasWidth)/5)+129, (canvasHeight/2-102) + (i*25));
-    }
+    renderControlButtons(((2*canvasWidth)/5)-60, canvasHeight/2-102);
 
     pop()
 }

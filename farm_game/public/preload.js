@@ -828,6 +828,15 @@ function setup() {
         Controls_Right_button_key = 'd';
         Controls_Special_button_key = 'Shift';
         Controls_Quest_button_key = 'P';
+        move_right_button = 68;
+        move_left_button = 65;
+        move_up_button = 87;
+        move_down_button = 83;
+        interact_button = 69;
+        eat_button = 81;
+        special_key = 16;
+        quest_key = 80;
+        saveOptions();
     });
     resetControlsButton.style('width', '200px');
     resetControlsButton.style('background','url()');

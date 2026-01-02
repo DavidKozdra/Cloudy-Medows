@@ -27,6 +27,50 @@ button {
     cursor: pointer;
 }
 
+/* Control UI styles */
+.controls-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 0;
+    justify-content: center;
+}
+
+.control-label {
+    font-family: pixelFont;
+    font-size: 15px;
+    color: black;
+    width: 80px;
+    padding-right: 20%;
+}
+
+.control-button {
+    font-family: pixelFont;
+    font-size: 15px;
+    color: black;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 2px 8px;
+    cursor: pointer;
+    min-width: 90px;
+    text-align: center;
+}
+
+.control-button:hover {
+    border-color: rgba(0, 0, 0, 0.3);
+}
+
+.control-row.highlighted .control-button {
+    background-color: rgba(255, 255, 0, 0.5);
+    border-color: rgb(255, 255, 0);
+}
+
 /* Fast travel transition overlay */
 #travelOverlay {
     position: absolute;
