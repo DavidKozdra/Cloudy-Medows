@@ -11,19 +11,8 @@
 
     <link rel="icon" type="image/x-icon" href="images/ui/Title_Screen.gif">
     <script type="text/javascript" src="localDataStorage-3.0.0.min.js"></script>
-    <script type="text/javascript" src="miscfunctions.js"></script>
-    <script type="text/javascript" src="preload.js"></script>
-    <script type="text/javascript" src="sketch.js"></script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-        body {
-            padding: 10px;
-            background: #000000;
-        }
-    </style>
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Class definitions (must load before usage in preload.js) -->
     <script src="classes/Sound.js"></script>
     <script src="classes/Cloud.js"></script>
     <script src="classes/item.js"></script>
@@ -44,6 +33,26 @@
     <script src="classes/tile_classes/chest.js"></script>
     <script src="classes/tile_classes/robot.js"></script>
     <script src="classes/tile_classes/air_ballon.js"></script>
+    
+    <!-- Configuration files -->
+    <script type="text/javascript" src="config/constants.js"></script>
+    <script type="text/javascript" src="config/items.js"></script>
+    <script type="text/javascript" src="config/tiles.js"></script>
+    
+    <!-- Main game files -->
+    <script type="text/javascript" src="miscfunctions.js"></script>
+    <script type="text/javascript" src="preload.js"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            padding: 10px;
+            background: #000000;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
 
  
 </head>

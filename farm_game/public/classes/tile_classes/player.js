@@ -168,7 +168,7 @@ class Player extends MoveableEntity {
                         this.ticks = 0;
                     }
                     this.a += 5;
-                    text('Respawn in 9', canvasWidth/2, (3*canvasHeight)/4);
+                    text('Respawn in 10', canvasWidth/2, (3*canvasHeight)/4);
                 }
                 if(this.transphase == 1){
                     if(this.ticks >= 600){
