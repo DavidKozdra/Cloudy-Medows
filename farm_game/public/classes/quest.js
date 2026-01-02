@@ -55,7 +55,10 @@ class Quest {
                     this.goals[i] = new HaveGoal(this.goals[i].item_name, this.goals[i].amount)
                 }
                 else if (this.goals[i].class == 'OneTileCheck'){
-                    this.goals[i] = new OneTileCheck(this.goals[i].tile_name, this.goals[i].x, this.goals[i].y, this.goals[i].level_name)
+                    if(this.goals[i].old_tile_name == undefined){
+                        this.goals[i].old_tile_name = "Rock"
+                    }
+                    this.goals[i] = new OneTileCheck(this.goals[i].tile_name, this.goals[i].x, this.goals[i].y, this.goals[i].level_name,  this.goals[i].old_tile_name) 
                 }
             }
         }
@@ -294,7 +297,7 @@ class Goal {
     render(x, y){
         push()
         textFont(player_2);
-        textSize(11);
+        textSize(this.name.length > 20 ? 8 : 12);
         fill(255);
         stroke(0);
         strokeWeight(4);
@@ -417,8 +420,8 @@ class HaveGoal extends Goal{ // Have _(amount) of _(item_name)
 }
 
 class OneTileCheck extends Goal{
-    constructor(tile_name, x, y, level_name){
-        super('Make x:' + x + ' y:' + y + ' into ' + tile_name + ' at ' + level_name);
+    constructor(tile_name, x, y, level_name , oldTileName){
+        super('Make x:' + x + ' y:' + y + ' into ' + tile_name + ' at ' + level_name + " instead of " + oldTileName);
         this.level_name = level_name;
         this.tile_name = tile_name;
         this.x = x;
