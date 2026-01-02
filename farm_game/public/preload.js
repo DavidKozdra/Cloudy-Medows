@@ -872,7 +872,7 @@ function setup() {
 
     QuitButton = createButton('Save and Quit');
     QuitButton.parent('game-container');
-    QuitButton.position((canvasWidth/2)-125, (canvasWidth/2)+95);
+    QuitButton.position((canvasWidth/2)-125, (canvasWidth/2)+80);
     QuitButton.style('width', '250px');
     QuitButton.style('background','url()');
     QuitButton.style("font-family","pixelFont");
