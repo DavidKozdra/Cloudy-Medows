@@ -233,7 +233,7 @@ function hideControls() {
         }
     }
 
-    
+
 }
 
 function showOptions(){
@@ -370,53 +370,110 @@ function showCredits(){
     pop()
 }
 
-function showQuests(){
-    let width = 10*22;
-    for(let i = questSlider.value(); i < (player.quests.length > 6 ? 6 + questSlider.value(): player.quests.length); i++){
-        width = max(width, (player.quests[i].name.length*17)+10);
-        if(!player.quests[i].done){
-            width = max(width, (player.quests[i].goals[player.quests[i].current_Goal].name.length*12)+10);
-        }
-    }
-    push()
-    stroke(149, 108, 65);
-    strokeWeight(5);
-    fill(187, 132, 75);
-    rect((canvasWidth/2) - (width/2), canvasHeight/8, width, (65*6)+35);
-    textFont(player_2);
-    textSize(20);
-    fill(255);
-    stroke(0);
-    strokeWeight(4);
-    text('All Quests', (canvasWidth/2) - (width/2)+7, (canvasHeight/8)+7)
-    
-    // "To close quests" text at bottom, smaller
-    textSize(12);
-    strokeWeight(2);
-    text(String.fromCharCode(quest_key)+ ' to close quests', (canvasWidth/2), (canvasHeight/8) + (65*6) + 25)
+let questsContainer = null;
 
-    pop()
+function showQuests(){
+    if (!questsContainer) {
+        questsContainer = document.createElement('div');
+        questsContainer.className = 'quests-container';
+        document.getElementById('game-container').appendChild(questsContainer);
+        
+        // Create header wrapper with close button
+        const headerWrapper = document.createElement('div');
+        headerWrapper.className = 'quests-header-wrapper';
+        questsContainer.appendChild(headerWrapper);
+        
+        const header = document.createElement('div');
+        header.className = 'quests-header';
+        header.innerHTML = '<h2>All Quests</h2>';
+        headerWrapper.appendChild(header);
+        
+        const closeButton = document.createElement('button');
+        closeButton.className = 'quests-close-btn';
+        closeButton.textContent = '×';
+        closeButton.addEventListener('click', () => {
+            player.show_quests = false;
+            questsContainer.style.display = 'none';
+            questSlider.hide();
+            questCloseButton.hide();
+        });
+        headerWrapper.appendChild(closeButton);
+        
+        // Create quests list container
+        const questsList = document.createElement('div');
+        questsList.className = 'quests-list';
+        questsContainer.appendChild(questsList);
+        
+        // Create footer for close instruction
+        const closeInstruction = document.createElement('div');
+        closeInstruction.className = 'quests-close-instruction';
+        questsContainer.appendChild(closeInstruction);
+    }
+
+    // Update quests list
+    const questsList = questsContainer.querySelector('.quests-list');
+    questsList.innerHTML = '';
+
+    // Render visible quests
+    const startIndex = questSlider.value();
+    const endIndex = Math.min(player.quests.length > 6 ? 6 + startIndex : player.quests.length, player.quests.length);
     
-    // Show and position close button
-    questCloseButton.show();
-    questCloseButton.position((canvasWidth/2) + (width/2) - 35, (canvasHeight/8) - 15);
-    
+    for(let i = startIndex; i < endIndex; i++){
+        const questButton = document.createElement('button');
+        questButton.className = 'quest-item';
+        questButton.setAttribute('data-quest-index', i);
+        if(player.current_quest === i){
+            questButton.classList.add('quest-current');
+        }
+        
+        // Add click handler
+        questButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const questIndex = parseInt(e.currentTarget.getAttribute('data-quest-index'));
+            player.current_quest = questIndex;
+            showQuests(); // Refresh to update highlight
+        });
+        
+        const questContent = document.createElement('div');
+        questContent.className = 'quest-content';
+        
+        // Let the quest render into the DOM element
+        questContent.innerHTML = '';
+        player.quests[i].render(questContent, player.current_quest === i ? 'yellow' : null);
+        
+        questButton.appendChild(questContent);
+        questsList.appendChild(questButton);
+    }
+
+    // Update close instruction
+    const closeInstruction = questsContainer.querySelector('.quests-close-instruction');
+    closeInstruction.textContent = String.fromCharCode(quest_key) + ' to close quests';
+
+    // Hide p5.js button and show container
+    questCloseButton.hide();
+
     // Show slider only if there are more than 6 quests
     if(player.quests.length > 6){
         questSlider.show();
-        questSlider.position((canvasWidth/2)+(width/2)-190, (canvasHeight/8)+220);
-        questSlider.attribute('max', max(0, player.quests.length-6));
+        questSlider.style('position', 'absolute');
+        questSlider.style('bottom', 'calc(12.5% + 50px)');
+        questSlider.style('left', '50%');
+        questSlider.style('transform', 'translateX(-50%)');
+        questSlider.style('z-index', '999');
+        questSlider.style('pointer-events', 'auto');
+        questSlider.attribute('max', Math.max(0, player.quests.length - 6));
     }
     else{
         questSlider.hide();
     }
-    for(let i = questSlider.value(); i < (player.quests.length > 6 ? 6 + questSlider.value(): player.quests.length); i++){
-        if(player.current_quest == i){
-            player.quests[i].render((canvasWidth/2) - (width/2)+5, (canvasHeight/8)+35+((i-questSlider.value())*65), 'yellow', width-10);
-        }
-        else{
-            player.quests[i].render((canvasWidth/2) - (width/2)+5, (canvasHeight/8)+35+((i-questSlider.value())*65), 0, width-10);
-        }
+
+    questsContainer.style.display = 'flex';
+    
+    // Disable canvas pointer events to prevent click interception
+    const canvas = document.querySelector('canvas');
+    if(canvas){
+        canvas.style.pointerEvents = 'none';
     }
 }
 

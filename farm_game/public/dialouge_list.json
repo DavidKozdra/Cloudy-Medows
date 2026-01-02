@@ -819,7 +819,7 @@
         {
           "phrase": "Ok will do.",
           "dialouge_num": -1,
-          "quest": {"name": "Move That Rock", "goals": [{"class": "OneTileCheck", "tile_name": "Bridge", "level_name": "Cloudy Meadows: Market", "x": 22, "y": 8}], "days": 3, "reward_item": 0, "reward_coins": 500}
+          "quest": {"name": "Move That Rock", "goals": [{"class": "OneTileCheck", "tile_name": "Bridge", "level_name": "Cloudy Meadows: Market", "x": 22, "y": 8}], "days": 30, "reward_item": 0, "reward_coins": 500}
         },
         {
           "phrase": "No thanks.",

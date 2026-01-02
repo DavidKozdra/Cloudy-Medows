@@ -365,6 +365,14 @@ function render_ui() {
         else{
             questSlider.hide();
             questCloseButton.hide();
+            if(questsContainer){
+                questsContainer.style.display = 'none';
+            }
+            // Re-enable canvas pointer events
+            const canvas = document.querySelector('canvas');
+            if(canvas){
+                canvas.style.pointerEvents = 'auto';
+            }
         }
         if (player.looking(currentLevel_x, currentLevel_y) != undefined && player.looking(currentLevel_x, currentLevel_y).name == "cart_s" && player.talking == 0) {
             push()

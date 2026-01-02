@@ -68,6 +68,12 @@ class Quest {
         this.current_Goal = obj.current_Goal;
     }
     render(x, y, strokeC, width){
+        // Check if x is a DOM element (new DOM rendering mode)
+        if (x instanceof HTMLElement) {
+            return this.renderDOM(x, y);
+        }
+        
+        // Original canvas rendering
         push()
         if(strokeC == 'yellow'){
             stroke(255, 255, 0);
@@ -158,6 +164,67 @@ class Quest {
         }
         pop()
         
+    }
+
+    renderDOM(container, isCurrentQuest){
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create quest title
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'quest-title';
+        titleDiv.textContent = this.name;
+        container.appendChild(titleDiv);
+        
+        // Create progress bar container
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'quest-progress-container';
+        container.appendChild(progressContainer);
+        
+        // Create progress bar
+        const progressBar = document.createElement('div');
+        progressBar.className = 'quest-progress-bar';
+        progressContainer.appendChild(progressBar);
+        
+        // Create progress fill
+        const progressFill = document.createElement('div');
+        progressFill.className = 'quest-progress-fill';
+        const progress = (this.current_Goal / this.goals.length) * 100;
+        progressFill.style.width = progress + '%';
+        
+        if (this.failed) {
+            progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
+        } else if (this.goals[this.current_Goal] === undefined) {
+            progressFill.style.backgroundColor = 'rgb(0, 255, 0)';
+        } else {
+            progressFill.style.backgroundColor = 'rgb(255, 255, 0)';
+        }
+        
+        progressBar.appendChild(progressFill);
+        
+        // Create status text
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'quest-status';
+        
+        if (this.failed) {
+            statusDiv.textContent = 'Failed';
+            statusDiv.style.color = 'rgb(255, 0, 0)';
+        } else if (this.goals[this.current_Goal] === undefined) {
+            // Quest completed
+            if (this.reward_item !== 0 || this.reward_coins !== 0) {
+                statusDiv.textContent = 'Rewards Ready';
+                statusDiv.style.color = 'rgb(255, 255, 0)';
+            } else {
+                statusDiv.textContent = 'Done';
+                statusDiv.style.color = 'rgb(0, 255, 0)';
+            }
+        } else {
+            // Show current goal
+            statusDiv.textContent = this.goals[this.current_Goal].name;
+            statusDiv.style.color = 'rgb(255, 255, 255)';
+        }
+        
+        container.appendChild(statusDiv);
     }
 
     daily_update(){
