@@ -1352,6 +1352,7 @@ function loadLevel(level, lvlx = 0, lvly = 0){
         for(let i = 0; i < newLvl.map.length; i++){
             for(let j = 0; j < newLvl.map[i].length; j++){
                 if(newLvl.map[i][j] != 0 && level.map[i][j] != 0){
+                    
                     level.map[i][j] = new_tile_from_num(tile_name_to_num(newLvl.map[i][j].name), newLvl.map[i][j].pos.x, newLvl.map[i][j].pos.y);
                     level.map[i][j].load(newLvl.map[i][j]);
                     if (newLvl.map[i][j].name == 'lamppost') {
