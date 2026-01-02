@@ -5,5 +5,9 @@
 
 .but{
     background-color: black;
+}
 
+/* Universal button cursor */
+button {
+    cursor: pointer;
 }

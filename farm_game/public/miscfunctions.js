@@ -74,7 +74,9 @@ function showTitle(){
     if(creditsOn){
         showCredits();
     }
-    else{}
+    else{
+        cursor('default');
+    }
     if(clear_anim){
         clear_data_render();
     }
@@ -307,7 +309,66 @@ function showCredits(){
     textAlign(CENTER, CENTER);
     textSize(11);
     text('Credits', canvasWidth/2 + 120, 20);
-    text('Christian Rodriguez - Lead programmer \n David Kozdra - Code Art and sound \n Patrick Mayer - Misc \n Christian “Sealand” Rodriguez - Music \n Ethan Davis - Dialogue and Testing \n and thanks to our play testers ', (canvasWidth/2)+120, 80);
+    
+    // Credits text
+    textSize(10);
+    text('Christian Rodriguez - Lead programmer', (canvasWidth/2)+120, 50);
+    
+    // David Kozdra line with links
+    textSize(10);
+    let davidY = 65;
+    text('David Kozdra - Code Art and sound', (canvasWidth/2)+120, davidY);
+    
+    // Calculate link positions for David's links
+    let websiteLinkX = (canvasWidth/2)+120 - 80;
+    let websiteLinkY = davidY + 12;
+    let itchLinkX = (canvasWidth/2)+120 + 60;
+    let itchLinkY = davidY + 12;
+    
+    // Check if mouse is hovering over website link
+    let websiteHover = mouseX > websiteLinkX - 50 && mouseX < websiteLinkX + 50 && 
+                       mouseY > websiteLinkY - 8 && mouseY < websiteLinkY + 8;
+    
+    // Check if mouse is hovering over itch link
+    let itchHover = mouseX > itchLinkX - 40 && mouseX < itchLinkX + 40 && 
+                    mouseY > itchLinkY - 8 && mouseY < itchLinkY + 8;
+    
+    // Website link
+    fill(websiteHover ? color(100, 200, 255) : color(150, 200, 255));
+    textSize(9);
+    text('davidkozdra.com', websiteLinkX, websiteLinkY);
+    
+    // Itch.io link
+    fill(itchHover ? color(100, 200, 255) : color(150, 200, 255));
+    text('itch.io page', itchLinkX, itchLinkY);
+    
+    // Change cursor on hover
+    if(websiteHover || itchHover){
+        cursor('pointer');
+    }
+    
+    // Handle clicks
+    if(mouseIsPressed && !window.creditLinkClicked){
+        window.creditLinkClicked = true;
+        if(websiteHover){
+            window.open('https://davidkozdra.com', '_blank');
+        }
+        if(itchHover){
+            window.open('https://zoda39089.itch.io/', '_blank');
+        }
+    }
+    if(!mouseIsPressed){
+        window.creditLinkClicked = false;
+    }
+    
+    // Rest of credits
+    fill(255);
+    textSize(10);
+    text('Patrick Mayer - Misc', (canvasWidth/2)+120, 90);
+    text('Christian "Sealand" Rodriguez - Music', (canvasWidth/2)+120, 105);
+    text('Ethan Davis - Dialogue and Testing', (canvasWidth/2)+120, 120);
+    text('and thanks to our play testers', (canvasWidth/2)+120, 135);
+    
     pop()
 }
 

@@ -829,6 +829,7 @@ function setup() {
     startButton.style('width', '250px');
     startButton.style('background','url()');
     startButton.style("font-family","pixelFont");
+    startButton.style('cursor', 'pointer');
    
     
     optionsButton = createButton('Options');
@@ -841,6 +842,7 @@ function setup() {
     optionsButton.style('width', '250px');
     optionsButton.style('background','url()');
     optionsButton.style("font-family","pixelFont");
+    optionsButton.style('cursor', 'pointer');
 
     creditsButton = createButton('Credits');
     creditsButton.position(canvasWidth/2-250/2, canvasHeight/2+200);
@@ -852,6 +854,7 @@ function setup() {
     creditsButton.style('width', '250px');
     creditsButton.style('background','url()');
     creditsButton.style("font-family","pixelFont");
+    creditsButton.style('cursor', 'pointer');
 
     robotPlayButton = createButton('Play');
     robotPlayButton.position(((11*canvasWidth)/16) - 55, canvasHeight/8 - 5);
@@ -861,6 +864,7 @@ function setup() {
     robotPlayButton.style("font-family","pixelFont");
     robotPlayButton.style('background-color','rgb(100, 100, 100)');
     robotPlayButton.style('color','rgb(0, 255, 0)');
+    robotPlayButton.style('cursor', 'pointer');
     robotPlayButton.hide();
 
     robotPauseButton = createButton('Pause');
@@ -871,6 +875,7 @@ function setup() {
     robotPauseButton.style("font-family","pixelFont");
     robotPauseButton.style('background-color','rgb(100, 100, 100)');
     robotPauseButton.style('color','rgb(0, 0, 255)');
+    robotPauseButton.style('cursor', 'pointer');
     robotPauseButton.hide();
 
     robotBoomButton = createButton('Boom');
@@ -890,6 +895,7 @@ function setup() {
     robotBoomButton.style("font-family","pixelFont");
     robotBoomButton.style('background-color','rgb(50, 50, 50)');
     robotBoomButton.style('color','rgb(255, 0, 0)');
+    robotBoomButton.style('cursor', 'pointer');
     robotBoomButton.hide();
 
     musicSlider = createSlider(0, 1, ((localData.get('Options') != null ? localData.get('Options').musicVolume:0.5)), 0.01);
@@ -917,6 +923,7 @@ function setup() {
     clearButton.style('width', '200px');
     clearButton.style('background','url()');
     clearButton.style("font-family","pixelFont");
+    clearButton.style('cursor', 'pointer');
 
     clearButton.hide();
 
@@ -925,6 +932,7 @@ function setup() {
     QuitButton.style('width', '250px');
     QuitButton.style('background','url()');
     QuitButton.style("font-family","pixelFont");
+    QuitButton.style('cursor', 'pointer');
     QuitButton.mousePressed(() => {
         title_screen = true;
         paused = false;
@@ -942,6 +950,7 @@ function setup() {
     dif0button.style('width','180px');
     dif0button.style('height','300px');
     dif0button.style('background','url()');
+    dif0button.style('cursor', 'pointer');
     dif0button.mousePressed(() => {
         dificulty = 0;
         dificulty_screen = false;
@@ -956,6 +965,7 @@ function setup() {
     dif1button.style('width','180px');
     dif1button.style('height','300px');
     dif1button.style('background','url()');
+    dif1button.style('cursor', 'pointer');
     dif1button.mousePressed(() => {
         dificulty = 1;
         dificulty_screen = false;
@@ -970,6 +980,7 @@ function setup() {
     dif2button.style('width','180px');
     dif2button.style('height','300px');
     dif2button.style('background','url()');
+    dif2button.style('cursor', 'pointer');
     dif2button.mousePressed(() => {
         dificulty = 2;
         dificulty_screen = false;
@@ -992,6 +1003,7 @@ function setup() {
     Controls_Interact_button.style('height', '20px');
     Controls_Interact_button.style('background','url()');
     Controls_Interact_button.style("font-family","pixelFont");
+    Controls_Interact_button.style('cursor', 'pointer');
     //Controls_Interact.style("border","none");
     Controls_Interact_button.hide();
 
@@ -1008,6 +1020,7 @@ function setup() {
     Controls_Eat_button.style('height', '20px');
     Controls_Eat_button.style('background','url()');
     Controls_Eat_button.style("font-family","pixelFont");
+    Controls_Eat_button.style('cursor', 'pointer');
     //Controls_Eat.style("border","none");
     Controls_Eat_button.hide();
 
@@ -1024,6 +1037,7 @@ function setup() {
     Controls_Up_button.style('height', '20px');
     Controls_Up_button.style('background','url()');
     Controls_Up_button.style("font-family","pixelFont");
+    Controls_Up_button.style('cursor', 'pointer');
     //Controls_Up.style("border","none");
     Controls_Up_button.hide();
 
@@ -1040,6 +1054,7 @@ function setup() {
     Controls_Left_button.style('height', '20px');
     Controls_Left_button.style('background','url()');
     Controls_Left_button.style("font-family","pixelFont");
+    Controls_Left_button.style('cursor', 'pointer');
     //Controls_Left.style("border","none");
     Controls_Left_button.hide();
 
@@ -1056,6 +1071,7 @@ function setup() {
     Controls_Down_button.style('height', '20px');
     Controls_Down_button.style('background','url()');
     Controls_Down_button.style("font-family","pixelFont");
+    Controls_Down_button.style('cursor', 'pointer');
     //Controls_Down.style("border","none");
     Controls_Down_button.hide();
 
@@ -1072,6 +1088,7 @@ function setup() {
     Controls_Right_button.style('height', '20px');
     Controls_Right_button.style('background','url()');
     Controls_Right_button.style("font-family","pixelFont");
+    Controls_Right_button.style('cursor', 'pointer');
     //Controls_Right.style("border","none");
     Controls_Right_button.hide();
 
@@ -1088,6 +1105,7 @@ function setup() {
     Controls_Special_button.style('height', '20px');
     Controls_Special_button.style('background','url()');
     Controls_Special_button.style("font-family","pixelFont");
+    Controls_Special_button.style('cursor', 'pointer');
     //Controls_Special.style("border","none");
     Controls_Special_button.hide();
 
@@ -1104,6 +1122,7 @@ function setup() {
     Controls_Quest_button.style('height', '20px');
     Controls_Quest_button.style('background','url()');
     Controls_Quest_button.style("font-family","pixelFont");
+    Controls_Quest_button.style('cursor', 'pointer');
     //Controls_Quest.style("border","none");
     Controls_Quest_button.hide();
     extra_lvls = {map: [
