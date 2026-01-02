@@ -1,4 +1,12 @@
 
+// Handle unhandled promise rejections from localData operations
+window.addEventListener('unhandledrejection', event => {
+    if (event.reason && event.reason.message && event.reason.message.includes('Permissions')) {
+        console.warn('IndexedDB permissions error (expected in some environments):', event.reason);
+        event.preventDefault();
+    }
+});
+
 // Helper function to add money and dispatch event
 function addMoney(amount) {
     if (amount > 0 && typeof player !== 'undefined' && player) {
@@ -53,6 +61,7 @@ function start(){
 
 
 function showTitle(){
+    // Render background on canvas
     push()
     background(135, 206, 235);
     for (let i = 0; i < clouds.length; i++) {
@@ -61,33 +70,22 @@ function showTitle(){
     }
     imageMode(CENTER);
     image(title_screen_img, canvasWidth / 2, (canvasHeight / 2) - 40);
-    
-    textFont(player_2);
-    fill('black');
-    textAlign(CENTER, CENTER);
-    textSize(13);
-    
-    startButton.show();
-    optionsButton.show();
-    creditsButton.show();
-    
     pop();
 
+    // Show DOM-based menu
+    showMainMenu();
+
     if(paused){
-        showOptions();
+        showTitleOptions();
     }
     else{
-        musicSlider.hide();
-        fxSlider.hide();
-        resetControlsButton.hide();
-        clearButton.hide();
-        hideControls();
-
+        hideTitleOptions();
     }
     if(creditsOn){
-        showCredits();
+        showCreditsMenu();
     }
     else{
+        hideCreditsMenu();
         cursor('default');
     }
     if(clear_anim){
@@ -95,88 +93,167 @@ function showTitle(){
     }
 }
 
+function showMainMenu(){
+    let container = document.getElementById('main-menu-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'main-menu-container';
+        document.body.appendChild(container);
+    }
+    if (container.innerHTML === '') {
+        container.className = 'main-menu';
+        container.innerHTML = `
+            <img src="images/ui/Title_Screen.gif" alt="Title" class="main-menu-title-image">
+            <button id="start-btn" class="main-menu-button">Start</button>
+            <button id="options-btn" class="main-menu-button">Options</button>
+            <button id="credits-btn" class="main-menu-button">Credits</button>
+        `;
+        
+        // Attach event listeners
+        document.getElementById('start-btn').addEventListener('click', start);
+        document.getElementById('options-btn').addEventListener('click', () => {
+            paused = !paused;
+            creditsOn = false;
+        });
+        document.getElementById('credits-btn').addEventListener('click', () => {
+            creditsOn = !creditsOn;
+            paused = false;
+        });
+    }
+    // Disable canvas pointer events when menu is open
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'none';
+    
+    container.style.display = 'flex';
+}
+
+function hideMainMenu(){
+    const container = document.getElementById('main-menu-container');
+    if (container) container.style.display = 'none';
+    // Re-enable canvas pointer events
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'auto';
+}
+
 function showDificulty(){
+    // Render background on canvas
     push();
     background(135, 206, 235);
-    musicSlider.hide();
-    fxSlider.hide();
-    clearButton.hide();
     for (let i = 0; i < clouds.length; i++) {
         clouds[i].update(clouds[i].vel)
         clouds[i].render()
     }
-    stroke(149, 108, 65);
-    strokeWeight(5);
-    fill(187, 132, 75);
-    image(dif_background_img, -20, (canvasHeight/4));
-    image(dif_background_img, canvasWidth - 236, (canvasHeight/4));
-    image(dif_background_img, (canvasWidth/2)-(256/2), (canvasHeight/4));
-    image(dif_background_img, (canvasWidth/2)-(256/2), 10);
-    rect((canvasWidth/2)-220, (canvasWidth/2)-300, 440, 100);
-    textFont(player_2);
-    fill('black');
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    stroke(255);
-    strokeWeight(3);
-    text('Select Your Dificulty', (canvasWidth/2)-10, (canvasWidth/2)-250);
-
-    fill(100, 255, 100);
-    stroke(0, 200, 0);
-    strokeWeight(5);
-    rect((canvasWidth/4)-90-13, (canvasWidth/2)-150-13, 170, 290);
-    fill(0, 255, 0);
-    stroke(0);
-    strokeWeight(3);
-    textSize(20);
-    text('Easy', (canvasWidth/4)-90-13+(170/2), (canvasWidth/2)-150-13+20);
-    textSize(14);
-    text('Money Loss', (canvasWidth/4)-90-13+(170/2), (canvasWidth/2)-150-13+70);
-    text('Food Rot', (canvasWidth/4)-90-13+(170/2), (canvasWidth/2)-150-13+140);
-    text('Perma Death', (canvasWidth/4)-90-13+(170/2), (canvasWidth/2)-150-13+210);
-    image(check_img, (canvasWidth/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+90)
-    image(x_img, (canvasWidth/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+160)
-    image(x_img, (canvasWidth/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+230)
-
-    fill(100, 100, 255);
-    stroke(0, 0, 200);
-    strokeWeight(5);
-    rect(((2*canvasWidth)/4)-90-13, (canvasWidth/2)-150-13, 170, 290);
-    fill(0, 0, 255);
-    stroke(0);
-    strokeWeight(3);
-    textSize(20);
-    text('Medium', ((2*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+20);
-    textSize(14);
-    text('Money Loss', ((2*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+70);
-    text('Food Rot', ((2*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+140);
-    text('Perma Death', ((2*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+210);
-    image(check_img, ((2*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+90)
-    image(check_img, ((2*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+160)
-    image(x_img, ((2*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+230)
-
-    fill(255, 100, 100);
-    stroke(200, 0, 0);
-    strokeWeight(5);
-    rect(((3*canvasWidth)/4)-90-13, (canvasWidth/2)-150-13, 170, 290);
-    fill(255, 0, 0);
-    stroke(0);
-    strokeWeight(3);
-    textSize(20);
-    text('Hard', ((3*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+20);
-    textSize(14);
-    text('Money Loss', ((3*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+70);
-    text('Food Rot', ((3*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+140);
-    text('Perma Death', ((3*canvasWidth)/4)-90-13+(170/2), (canvasWidth/2)-150-13+210);
-    image(x_img, ((3*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+90)
-    image(x_img, ((3*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+160)
-    image(check_img, ((3*canvasWidth)/4)-90-13+(170/2)-8, (canvasWidth/2)-150-13+230)
-
-    dif0button.show()
-    dif1button.show()
-    dif2button.show()
-
     pop();
+    
+    // Show DOM-based difficulty menu
+    showDifficultyMenu();
+}
+
+function showDifficultyMenu(){
+    let difficultyMenu = document.getElementById('difficulty-menu');
+    if (!difficultyMenu) {
+        difficultyMenu = document.createElement('div');
+        difficultyMenu.id = 'difficulty-menu';
+        difficultyMenu.className = 'difficulty-menu';
+        document.body.appendChild(difficultyMenu);
+    }
+    
+    difficultyMenu.innerHTML = `
+        <h2 class="difficulty-title">Select Your Difficulty</h2>
+        <div class="difficulty-container">
+            <!-- Easy -->
+            <div class="difficulty-card difficulty-card-easy">
+                <h3 class="difficulty-card-title">Easy</h3>
+                <div class="difficulty-feature">
+                    <span>Money Loss</span>
+                    <img src="images/ui/checkmark.png" alt="Yes" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Food Rot</span>
+                    <img src="images/ui/x.png" alt="No" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Perma Death</span>
+                    <img src="images/ui/x.png" alt="No" class="feature-icon">
+                </div>
+                <button class="difficulty-select-btn" data-difficulty="0">Select</button>
+            </div>
+
+            <!-- Medium -->
+            <div class="difficulty-card difficulty-card-medium">
+                <h3 class="difficulty-card-title">Medium</h3>
+                <div class="difficulty-feature">
+                    <span>Money Loss</span>
+                    <img src="images/ui/checkmark.png" alt="Yes" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Food Rot</span>
+                    <img src="images/ui/checkmark.png" alt="Yes" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Perma Death</span>
+                    <img src="images/ui/x.png" alt="No" class="feature-icon">
+                </div>
+                <button class="difficulty-select-btn" data-difficulty="1">Select</button>
+            </div>
+
+            <!-- Hard -->
+            <div class="difficulty-card difficulty-card-hard">
+                <h3 class="difficulty-card-title">Hard</h3>
+                <div class="difficulty-feature">
+                    <span>Money Loss</span>
+                    <img src="images/ui/x.png" alt="No" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Food Rot</span>
+                    <img src="images/ui/x.png" alt="No" class="feature-icon">
+                </div>
+                <div class="difficulty-feature">
+                    <span>Perma Death</span>
+                    <img src="images/ui/checkmark.png" alt="Yes" class="feature-icon">
+                </div>
+                <button class="difficulty-select-btn" data-difficulty="2">Select</button>
+            </div>
+        </div>
+    `;
+    
+    // Attach event listeners to difficulty buttons
+    const difficultyButtons = difficultyMenu.querySelectorAll('.difficulty-select-btn');
+    difficultyButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const difficulty = parseInt(e.target.getAttribute('data-difficulty'));
+            selectDifficulty(difficulty);
+        });
+    });
+    
+    // Disable canvas pointer events when menu is open
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'none';
+    
+    difficultyMenu.style.display = 'flex';
+}
+
+function hideDifficultyMenu(){
+    const difficultyMenu = document.getElementById('difficulty-menu');
+    if (difficultyMenu) difficultyMenu.style.display = 'none';
+    // Re-enable canvas pointer events
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'auto';
+}
+
+function selectDifficulty(difficulty){
+    dificulty = difficulty;
+    try {
+        localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty});
+    } catch (e) {
+        console.warn('Failed to save difficulty:', e);
+    }
+    triggerMenuFadeOut(() => {
+        hideDifficultyMenu();
+        dificulty_screen = false;
+        paused = false;
+        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+    });
 }
 
 let controlsContainer = null;
@@ -272,19 +349,127 @@ function showOptions(){
     textAlign(CENTER, CENTER);
     textSize(30);
     text('Option', ((4*canvasWidth)/5)+40, 30);
-    musicSlider.show();
-    fxSlider.show();
-    musicSlider.position(((4*canvasWidth)/5)-30, (canvasHeight/6)-25);
-    fxSlider.position(((4*canvasWidth)/5)-30, (canvasHeight/6)+15);
-    
-    renderControlButtons(((4*canvasWidth)/5)-80, canvasHeight/2-127);
-
-    resetControlsButton.show();
-    clearButton.show();
-    //deleate data button
     image(music_note_img, ((4*canvasWidth)/5)-80, (canvasHeight/6)-50);
     image(fx_img, ((4*canvasWidth)/5)-80, (canvasHeight/6)-10);
     pop()
+    
+    // Show DOM-based options menu
+    showTitleOptions();
+}
+
+function showTitleOptions(){
+    let optionsMenu = document.getElementById('options-menu');
+    if (!optionsMenu) {
+        optionsMenu = document.createElement('div');
+        optionsMenu.id = 'options-menu';
+        optionsMenu.className = 'title-options-menu';
+        document.body.appendChild(optionsMenu);
+    }
+    
+    const controlItems = [
+        { label: 'Interact:', key: () => Controls_Interact_button_key },
+        { label: 'Eat:', key: () => Controls_Eat_button_key },
+        { label: 'Up:', key: () => Controls_Up_button_key },
+        { label: 'Down:', key: () => Controls_Down_button_key },
+        { label: 'Left:', key: () => Controls_Left_button_key },
+        { label: 'Right:', key: () => Controls_Right_button_key },
+        { label: 'Special:', key: () => Controls_Special_button_key },
+        { label: 'Quest:', key: () => Controls_Quest_button_key }
+    ];
+    
+    let controlsHtml = '';
+    controlItems.forEach(item => {
+        controlsHtml += `
+            <div class="title-control-row">
+                <span class="title-control-label">${item.label}</span>
+                <span class="title-control-key">${item.key()}</span>
+            </div>
+        `;
+    });
+    
+    optionsMenu.innerHTML = `
+        <h2 class="options-title">Options</h2>
+        
+        <div class="options-section">
+            <div class="slider-row">
+                <img src="images/ui/Music_Note.png" alt="Music" class="options-icon">
+                <label for="music-slider-title">Music</label>
+                <input id="music-slider-title" type="range" min="0" max="1" step="0.01" class="options-slider">
+            </div>
+            <div class="slider-row">
+                <img src="images/ui/fx.png" alt="FX" class="options-icon">
+                <label for="fx-slider-title">Sound</label>
+                <input id="fx-slider-title" type="range" min="0" max="1" step="0.01" class="options-slider">
+            </div>
+        </div>
+
+        <div class="options-section">
+            <h3 class="options-section-title">Controls</h3>
+            <div id="title-controls-container" class="title-controls-container">
+                ${controlsHtml}
+            </div>
+        </div>
+
+        <div class="options-button-group">
+            <button id="reset-controls-btn" class="options-button">Reset Controls</button>
+            <button id="clear-data-btn" class="options-button options-button-danger">Clear Save</button>
+        </div>
+
+        <button id="back-btn" class="options-back-button">Back</button>
+    `;
+    
+    // Sync sliders with p5.js sliders
+    const musicSliderDOM = document.getElementById('music-slider-title');
+    const fxSliderDOM = document.getElementById('fx-slider-title');
+    
+    if (musicSliderDOM) {
+        musicSliderDOM.value = musicSlider.value();
+        musicSliderDOM.oninput = () => {
+            musicSlider.value(musicSliderDOM.value);
+        };
+    }
+    
+    if (fxSliderDOM) {
+        fxSliderDOM.value = fxSlider.value();
+        fxSliderDOM.oninput = () => {
+            fxSlider.value(fxSliderDOM.value);
+        };
+    }
+    
+    // Attach event listeners
+    document.getElementById('reset-controls-btn').addEventListener('click', () => {
+        resetControls();
+    });
+    
+    document.getElementById('clear-data-btn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all data? This cannot be undone!')) {
+            clear_anim = true;
+            try {
+                localData.clear();
+            } catch (e) {
+                console.warn('Failed to clear data:', e);
+            }
+        }
+    });
+    
+    document.getElementById('back-btn').addEventListener('click', () => {
+        paused = false;
+        hideTitleOptions();
+    });
+    
+    // Disable canvas pointer events when menu is open
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'none';
+    
+    optionsMenu.style.display = 'flex';
+}
+
+function hideTitleOptions(){
+    const optionsMenu = document.getElementById('options-menu');
+    if (optionsMenu) optionsMenu.style.display = 'none';
+    // Re-enable canvas pointer events
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'auto';
 }
 
 function showPaused(){
@@ -301,7 +486,6 @@ function showPaused(){
             musicSliderDOM.value = musicSlider.value();
             musicSliderDOM.oninput = () => {
                 musicSlider.value(musicSliderDOM.value);
-                saveOptions();
             };
         }
         
@@ -309,7 +493,6 @@ function showPaused(){
             fxSliderDOM.value = fxSlider.value();
             fxSliderDOM.oninput = () => {
                 fxSlider.value(fxSliderDOM.value);
-                saveOptions();
             };
         }
         
@@ -364,7 +547,7 @@ function ensurePauseMenuContainer() {
     musicRow.className = 'pause-slider-row';
     const musicIcon = document.createElement('img');
     musicIcon.className = 'pause-slider-icon';
-    musicIcon.src = 'images/ui/music_note.png';
+    musicIcon.src = 'images/ui/Music_Note.png';
     musicIcon.alt = 'Music';
     const musicSliderDOM = document.createElement('input');
     musicSliderDOM.id = 'pause-music-slider';
@@ -381,7 +564,7 @@ function ensurePauseMenuContainer() {
     fxRow.className = 'pause-slider-row';
     const fxIcon = document.createElement('img');
     fxIcon.className = 'pause-slider-icon';
-    fxIcon.src = 'images/ui/fx_note.png';
+    fxIcon.src = 'images/ui/fx.png';
     fxIcon.alt = 'FX';
     const fxSliderDOM = document.createElement('input');
     fxSliderDOM.id = 'pause-fx-slider';
@@ -468,80 +651,56 @@ function ensurePauseMenuContainer() {
 }
 
 function showCredits(){
-    push()
-    stroke(149, 108, 65);
-    strokeWeight(5);
-    fill(187, 132, 75);
-    rectMode(CENTER);
-    rect(canvasWidth/2 + 120, 150/2, 490, 150 );
-    fill(255);
-    stroke(0);
-    strokeWeight(2);
-    textFont(player_2);
-    textAlign(CENTER, CENTER);
-    textSize(11);
-    text('Credits', canvasWidth/2 + 120, 20);
-    
-    // Credits text
-    textSize(10);
-    text('Christian Rodriguez - Lead programmer', (canvasWidth/2)+120, 50);
-    
-    // David Kozdra line with links
-    textSize(10);
-    let davidY = 65;
-    text('David Kozdra - Code Art and sound', (canvasWidth/2)+120, davidY);
-    
-    // Calculate link positions for David's links
-    let websiteLinkX = (canvasWidth/2)+120 - 80;
-    let websiteLinkY = davidY + 12;
-    let itchLinkX = (canvasWidth/2)+120 + 60;
-    let itchLinkY = davidY + 12;
-    
-    // Check if mouse is hovering over website link
-    let websiteHover = mouseX > websiteLinkX - 50 && mouseX < websiteLinkX + 50 && 
-                       mouseY > websiteLinkY - 8 && mouseY < websiteLinkY + 8;
-    
-    // Check if mouse is hovering over itch link
-    let itchHover = mouseX > itchLinkX - 40 && mouseX < itchLinkX + 40 && 
-                    mouseY > itchLinkY - 8 && mouseY < itchLinkY + 8;
-    
-    // Website link
-    fill(websiteHover ? color(100, 200, 255) : color(150, 200, 255));
-    textSize(9);
-    text('davidkozdra.com', websiteLinkX, websiteLinkY);
-    
-    // Itch.io link
-    fill(itchHover ? color(100, 200, 255) : color(150, 200, 255));
-    text('itch.io page', itchLinkX, itchLinkY);
-    
-    // Change cursor on hover
-    if(websiteHover || itchHover){
-        cursor('pointer');
+    // Show DOM-based credits menu
+    showCreditsMenu();
+}
+
+function showCreditsMenu(){
+    let creditsMenu = document.getElementById('credits-menu');
+    if (!creditsMenu) {
+        creditsMenu = document.createElement('div');
+        creditsMenu.id = 'credits-menu';
+        creditsMenu.className = 'credits-menu';
+        document.body.appendChild(creditsMenu);
     }
     
-    // Handle clicks
-    if(mouseIsPressed && !window.creditLinkClicked){
-        window.creditLinkClicked = true;
-        if(websiteHover){
-            window.open('https://davidkozdra.com', '_blank');
-        }
-        if(itchHover){
-            window.open('https://zoda39089.itch.io/', '_blank');
-        }
-    }
-    if(!mouseIsPressed){
-        window.creditLinkClicked = false;
-    }
+    creditsMenu.innerHTML = `
+        <h2 class="credits-title">Credits</h2>
+        <div class="credits-content">
+            <div class="credits-line">Christian Rodriguez - Lead programmer</div>
+            <div class="credits-line">
+                David Kozdra - Code Art and sound
+                <br>
+                <a href="https://davidkozdra.com" target="_blank" class="credits-link">davidkozdra.com</a> | 
+                <a href="https://zoda39089.itch.io/" target="_blank" class="credits-link">itch.io page</a>
+            </div>
+            <div class="credits-line">Patrick Mayer - Misc</div>
+            <div class="credits-line">Christian "Sealand" Rodriguez - Music</div>
+            <div class="credits-line">Ethan Davis - Dialogue and Testing</div>
+            <div class="credits-line">and thanks to our play testers</div>
+        </div>
+        <button id="credits-back-btn" class="credits-back-button">Back</button>
+    `;
     
-    // Rest of credits
-    fill(255);
-    textSize(10);
-    text('Patrick Mayer - Misc', (canvasWidth/2)+120, 90);
-    text('Christian "Sealand" Rodriguez - Music', (canvasWidth/2)+120, 105);
-    text('Ethan Davis - Dialogue and Testing', (canvasWidth/2)+120, 120);
-    text('and thanks to our play testers', (canvasWidth/2)+120, 135);
+    // Attach event listener to back button
+    document.getElementById('credits-back-btn').addEventListener('click', () => {
+        creditsOn = false;
+        hideCreditsMenu();
+    });
     
-    pop()
+    // Disable canvas pointer events when menu is open
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'none';
+    
+    creditsMenu.style.display = 'flex';
+}
+
+function hideCreditsMenu(){
+    const creditsMenu = document.getElementById('credits-menu');
+    if (creditsMenu) creditsMenu.style.display = 'none';
+    // Re-enable canvas pointer events
+    const canvas = document.querySelector('canvas');
+    if (canvas) canvas.style.pointerEvents = 'auto';
 }
 
 let questsContainer = null;
