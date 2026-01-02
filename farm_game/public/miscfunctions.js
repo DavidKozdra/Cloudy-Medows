@@ -292,16 +292,16 @@ function hideDifficultyMenu(){
 
 function selectDifficulty(difficulty){
     dificulty = difficulty;
+    
     try {
         localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty});
     } catch (e) {
         console.warn('Failed to save difficulty:', e);
     }
     triggerMenuFadeOut(() => {
-        hideDifficultyMenu();
-        dificulty_screen = false;
-        paused = false;
-        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+        console.log('Difficulty selected, reloading window...');
+        // Reload the window to ensure clean initialization
+        window.location.reload();
     });
 }
 
@@ -601,9 +601,18 @@ function showTitleOptions(){
             if (confirm('Are you sure you want to clear all data? This cannot be undone!')) {
                 clear_anim = true;
                 try {
+                    // Clear the IndexedDB
                     localData.clear();
+                    console.log('Data cleared from IndexedDB');
+                    
+                    // After a brief delay to show animation, reload the window
+                    setTimeout(() => {
+                        console.log('Reloading window...');
+                        window.location.reload();
+                    }, 1500); // Let the animation finish
                 } catch (e) {
                     console.warn('Failed to clear data:', e);
+                    window.location.reload(); // Reload anyway to reset state
                 }
             }
         });
