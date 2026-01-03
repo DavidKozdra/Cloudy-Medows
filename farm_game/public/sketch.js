@@ -23,6 +23,9 @@ var lastTimeMili = 0;
 var lastHungerMili = 0;
 var days = 0;
 var title_screen = true;
+var world_select_screen = false;
+var currentWorldSlot = null;
+var playerName = '';
 var dificulty_screen = false;
 var dificulty = 0;
 var save_anim = 0;
@@ -181,6 +184,9 @@ function draw() {
             image(save_img, canvasWidth - 128 + 5, canvasHeight - (128));
             pop()
         }
+    }
+    else if (world_select_screen){
+        showWorldSelect();
     }
     else if (dificulty_screen){
         showDificulty();

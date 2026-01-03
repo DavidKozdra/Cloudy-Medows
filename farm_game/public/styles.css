@@ -1544,3 +1544,254 @@ button {
 .feature-toggle-btn:active {
     transform: scale(0.95);
 }
+
+/* World Selection Menu Styles */
+.world-select-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    pointer-events: auto;
+    gap: 30px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.world-select-title {
+    font-family: pixelFont, monospace;
+    font-size: 36px;
+    color: rgb(0, 0, 0);
+    text-shadow: 3px 3px 0 rgba(255, 255, 255, 0.5);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.worlds-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.world-card {
+    border: 5px solid rgb(100, 70, 40);
+    border-radius: 8px;
+    padding: 25px;
+    width: 280px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.world-card-title {
+    font-family: pixelFont, monospace;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    color: rgb(100, 70, 40);
+}
+
+.world-info {
+    width: 100%;
+    text-align: left;
+    font-family: pixelFont, monospace;
+    font-size: 14px;
+    color: rgb(0, 0, 0);
+    flex-grow: 1;
+}
+
+.world-info p {
+    margin: 8px 0;
+}
+
+.world-empty {
+    text-align: center;
+    color: rgb(150, 150, 150);
+    font-style: italic;
+    margin-top: 40px;
+}
+
+.world-btn {
+    font-family: pixelFont, monospace;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(100, 70, 40);
+    border: 3px solid rgb(149, 108, 65);
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    width: 100%;
+}
+
+.world-btn:hover {
+    background-color: rgb(130, 90, 50);
+}
+
+.world-btn:active {
+    transform: translateY(2px);
+}
+
+.world-btn-new {
+    background-color: rgb(0, 150, 0);
+    border-color: rgb(0, 200, 0);
+}
+
+.world-btn-new:hover {
+    background-color: rgb(0, 180, 0);
+}
+
+.world-btn-delete {
+    background-color: rgb(150, 0, 0);
+    border-color: rgb(200, 0, 0);
+    margin-top: 5px;
+}
+
+.world-btn-delete:hover {
+    background-color: rgb(180, 0, 0);
+}
+
+.world-back-btn {
+    font-family: pixelFont, monospace;
+    font-size: 18px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(100, 70, 40);
+    border: 3px solid rgb(149, 108, 65);
+    border-radius: 4px;
+    padding: 12px 40px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.world-back-btn:hover {
+    background-color: rgb(130, 90, 50);
+}
+
+.world-back-btn:active {
+    transform: translateY(2px);
+}
+
+.world-expand-btn {
+    font-family: pixelFont, monospace;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(70, 100, 70);
+    border: 3px solid rgb(100, 150, 100);
+    border-radius: 4px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    grid-column: 1 / -1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.world-expand-btn:hover {
+    background-color: rgb(100, 130, 100);
+}
+
+.world-expand-btn:active {
+    transform: translateY(2px);
+}
+
+/* Name Input Overlay */
+.name-input-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.name-input-box {
+    background-color: rgb(255, 255, 255);
+    border: 5px solid rgb(100, 70, 40);
+    border-radius: 8px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.name-input-box h3 {
+    font-family: pixelFont, monospace;
+    font-size: 24px;
+    color: rgb(100, 70, 40);
+    margin: 0;
+}
+
+.name-input-field {
+    font-family: pixelFont, monospace;
+    font-size: 18px;
+    padding: 10px 15px;
+    border: 3px solid rgb(149, 108, 65);
+    border-radius: 4px;
+    width: 250px;
+    text-align: center;
+}
+
+.name-input-field:focus {
+    outline: none;
+    border-color: rgb(100, 150, 200);
+}
+
+.name-input-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.name-input-btn {
+    font-family: pixelFont, monospace;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 150, 0);
+    border: 3px solid rgb(0, 200, 0);
+    border-radius: 4px;
+    padding: 10px 25px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.name-input-btn:hover {
+    background-color: rgb(0, 180, 0);
+}
+
+.name-input-btn:active {
+    transform: translateY(2px);
+}
+
+.name-input-btn-cancel {
+    background-color: rgb(150, 0, 0);
+    border-color: rgb(200, 0, 0);
+}
+
+.name-input-btn-cancel:hover {
+    background-color: rgb(180, 0, 0);
+}

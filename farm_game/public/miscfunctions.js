@@ -7,6 +7,100 @@ window.addEventListener('unhandledrejection', event => {
     }
 });
 
+// Compression utilities
+function compressData(data) {
+    try {
+        const jsonString = JSON.stringify(data);
+        return LZString.compressToUTF16(jsonString);
+    } catch (e) {
+        console.error('Compression failed:', e);
+        return null;
+    }
+}
+
+function decompressData(compressed) {
+    try {
+        const decompressed = LZString.decompressFromUTF16(compressed);
+        return JSON.parse(decompressed);
+    } catch (e) {
+        console.error('Decompression failed:', e);
+        return null;
+    }
+}
+
+// Optimized level save - only save changed/non-default tiles
+function optimizeLevelForSave(level) {
+    const optimized = {
+        name: level.name,
+        changedTiles: [] // Only save tiles that aren't default
+    };
+    
+    for(let y = 0; y < level.map.length; y++){
+        for(let x = 0; x < level.map[y].length; x++){
+            const tile = level.map[y][x];
+            if (tile != 0 && tile != undefined) {
+                // Only save if tile has changed state (has age > 0, inventory, etc.)
+                if (tile.age > 0 || 
+                    (tile.inv && tile.inv.some(item => item != 0)) ||
+                    tile.growTimer > 0 ||
+                    tile.watermet !== undefined) {
+                    tile.getReadyForSave();
+                    optimized.changedTiles.push({
+                        x: x,
+                        y: y,
+                        tile: tile
+                    });
+                }
+            }
+        }
+    }
+    
+    return optimized;
+}
+
+// Cleanup old save data to free up localStorage space
+function cleanupOldSaveData() {
+    try {
+        // List of old keys that might exist from the old save system
+        const keysToCheck = [
+            'Day_curLvl_Dif', 'player', 'extralvlStuff',
+            'Level_1', 'Level_2', 'Level_3', 'Level_4', 'Level_5',
+            'Level_6', 'Level_7', 'Level_8', 'Level_9', 'Level_10',
+            'Tutorial', 'Woodlands', 'Fogwood Forest', 'Mountain Mines', 'Desert',
+            'Snowy Forest', 'Island', 'Cloud Paradise', 'Cloudy Meadows'
+        ];
+        
+        let cleanedCount = 0;
+        keysToCheck.forEach(key => {
+            if (localData.get(key) !== null) {
+                localData.remove(key);
+                cleanedCount++;
+            }
+        });
+        
+        if (cleanedCount > 0) {
+            console.log(`Cleaned up ${cleanedCount} old save data entries`);
+        }
+        
+        // Also clean up any orphaned world level data
+        for (let i = 1; i <= 3; i++) {
+            const worldExists = localData.get(`world_${i}`);
+            if (!worldExists) {
+                // Clean up level data for non-existent worlds
+                const levelData = localData.get(`world_${i}_levels`);
+                if (levelData && levelData.levelNames) {
+                    levelData.levelNames.forEach(name => {
+                        localData.remove(`world_${i}_level_${name}`);
+                    });
+                }
+                localData.remove(`world_${i}_levels`);
+            }
+        }
+    } catch (e) {
+        console.warn('Error cleaning up old save data:', e);
+    }
+}
+
 // Helper function to update canvas pointer-events based on visible menus
 function updateCanvasPointerEvents() {
     const canvas = document.querySelector('canvas');
@@ -68,11 +162,8 @@ function start(){
         hideControls();
         hidePaused();
         title_screen = false;
-        if(localData.get('Day_curLvl_Dif') == null){
-            dificulty_screen = true;
-        }
+        world_select_screen = true;
         paused = false;
-        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
 
         //turn off the title screen
         title_screen = false;
@@ -338,11 +429,28 @@ function hideDifficultyMenu(){
 function selectDifficulty(difficulty){
     dificulty = difficulty;
     
+    // Reinitialize all levels to their fresh state
+    newWorld();
+    
+    // Reset player for new world
+    player = new Player('player1', 0, (5 * tileSize), (5 * tileSize));
+    
+    // Days counter already reset by newWorld(), but ensure clean state
+    visitedLocations.clear(); // Clear visited locations for new world
+    
+    // Save to current world slot with fresh starting position (use newWorld defaults: 4, 1)
+    const worldData = {
+        playerName: playerName,
+        difficulty: difficulty,
+        days: 0,
+        dayData: {day: 0, currentLevel_y: currentLevel_y, currentLevel_x: currentLevel_x, dificulty}
+    };
+    
     try {
-        localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty});
-        console.log('Difficulty saved:', difficulty);
+        localData.set(`world_${currentWorldSlot}`, worldData);
+        console.log('World created:', currentWorldSlot, playerName, difficulty);
     } catch (e) {
-        console.warn('Failed to save difficulty:', e);
+        console.warn('Failed to save world:', e);
     }
     
     // Proceed directly into the game without showing difficulty screen again
@@ -358,6 +466,15 @@ function selectDifficulty(difficulty){
 function selectCustomDifficulty(features){
     dificulty = 3; // Custom difficulty
     
+    // Reinitialize all levels to their fresh state
+    newWorld();
+    
+    // Reset player for new world
+    player = new Player('player1', 0, (5 * tileSize), (5 * tileSize));
+    
+    // Days counter already reset by newWorld(), but ensure clean state
+    visitedLocations.clear(); // Clear visited locations for new world
+    
     // Store custom rules globally
     window.customRules = {
         moneyLoss: features[0].enabled,
@@ -365,11 +482,19 @@ function selectCustomDifficulty(features){
         permaDeath: features[2].enabled
     };
     
+    // Save to current world slot with custom rules and fresh starting position (use newWorld defaults: 4, 1)
+    const worldData = {
+        playerName: playerName,
+        difficulty: 3,
+        days: 0,
+        dayData: {day: 0, currentLevel_y: currentLevel_y, currentLevel_x: currentLevel_x, dificulty, customRules: window.customRules}
+    };
+    
     try {
-        localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty, customRules: window.customRules});
-        console.log('Custom difficulty saved:', window.customRules);
+        localData.set(`world_${currentWorldSlot}`, worldData);
+        console.log('Custom world created:', currentWorldSlot, playerName, window.customRules);
     } catch (e) {
-        console.warn('Failed to save custom difficulty:', e);
+        console.warn('Failed to save custom world:', e);
     }
     
     // Proceed directly into the game
@@ -380,6 +505,331 @@ function selectCustomDifficulty(features){
     
     console.log('Starting game with custom difficulty:', window.customRules);
     levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+}
+
+// World Selection System
+function showWorldSelect() {
+    push();
+    background(135, 206, 235);
+    
+    // Show world selection UI
+    const worldMenu = document.getElementById('world-select-menu');
+    if (worldMenu) {
+        worldMenu.style.display = 'flex';
+    } else {
+        // Clean up old data on first world select screen
+        cleanupOldSaveData();
+        createWorldSelectMenu();
+    }
+    pop();
+}
+
+function createWorldSelectMenu() {
+    console.log('createWorldSelectMenu called');
+    
+    const menu = document.createElement('div');
+    menu.id = 'world-select-menu';
+    menu.className = 'world-select-menu';
+    document.body.appendChild(menu);
+    
+    const title = document.createElement('h2');
+    title.className = 'world-select-title';
+    title.textContent = 'Select World';
+    menu.appendChild(title);
+    
+    const worldsContainer = document.createElement('div');
+    worldsContainer.className = 'worlds-container';
+    worldsContainer.id = 'worlds-container';
+    menu.appendChild(worldsContainer);
+    
+    // Get the maximum number of slots (default 3, can expand)
+    const maxSlots = localData.get('maxWorldSlots') || 3;
+    
+    // Create world slots dynamically
+    for (let i = 1; i <= maxSlots; i++) {
+        const worldData = localData.get(`world_${i}`);
+        console.log(`World ${i} data:`, worldData);
+        const worldCard = document.createElement('div');
+        worldCard.className = 'world-card';
+        
+        if (worldData) {
+            // Existing world
+            worldCard.innerHTML = `
+                <h3 class="world-card-title">World ${i}</h3>
+                <div class="world-info">
+                    <p><strong>Player:</strong> ${worldData.playerName || 'Unnamed'}</p>
+                    <p><strong>Day:</strong> ${worldData.days || 0}</p>
+                    <p><strong>Gold:</strong> ${worldData.playerCoins || 0}</p>
+                    <p><strong>Difficulty:</strong> ${['Easy', 'Medium', 'Hard', 'Custom'][worldData.difficulty || 0]}</p>
+                </div>
+                <button class="world-btn world-btn-play">Play</button>
+                <button class="world-btn world-btn-delete">Delete</button>
+            `;
+            
+            worldCard.querySelector('.world-btn-play').addEventListener('click', () => {
+                loadWorld(i);
+            });
+            
+            worldCard.querySelector('.world-btn-delete').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`Delete button clicked for world ${i}`);
+                
+                const confirmed = confirm(`Delete World ${i}?\n\nThis action cannot be undone!`);
+                console.log('Confirmation result:', confirmed);
+                
+                if (confirmed) {
+                    console.log(`User confirmed deletion of world ${i}`);
+                    try {
+                        console.log('About to call deleteWorld...');
+                        deleteWorld(i);
+                        console.log('deleteWorld returned successfully');
+                    } catch (error) {
+                        console.error('Error in deleteWorld:', error);
+                    }
+                    console.log('Delete completed, refreshing menu...');
+                    
+                    // Remove the old menu and create a fresh one
+                    const oldMenu = document.getElementById('world-select-menu');
+                    console.log('Old menu found:', oldMenu);
+                    if (oldMenu) {
+                        oldMenu.remove();
+                        console.log('Old menu removed');
+                    }
+                    
+                    console.log('Creating new menu...');
+                    createWorldSelectMenu();
+                    console.log('New menu created');
+                } else {
+                    console.log('User cancelled deletion');
+                }
+            });
+        } else {
+            // Empty slot
+            worldCard.innerHTML = `
+                <h3 class="world-card-title">World ${i}</h3>
+                <div class="world-info">
+                    <p class="world-empty">Empty Slot</p>
+                </div>
+                <button class="world-btn world-btn-new">Create New</button>
+            `;
+            
+            worldCard.querySelector('.world-btn-new').addEventListener('click', () => {
+                showNameInput(i);
+            });
+        }
+        
+        worldsContainer.appendChild(worldCard);
+    }
+    
+    // Add "Expand Slots" button if under 10 slots
+    if (maxSlots < 10) {
+        const expandBtn = document.createElement('button');
+        expandBtn.className = 'world-expand-btn';
+        expandBtn.textContent = `Add Slot (${maxSlots}/10)`;
+        expandBtn.addEventListener('click', () => {
+            const newMaxSlots = maxSlots + 1;
+            localData.set('maxWorldSlots', newMaxSlots);
+            console.log(`Expanded world slots to ${newMaxSlots}`);
+            
+            // Refresh the menu
+            const oldMenu = document.getElementById('world-select-menu');
+            if (oldMenu) {
+                oldMenu.remove();
+            }
+            createWorldSelectMenu();
+        });
+        worldsContainer.appendChild(expandBtn);
+    }
+    
+    const backBtn = document.createElement('button');
+    backBtn.className = 'world-back-btn';
+    backBtn.textContent = 'Back';
+    backBtn.addEventListener('click', () => {
+        hideWorldSelect();
+        title_screen = true;
+        world_select_screen = false;
+    });
+    menu.appendChild(backBtn);
+    
+    menu.style.display = 'flex';
+    updateCanvasPointerEvents();
+}
+
+function hideWorldSelect() {
+    const menu = document.getElementById('world-select-menu');
+    if (menu) {
+        menu.remove();
+    }
+    updateCanvasPointerEvents();
+}
+
+function showNameInput(slot) {
+    const overlay = document.createElement('div');
+    overlay.id = 'name-input-overlay';
+    overlay.className = 'name-input-overlay';
+    
+    const box = document.createElement('div');
+    box.className = 'name-input-box';
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Enter Your Name';
+    box.appendChild(title);
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'name-input-field';
+    input.placeholder = 'Player Name';
+    input.maxLength = 20;
+    box.appendChild(input);
+    
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'name-input-buttons';
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'name-input-btn';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.addEventListener('click', () => {
+        const name = input.value.trim() || 'Player';
+        createNewWorld(slot, name);
+        overlay.remove();
+    });
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'name-input-btn name-input-btn-cancel';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => {
+        overlay.remove();
+    });
+    
+    btnContainer.appendChild(confirmBtn);
+    btnContainer.appendChild(cancelBtn);
+    box.appendChild(btnContainer);
+    
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    
+    input.focus();
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            confirmBtn.click();
+        }
+    });
+}
+
+function createNewWorld(slot, name) {
+    currentWorldSlot = slot;
+    playerName = name;
+    
+    // Clean up old save data to make room for new world
+    cleanupOldSaveData();
+    
+    hideWorldSelect();
+    world_select_screen = false;
+    dificulty_screen = true;
+}
+
+function loadWorld(slot) {
+    currentWorldSlot = slot;
+    const worldData = localData.get(`world_${slot}`);
+    
+    if (worldData) {
+        playerName = worldData.playerName || 'Player';
+        
+        // Load player data (decompress if needed)
+        if (worldData.playerCompressed) {
+            const playerData = decompressData(worldData.playerCompressed);
+            if (playerData) {
+                player.load(playerData);
+            }
+        } else if (worldData.player) {
+            // Legacy support for old uncompressed saves
+            player.load(worldData.player);
+        }
+        
+        if (worldData.dayData) {
+            days = worldData.dayData.days || 0;
+            currentLevel_x = worldData.dayData.currentLevel_x;
+            currentLevel_y = worldData.dayData.currentLevel_y;
+            dificulty = worldData.dayData.dificulty;
+        }
+        
+        // Load levels for this world
+        loadWorldLevels(slot);
+        
+        hideWorldSelect();
+        world_select_screen = false;
+        title_screen = false;
+        paused = false;
+        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+    }
+}
+
+function deleteWorld(slot) {
+    console.log(`Deleting world ${slot}...`);
+    console.log('Before delete:', localData.get(`world_${slot}`));
+    
+    // Delete all level data for this world first
+    const levelData = localData.get(`world_${slot}_levels`);
+    if (levelData && levelData.levelNames) {
+        levelData.levelNames.forEach(name => {
+            localData.remove(`world_${slot}_level_${name}`);
+            console.log(`Deleted level: world_${slot}_level_${name}`);
+        });
+    }
+    localData.remove(`world_${slot}_levels`);
+    
+    // Delete the world data
+    localData.remove(`world_${slot}`);
+    
+    console.log('After delete:', localData.get(`world_${slot}`));
+    console.log(`World ${slot} deleted successfully`);
+}
+
+function loadWorldLevels(slot) {
+    const levelData = localData.get(`world_${slot}_levels`);
+    if (levelData && levelData.levelNames) {
+        levelData.levelNames.forEach(name => {
+            const compressedLevel = localData.get(`world_${slot}_level_${name}`);
+            if (compressedLevel) {
+                try {
+                    // Decompress the level data
+                    const optimizedLevel = decompressData(compressedLevel);
+                    
+                    if (!optimizedLevel) {
+                        console.error(`Failed to decompress level: ${name}`);
+                        return;
+                    }
+                    
+                    // Find and reconstruct the level
+                    for (let i = 0; i < levels.length; i++) {
+                        for (let j = 0; j < levels[i].length; j++) {
+                            if (levels[i][j] != 0 && levels[i][j] != undefined && 
+                                levels[i][j].name === name && 
+                                typeof levels[i][j].load === 'function') {
+                                
+                                // Reconstruct the full level from changed tiles
+                                const reconstructedLevel = JSON.parse(JSON.stringify(levels[i][j]));
+                                
+                                // Apply changed tiles
+                                optimizedLevel.changedTiles.forEach(tileData => {
+                                    if (reconstructedLevel.map[tileData.y] && reconstructedLevel.map[tileData.y][tileData.x]) {
+                                        reconstructedLevel.map[tileData.y][tileData.x] = tileData.tile;
+                                    }
+                                });
+                                
+                                // Load the reconstructed level
+                                levels[i][j].load(reconstructedLevel);
+                                console.log(`Loaded compressed level: ${name} (${optimizedLevel.changedTiles.length} changed tiles)`);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error loading compressed level ${name}:`, error);
+                }
+            }
+        });
+    }
 }
 
 let controlsContainer = null;
@@ -1285,26 +1735,108 @@ function saveAll(){
     if(player.talking == 0){
         player.save()
     }
-    localData.set('Day_curLvl_Dif', {days: days, currentLevel_x: currentLevel_x, currentLevel_y: currentLevel_y, dificulty: dificulty});
-    let lvlLength = 0;
-    for(let i = 0; i < levels.length; i++){
-        for(let j = 0; j < levels[i].length; j++){
-            if(levels[i][j] != 0 && levels[i][j] != undefined){
-                for(let y = 0; y < levels[i][j].map.length; y++){
-                    for(let x = 0; x < levels[i][j].map[y].length; x++){
-                        if (levels[i][j].map[y][x] != 0){
-                            levels[i][j].map[y][x].getReadyForSave();
+    
+    try {
+        // Save to world slot if one is selected
+        if (currentWorldSlot) {
+            // First, clean up old data to make space
+            cleanupOldSaveData();
+            
+            // Compress player data
+            const playerData = compressData(player);
+            
+            const worldData = {
+                playerName: playerName,
+                days: days,
+                difficulty: dificulty,
+                playerCoins: player.coins || 0,
+                dayData: {
+                    days: days, 
+                    currentLevel_x: currentLevel_x, 
+                    currentLevel_y: currentLevel_y, 
+                    dificulty: dificulty
+                },
+                playerCompressed: playerData
+            };
+            
+            localData.set(`world_${currentWorldSlot}`, worldData);
+            
+            // Only save the current level with compression
+            let levelNames = [];
+            const currentLevelName = levels[currentLevel_y][currentLevel_x].name;
+            
+            // Optimize and compress current level
+            if (levels[currentLevel_y][currentLevel_x] != 0 && levels[currentLevel_y][currentLevel_x] != undefined) {
+                const optimizedLevel = optimizeLevelForSave(levels[currentLevel_y][currentLevel_x]);
+                const compressedLevel = compressData(optimizedLevel);
+                
+                if (compressedLevel) {
+                    localData.set(`world_${currentWorldSlot}_level_${currentLevelName}`, compressedLevel);
+                    levelNames.push(currentLevelName);
+                    console.log(`Saved current level: ${currentLevelName} (${optimizedLevel.changedTiles.length} changed tiles)`);
+                }
+            }
+            
+            // Save only visited locations (limit to 5 for space)
+            const MAX_SAVED_LEVELS = 5;
+            let savedCount = 0;
+            
+            for(let i = 0; i < levels.length && savedCount < MAX_SAVED_LEVELS; i++){
+                for(let j = 0; j < levels[i].length && savedCount < MAX_SAVED_LEVELS; j++){
+                    if(levels[i][j] != 0 && levels[i][j] != undefined && 
+                       visitedLocations.has(levels[i][j].name) && 
+                       levels[i][j].name !== currentLevelName){
+                        
+                        const optimizedLevel = optimizeLevelForSave(levels[i][j]);
+                        const compressedLevel = compressData(optimizedLevel);
+                        
+                        if (compressedLevel) {
+                            localData.set(`world_${currentWorldSlot}_level_${levels[i][j].name}`, compressedLevel);
+                            levelNames.push(levels[i][j].name);
+                            savedCount++;
+                            console.log(`Saved visited level: ${levels[i][j].name} (${optimizedLevel.changedTiles.length} changed tiles)`);
                         }
                     }
                 }
-                localData.set(levels[i][j].name, levels[i][j]);
-                if(j > lvlLength){
-                    lvlLength = j
+            }
+            localData.set(`world_${currentWorldSlot}_levels`, {levelNames: levelNames});
+            console.log(`Total: Saved ${levelNames.length} compressed levels for world ${currentWorldSlot}`);
+        } else {
+            // Fallback to old save system if no world slot selected
+            localData.set('Day_curLvl_Dif', {days: days, currentLevel_x: currentLevel_x, currentLevel_y: currentLevel_y, dificulty: dificulty});
+            let lvlLength = 0;
+            for(let i = 0; i < levels.length; i++){
+                for(let j = 0; j < levels[i].length; j++){
+                    if(levels[i][j] != 0 && levels[i][j] != undefined){
+                        for(let y = 0; y < levels[i][j].map.length; y++){
+                            for(let x = 0; x < levels[i][j].map[y].length; x++){
+                                if (levels[i][j].map[y][x] != 0){
+                                    levels[i][j].map[y][x].getReadyForSave();
+                                }
+                            }
+                        }
+                        localData.set(levels[i][j].name, levels[i][j]);
+                        if(j > lvlLength){
+                            lvlLength = j
+                        }
+                    }
                 }
             }
+            localData.set('extralvlStuff', {extraCount: extraCount, lvlLength: lvlLength});
+        }
+    } catch (e) {
+        console.error('Save failed:', e);
+        if (e.message && e.message.includes('quota')) {
+            // Storage is full, try to clean up and retry
+            console.log('Storage quota exceeded, attempting cleanup...');
+            cleanupOldSaveData();
+            
+            // Show error to user
+            alert('Storage is full! Old save data has been cleaned. Please try saving again.');
+        } else {
+            alert('Failed to save game: ' + e.message);
         }
     }
-    localData.set('extralvlStuff', {extraCount: extraCount, lvlLength: lvlLength});
 }
 
 function saveOptions(){
@@ -1450,7 +1982,7 @@ function loadLevel(level, lvlx = 0, lvly = 0){
     }
 }
 
-function deleteWorld(){
+function deleteOldWorldData(){
     localData.remove('player');
     localData.remove('Day_curLvl_Dif');
     for(let i = 0; i < levels.length; i++){
