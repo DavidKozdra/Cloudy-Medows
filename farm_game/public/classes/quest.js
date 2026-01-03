@@ -360,31 +360,75 @@ class Quest {
             'flower seed': 'SeedBagFlower',
             'flowerseed': 'SeedBagFlower',
             'wheat seed': 'seedbag_sp',
-            'corn seed': 'Corn_item',
+            'wheatseed': 'seedbag_sp',
+            'sweet potato seed': 'seedbag_sp',
+            'sweetpotatoseed': 'seedbag_sp',
+            'corn seed': 'Corn_Seed_bag',
+            'cornseed': 'Corn_Seed_bag',
             'tomato seed': 'tomato_bag',
+            'tomatoseed': 'tomato_bag',
             'strawberry seed': 'SeedBag_Stawberry',
+            'strawberryseed': 'SeedBag_Stawberry',
             'watermelon seed': 'seedbagwatermelon',
-            'hemp seed': 'hemp_bag',
-            'ladybug': 'ladybug',
-            'ladybugs': 'ladybug',
+            'watermelonseed': 'seedbagwatermelon',
+            'hemp seed': 'hemp_seeds',
+            'hempseed': 'hemp_seeds',
+            'carrot seed': 'seedbag_carrot',
+            'carrotseed': 'seedbag_carrot',
+            'pumpkin seed': 'Pumpkin_seedBag',
+            'pumpkinseed': 'Pumpkin_seedBag',
+            'ladybug': 'Lady_Bug_bag',
+            'ladybugs': 'Lady_Bug_bag',
             'hot dog': 'HotDog',
             'hotdog': 'HotDog',
             'chest': 'Chest',
             'sprinkler': 'Sprinkler',
             'full course': 'FullCourse',
+            'fullcourse': 'FullCourse',
             'robot': 'robot',
+            'robot1': 'robot',
+            'robot2': 'robot2',
+            'robot3': 'robot',
             'hemp': 'hemp',
+            'hemp flower': 'hemp',
+            'hempflower': 'hemp',
             'corn': 'Corn_item',
             'tomato': 'tomato',
             'strawberry': 'Stawberry',
-            'watermelon': 'watermelon'
+            'strawberries': 'Stawberry',
+            'watermelon': 'watermelon2',
+            'sweet potatoes': 'SweetPotato',
+            'sweetpotatoes': 'SweetPotato',
+            'carrot': 'carrot',
+            'pumpkin': 'Pumpkin',
+            'compost': 'Compost',
+            'junk': 'junk',
+            'hoe': 'Hoe',
+            'shovel': 'shovel',
+            'veggie oil': 'veg_oil',
+            'veggieoil': 'veg_oil',
+            'backpack': 'backPack',
+            'grinder': 'Grinder',
+            'veggie press': 'veg_oil_maker',
+            'veggiepress': 'veg_oil_maker',
+            'up command': 'floppy_up',
+            'down command': 'floppy_down',
+            'left command': 'floppy_left',
+            'right command': 'floppy_right',
+            'interact command': 'floppy_interact',
+            'restart command': 'floppy_restart',
+            'add to chest command': 'Floppy_addChestt',
+            'add from chest command': 'floppy_removechest',
+            '1 day pause command': 'Floppy_Pause'
         };
         
         const tileMap = {
             'grass': 'grass_tile',
             'concrete': 'concrete_tile',
             'dirt': 'dirt_tile',
-            'plot': 'plot_tile'
+            'plot': 'plot_tile',
+            'air balloon': 'air_ballon_tile',
+            'airballoon': 'air_ballon_tile'
         };
         
         const npcMap = {
@@ -392,6 +436,7 @@ class Quest {
             'deb': 'deb',
             'mira': 'mira',
             'oldmanj': 'old_man_j',
+            'old man j': 'old_man_j',
             'mario': 'mario',
             'jake': 'Jake'
         };
@@ -449,7 +494,7 @@ class Quest {
         rewardsContainer.style.gap = '8px';
         
         // Add item reward with image
-        if (this.reward_item !== 0) {
+        if (this.reward_item !== 0 && this.reward_item && this.reward_item.name) {
             const itemReward = document.createElement('div');
             itemReward.style.display = 'flex';
             itemReward.style.alignItems = 'center';
@@ -463,6 +508,10 @@ class Quest {
             itemImg.style.width = '32px';
             itemImg.style.height = '32px';
             itemImg.style.imageRendering = 'pixelated';
+            itemImg.onerror = () => {
+                // Fallback to a default image if the specific item image is not found
+                itemImg.src = 'images/ui/Chat_Icon.png';
+            };
             itemReward.appendChild(itemImg);
             
             const itemText = document.createElement('span');

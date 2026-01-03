@@ -141,7 +141,7 @@ button {
 /* Quests UI styles */
 .quests-container {
     position: absolute;
-    top: -200px;
+    top: -400px;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgb(187, 132, 75);
