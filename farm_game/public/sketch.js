@@ -33,6 +33,23 @@ var paused = false;
 var mouse_item = 0;
 var localData = localDataStorage( 'passphrase.life' )
 var musicplayer = {};
+
+// Mouse wheel hotbar scroll
+function handleHotbarScroll(event) {
+    if (typeof player !== 'undefined' && player.inv && !title_screen && !paused && !player.show_quests) {
+        const slots = 8;
+        if (event.deltaY > 0) {
+            // Scroll down: next slot
+            player.hand = (player.hand + 1) % slots;
+        } else if (event.deltaY < 0) {
+            // Scroll up: previous slot
+            player.hand = (player.hand - 1 + slots) % slots;
+        }
+    }
+}
+
+// Attach event listener
+window.addEventListener('wheel', handleHotbarScroll, { passive: false });
 var musicSlider;
 var fxSlider;
 var startButton;
@@ -379,9 +396,9 @@ function render_ui() {
             text(player.coins, canvasWidth - 110 - (amountS.length-3)*20, (canvasHeight - 182.5) - ((amountS.length-4)*3));
         }
         else{
-            image(coin_img, canvasWidth - 130 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 185));
+            image(coin_img, canvasWidth - 100 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 185));
             textSize(30);
-            text(player.coins, canvasWidth - 100 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 182.5));
+            text(player.coins, canvasWidth - 90 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 182.5));
         }
     }
     else{
