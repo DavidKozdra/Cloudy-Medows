@@ -1500,3 +1500,47 @@ button {
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.05s ease;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
+
+/* Custom Difficulty Styles */
+.difficulty-card-custom {
+    border-color: rgb(150, 100, 200);
+    background-color: rgba(200, 150, 255, 0.15);
+}
+
+.difficulty-card-custom .difficulty-card-title {
+    color: rgb(100, 50, 150);
+}
+
+.feature-toggle-btn {
+    transition: transform 0.1s ease;
+}
+
+.feature-toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.feature-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Custom Difficulty Styles */
+.difficulty-card-custom {
+    border-color: rgb(150, 100, 200);
+    background-color: rgba(200, 150, 255, 0.15);
+}
+
+.difficulty-card-custom .difficulty-card-title {
+    color: rgb(100, 50, 150);
+}
+
+.feature-toggle-btn {
+    transition: transform 0.1s ease;
+}
+
+.feature-toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.feature-toggle-btn:active {
+    transform: scale(0.95);
+}

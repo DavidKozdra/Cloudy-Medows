@@ -221,9 +221,9 @@ function showDifficultyMenu(){
                 id: 'easy',
                 title: 'Easy',
                 features: [
-                    { label: 'Money Loss', icon: 'checkmark.png' },
-                    { label: 'Food Rot', icon: 'x.png' },
-                    { label: 'Perma Death', icon: 'x.png' }
+                    { label: 'Money Loss', icon: 'checkmark.png', enabled: true },
+                    { label: 'Food Rot', icon: 'x.png', enabled: false },
+                    { label: 'Perma Death', icon: 'x.png', enabled: false }
                 ],
                 difficulty: 0
             },
@@ -231,9 +231,9 @@ function showDifficultyMenu(){
                 id: 'medium',
                 title: 'Medium',
                 features: [
-                    { label: 'Money Loss', icon: 'checkmark.png' },
-                    { label: 'Food Rot', icon: 'checkmark.png' },
-                    { label: 'Perma Death', icon: 'x.png' }
+                    { label: 'Money Loss', icon: 'checkmark.png', enabled: true },
+                    { label: 'Food Rot', icon: 'checkmark.png', enabled: true },
+                    { label: 'Perma Death', icon: 'x.png', enabled: false }
                 ],
                 difficulty: 1
             },
@@ -241,11 +241,21 @@ function showDifficultyMenu(){
                 id: 'hard',
                 title: 'Hard',
                 features: [
-                    { label: 'Money Loss', icon: 'x.png' },
-                    { label: 'Food Rot', icon: 'x.png' },
-                    { label: 'Perma Death', icon: 'checkmark.png' }
+                    { label: 'Money Loss', icon: 'checkmark.png', enabled: true },
+                    { label: 'Food Rot', icon: 'checkmark.png', enabled: true },
+                    { label: 'Perma Death', icon: 'checkmark.png', enabled: true }
                 ],
                 difficulty: 2
+            },
+            {
+                id: 'custom',
+                title: 'Custom',
+                features: [
+                    { label: 'Money Loss', icon: 'checkmark.png', enabled: true, toggleable: true },
+                    { label: 'Food Rot', icon: 'checkmark.png', enabled: true, toggleable: true },
+                    { label: 'Perma Death', icon: 'x.png', enabled: false, toggleable: true }
+                ],
+                difficulty: 3
             }
         ];
         
@@ -266,11 +276,35 @@ function showDifficultyMenu(){
                 label.textContent = feature.label;
                 featureDiv.appendChild(label);
                 
-                const img = document.createElement('img');
-                img.src = `images/ui/${feature.icon}`;
-                img.alt = feature.label;
-                img.className = 'feature-icon';
-                featureDiv.appendChild(img);
+                if (feature.toggleable) {
+                    // Make feature clickable for custom difficulty
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'feature-toggle-btn';
+                    toggleBtn.style.background = 'none';
+                    toggleBtn.style.border = 'none';
+                    toggleBtn.style.padding = '0';
+                    toggleBtn.style.cursor = 'pointer';
+                    
+                    const img = document.createElement('img');
+                    img.src = `images/ui/${feature.icon}`;
+                    img.alt = feature.label;
+                    img.className = 'feature-icon';
+                    toggleBtn.appendChild(img);
+                    
+                    toggleBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        feature.enabled = !feature.enabled;
+                        img.src = `images/ui/${feature.enabled ? 'checkmark.png' : 'x.png'}`;
+                    });
+                    
+                    featureDiv.appendChild(toggleBtn);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = `images/ui/${feature.icon}`;
+                    img.alt = feature.label;
+                    img.className = 'feature-icon';
+                    featureDiv.appendChild(img);
+                }
                 
                 card.appendChild(featureDiv);
             }
@@ -280,7 +314,11 @@ function showDifficultyMenu(){
             btn.textContent = 'Select';
             btn.dataset.difficulty = diff.difficulty;
             btn.addEventListener('click', () => {
-                selectDifficulty(diff.difficulty);
+                if (diff.id === 'custom') {
+                    selectCustomDifficulty(diff.features);
+                } else {
+                    selectDifficulty(diff.difficulty);
+                }
             });
             card.appendChild(btn);
             
@@ -314,6 +352,33 @@ function selectDifficulty(difficulty){
     paused = false;
     
     console.log('Starting game with difficulty:', difficulty);
+    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+}
+
+function selectCustomDifficulty(features){
+    dificulty = 3; // Custom difficulty
+    
+    // Store custom rules globally
+    window.customRules = {
+        moneyLoss: features[0].enabled,
+        foodRot: features[1].enabled,
+        permaDeath: features[2].enabled
+    };
+    
+    try {
+        localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty, customRules: window.customRules});
+        console.log('Custom difficulty saved:', window.customRules);
+    } catch (e) {
+        console.warn('Failed to save custom difficulty:', e);
+    }
+    
+    // Proceed directly into the game
+    hideDifficultyMenu();
+    dificulty_screen = false;
+    title_screen = false;
+    paused = false;
+    
+    console.log('Starting game with custom difficulty:', window.customRules);
     levels[currentLevel_y][currentLevel_x].level_name_popup = true;
 }
 
@@ -827,7 +892,7 @@ function showCreditsMenu(){
             const line = document.createElement('div');
             line.className = 'credits-line';
             if (idx === 1) {
-                line.innerHTML = `David Kozdra - Code Art and sound<br><a href="https://davidkozdra.com" target="_blank" class="credits-link">davidkozdra.com</a> | <a href="https://zoda39089.itch.io/" target="_blank" class="credits-link">itch.io page</a>`;
+                line.textContent = credit;
             } else {
                 line.textContent = credit;
             }
