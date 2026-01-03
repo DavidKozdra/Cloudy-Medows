@@ -429,7 +429,7 @@
         {
           "phrase": "Can do.",
           "dialouge_num": -1,
-          "quest": {"name": "Ride the Air Ballon", "goals": [{"class": "LocationGoal", "level_name": "Poly Park: Air ballon landing"}], "days": 3, "reward_item": {"num": 11, "amount": 1}, "reward_coins": 0}
+          "quest": {"name": "Ride the Air Ballon", "goals": [{"class": "LocationGoal", "level_name": "Poly Park: Air ballon landing"}, {"class": "TalkingGoal", "npc_name": "Mira"}], "days": 3, "reward_item": {"num": 11, "amount": 1}, "reward_coins": 0}
         },
         {
           "phrase": "No thanks.",

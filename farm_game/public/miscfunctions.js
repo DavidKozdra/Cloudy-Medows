@@ -972,11 +972,9 @@ function showQuests(){
                     detailsContainer.appendChild(card);
                 }
                 
-                // Add rewards card if there are rewards
-                if (quest.reward_item !== 0 || quest.reward_coins > 0) {
-                    const rewardsCard = quest.createRewardsCard();
-                    detailsContainer.appendChild(rewardsCard);
-                }
+                // Always show rewards card to see what's configured
+                const rewardsCard = quest.createRewardsCard();
+                detailsContainer.appendChild(rewardsCard);
                 
                 detailsContainer.style.display = 'flex';
                 detailsButton.textContent = 'Hide';

@@ -69,6 +69,13 @@ class Quest {
         this.days = obj.days;
         this.maxDays = obj.maxDays;
         this.current_Goal = obj.current_Goal;
+        // Restore reward information if it exists
+        if (obj.reward_item !== undefined) {
+            this.reward_item = obj.reward_item;
+        }
+        if (obj.reward_coins !== undefined) {
+            this.reward_coins = obj.reward_coins;
+        }
     }
     renderCurrentGoal(x, y, strokeC, width){
         // Display current goal as a DOM popup inside the container
@@ -232,13 +239,15 @@ class Quest {
         card.style.padding = '14px';
         card.style.marginBottom = '10px';
         card.style.border = '2px solid rgb(149, 108, 65)';
-        card.style.backgroundColor = isActive ? 'rgb(220, 200, 180)' : 'rgb(240, 225, 205)';
+        // Don't highlight as active if quest is failed
+        const shouldHighlight = isActive && !this.failed;
+        card.style.backgroundColor = shouldHighlight ? 'rgb(220, 200, 180)' : 'rgb(240, 225, 205)';
         card.style.borderRadius = '4px';
         card.style.display = 'flex';
         card.style.gap = '14px';
         card.style.alignItems = 'flex-start';
         card.style.minHeight = '80px';
-        card.style.boxShadow = isActive ? '0 2px 4px rgba(0, 0, 0, 0.2)' : 'none';
+        card.style.boxShadow = shouldHighlight ? '0 2px 4px rgba(0, 0, 0, 0.2)' : 'none';
     
         card.className = 'quest-goal-card';
         // Goal image/icon
@@ -323,8 +332,17 @@ class Quest {
         const statusDiv = document.createElement('div');
         statusDiv.style.fontSize = '11px';
         statusDiv.style.fontWeight = 'bold';
-        statusDiv.style.color = goal.done ? 'rgb(50, 150, 50)' : 'rgb(180, 100, 0)';
-        statusDiv.textContent = goal.done ? '✓ Complete' : '○ Active';
+        
+        if (this.failed) {
+            statusDiv.style.color = 'rgb(200, 50, 50)';
+            statusDiv.textContent = '✗ Failed';
+        } else if (goal.done) {
+            statusDiv.style.color = 'rgb(50, 150, 50)';
+            statusDiv.textContent = '✓ Complete';
+        } else {
+            statusDiv.style.color = 'rgb(180, 100, 0)';
+            statusDiv.textContent = '○ To Do ';
+        }
         contentDiv.appendChild(statusDiv);
         
         card.appendChild(contentDiv);
@@ -493,8 +511,12 @@ class Quest {
         rewardsContainer.style.flexDirection = 'column';
         rewardsContainer.style.gap = '8px';
         
+        let hasRewards = false;
+        
         // Add item reward with image
-        if (this.reward_item !== 0 && this.reward_item && this.reward_item.name) {
+        // Check if reward_item is an object with name property (Item/Tool/Seed/etc object)
+        if (this.reward_item && typeof this.reward_item === 'object' && this.reward_item.name) {
+            hasRewards = true;
             const itemReward = document.createElement('div');
             itemReward.style.display = 'flex';
             itemReward.style.alignItems = 'center';
@@ -515,7 +537,7 @@ class Quest {
             itemReward.appendChild(itemImg);
             
             const itemText = document.createElement('span');
-            itemText.textContent = `${this.reward_item.amount}x ${this.reward_item.name}`;
+            itemText.textContent = `${this.reward_item.amount || 1}x ${this.reward_item.name}`;
             itemText.style.fontSize = '13px';
             itemText.style.color = 'rgb(100, 70, 40)';
             itemText.style.fontWeight = 'bold';
@@ -525,7 +547,8 @@ class Quest {
         }
         
         // Add coin reward with icon
-        if (this.reward_coins > 0) {
+        if (this.reward_coins && this.reward_coins > 0) {
+            hasRewards = true;
             const coinReward = document.createElement('div');
             coinReward.style.display = 'flex';
             coinReward.style.alignItems = 'center';
@@ -549,6 +572,17 @@ class Quest {
             coinReward.appendChild(coinText);
             
             rewardsContainer.appendChild(coinReward);
+        }
+        
+        // If no rewards were added, show a message
+        if (!hasRewards) {
+            const noRewardsText = document.createElement('div');
+            noRewardsText.textContent = 'No rewards for this quest';
+            noRewardsText.style.fontSize = '12px';
+            noRewardsText.style.color = 'rgb(120, 90, 60)';
+            noRewardsText.style.fontStyle = 'italic';
+            noRewardsText.style.padding = '6px';
+            rewardsContainer.appendChild(noRewardsText);
         }
         
         card.appendChild(rewardsContainer);
