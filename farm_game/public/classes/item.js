@@ -137,7 +137,7 @@ class Backpack extends Item {
             for(let j = 0; j < this.inv[i].length; j++){
                 rect(gridLeft + (j * cellSize), gridTop + (i * cellSize), 74, 74)
                 if(this.inv[i][j] != 0){
-                    this.inv[i][j].render(gridLeft + (j * cellSize) + 5, gridTop + (i * cellSize) - 30);
+                    this.inv[i][j].render(gridLeft + (j * cellSize) + 5, gridTop + (i * cellSize) + 10);
                 }
             }
         }

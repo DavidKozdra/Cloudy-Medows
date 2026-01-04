@@ -399,45 +399,52 @@ class Player extends MoveableEntity {
     eat() {
         if (millis() - this.lasteatMili > 100) {
             if (this.hunger < maxHunger) {  // player only eats when hungry
-                if(this.inv[this.hand].class == 'Eat' && this.inv[this.hand].amount == 1){
-                    EatSound.play();
-                    this.hunger += this.inv[this.hand].hunger;
-                    if (this.hunger > maxHunger) {
-                        this.hunger = maxHunger;
-                    }
-                    this.inv[this.hand].amount -= 1;
-                    this.hunger_counter = 0;
-                    this.hunger_timer = this.inv[this.hand].hunger_timer;
-                    this.lastFoodnum = item_name_to_num(this.inv[this.hand].name);
-                    let seed_obj_num = this.inv[this.hand].seed_num;
-                    if (this.inv[this.hand].amount == 0) {
-                        this.inv[this.hand] = 0;
-                    }
-                    // Use item's seed_min/seed_max or defaults
-                    let seed_min = this.inv[this.hand].seed_min || 1;
-                    let seed_max = this.inv[this.hand].seed_max || 3;
-                    let seed_amount = floor(random(seed_min, seed_max + 1));
-                    addItem(this, seed_obj_num, seed_amount);
+                // Don't eat hemp seeds if standing on a plot (tilled dirt)
+                if(this.inv[this.hand].name === 'Hemp Seed' && this.touching.name === 'plot') {
+                    return;
                 }
-                else if (this.inv[this.hand].class == 'Eat' && (checkForSpace(this, this.inv[this.hand].seed_num))) {
-                    EatSound.play();
-                    this.hunger += this.inv[this.hand].hunger;
-                    if (this.hunger > maxHunger) {
-                        this.hunger = maxHunger;
+                // Check if item is edible (has hunger property)
+                if(this.inv[this.hand].hunger !== undefined){
+                    if(this.inv[this.hand].amount == 1){
+                        EatSound.play();
+                        this.hunger += this.inv[this.hand].hunger;
+                        if (this.hunger > maxHunger) {
+                            this.hunger = maxHunger;
+                        }
+                        this.inv[this.hand].amount -= 1;
+                        this.hunger_counter = 0;
+                        this.hunger_timer = this.inv[this.hand].hunger_timer;
+                        this.lastFoodnum = item_name_to_num(this.inv[this.hand].name);
+                        let seed_obj_num = this.inv[this.hand].seed_num;
+                        if (this.inv[this.hand].amount == 0) {
+                            this.inv[this.hand] = 0;
+                        }
+                        // Use item's seed_min/seed_max or defaults
+                        let seed_min = this.inv[this.hand].seed_min || 1;
+                        let seed_max = this.inv[this.hand].seed_max || 3;
+                        let seed_amount = floor(random(seed_min, seed_max + 1));
+                        addItem(this, seed_obj_num, seed_amount);
                     }
-                    this.inv[this.hand].amount -= 1;
-                    this.hunger_counter = 0;
-                    this.hunger_timer = this.inv[this.hand].hunger_timer;
-                    this.lastFoodnum = item_name_to_num(this.inv[this.hand].name);
-                    let seed_obj_num = this.inv[this.hand].seed_num;
-                    if (this.inv[this.hand].amount == 0) {
-                        this.inv[this.hand] = 0;
+                    else if (checkForSpace(this, this.inv[this.hand].seed_num)) {
+                        EatSound.play();
+                        this.hunger += this.inv[this.hand].hunger;
+                        if (this.hunger > maxHunger) {
+                            this.hunger = maxHunger;
+                        }
+                        this.inv[this.hand].amount -= 1;
+                        this.hunger_counter = 0;
+                        this.hunger_timer = this.inv[this.hand].hunger_timer;
+                        this.lastFoodnum = item_name_to_num(this.inv[this.hand].name);
+                        let seed_obj_num = this.inv[this.hand].seed_num;
+                        if (this.inv[this.hand].amount == 0) {
+                            this.inv[this.hand] = 0;
+                        }
+                        // Use item's seed_min/seed_max or defaults
+                        let seed_min = this.inv[this.hand].seed_min || 1;
+                        let seed_max = this.inv[this.hand].seed_max || 3;
+                        let seed_amount = floor(random(seed_min, seed_max + 1));
+                        addItem(this, seed_obj_num, seed_amount);
                     }
-                    // Use item's seed_min/seed_max or defaults
-                    let seed_min = this.inv[this.hand].seed_min || 1;
-                    let seed_max = this.inv[this.hand].seed_max || 3;
-                    let seed_amount = floor(random(seed_min, seed_max + 1));
-                    addItem(this, seed_obj_num, seed_amount);
                 }
             }
         }
@@ -583,13 +590,17 @@ class Player extends MoveableEntity {
             }
         }
         else if (this.touching.name == 'plot') {
-            if (this.inv[this.hand].class == 'Seed') {
+            if (this.inv[this.hand].class == 'Seed' || (this.inv[this.hand].plant_num !== undefined && this.inv[this.hand].plant_num !== 0)) {
                 levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile_from_num(this.inv[this.hand].plant_num, this.touching.pos.x, this.touching.pos.y);
                 this.inv[this.hand].amount -= 1;
                 PlantingSound.play()
                 if (this.inv[this.hand].amount == 0) {
                     this.inv[this.hand] = 0;
                 }
+            }
+            else if (this.inv[this.hand].name == 'Shovel') {
+                levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile_from_num(2, this.touching.pos.x, this.touching.pos.y);
+                shovelSound.play();
             }
         }
         else if (this.touching.name == 'compost_bucket') {

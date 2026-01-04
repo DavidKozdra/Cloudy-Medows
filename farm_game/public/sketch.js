@@ -799,7 +799,7 @@ function render_ui() {
             image(hunger_f, (canvasWidth / 20) + (30 * i), (canvasHeight - 185));
         }
         textFont(player_2);
-        textSize(32.5);
+        textSize(30.5);
         fill(0);
         textAlign(LEFT, TOP);
         let amountS = str(player.coins)

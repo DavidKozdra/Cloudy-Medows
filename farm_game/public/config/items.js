@@ -37,7 +37,7 @@ const ITEM_DEFINITIONS = [
     /*21*/ { name: 'Down Command', png: 76, command: 'down', class: 'Command'},
     /*22*/ { name: 'Left Command', png: 77, command: 'left', class: 'Command'},
     /*23*/ { name: 'Interact Command', png: 78, command: 'interact', class: 'Command'},
-    /*24*/ { name: 'Hemp Seed', png: 79, plant_num: 45, class: 'Seed'},
+    /*24*/ { name: 'Hemp Seed', png: 79, plant_num: 45, price: 2, hunger: 1, hunger_timer: 1500, seed_num: 24, seed_min: 1, seed_max: 2, class: 'Seed'},
     /*25*/ { name: 'Hemp Flower', png: 80, price: 20, hunger: -2, hunger_timer: 100, seed_num: 24, seed_min: 2, seed_max: 3, class: 'Eat'},
     /*26*/ { name: 'Restart Command', png: 81, command: 'restart', class: 'Command'},
     /*27*/ { name: 'Robot1', png: 82, price: 70, tile_num: 46, tile_need_num: 0, class: 'Placeable'},
