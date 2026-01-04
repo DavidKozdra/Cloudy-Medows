@@ -96,6 +96,7 @@ function preload() {
 
     //NPC
     quest_marker_img = loadImage('images/ui/QuestMarker.png');
+    gift_indication_img = loadImage('images/ui/gift_indication.png');
     Dialouge_JSON = loadJSON('dialouge_list.json');
     //Cowboy Rick
     rick_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');

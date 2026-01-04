@@ -211,21 +211,14 @@ class Level {
                     // Show quest/gift icons above NPCs when not talking
                     if(this.map[i][j].class === 'NPC' && player.talking === 0) {
                         push();
-                        textSize(24);
-                        textAlign(CENTER, CENTER);
+                        imageMode(CENTER);
                         
                         if(this.map[i][j].hasQuestForPlayer && this.map[i][j].hasQuestForPlayer()) {
-                            // Quest icon (exclamation mark in yellow circle)
-                            fill(255, 215, 0); // Gold
-                            stroke(0);
-                            strokeWeight(2);
-                            text('!', this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
+                            // Quest marker sprite
+                            image(quest_marker_img, this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
                         } else if(this.map[i][j].hasGiftForPlayer && this.map[i][j].hasGiftForPlayer()) {
-                            // Gift icon
-                            fill(255, 100, 180); // Pink
-                            stroke(0);
-                            strokeWeight(2);
-                            text('🎁', this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
+                            // Gift indication sprite
+                            image(gift_indication_img, this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
                         }
                         
                         pop();
