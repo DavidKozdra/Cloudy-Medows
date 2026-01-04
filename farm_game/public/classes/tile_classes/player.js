@@ -1057,8 +1057,9 @@ function takeInput() {
             if (millis() - lastMili > 200) {
                 current_reply += 1;
                 if (player.talking.class == 'NPC'){
-                    if (current_reply > player.talking.dialouges[player.talking.current_dialouge].replies.length-1){
-                        current_reply = player.talking.dialouges[player.talking.current_dialouge].replies.length-1;
+                    const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
+                    if (current_reply > activeReplies.length-1){
+                        current_reply = max(0, activeReplies.length-1);
                     }
                 }
                 else if (player.talking.class == 'Shop'){
@@ -1072,7 +1073,16 @@ function takeInput() {
         if (keyIsDown(interact_button)){
             if (millis() - player.lastinteractMili > 200) {
                 if (player.talking.class == 'NPC'){
-                    const selectedReply = player.talking.dialouges[player.talking.current_dialouge].replies[current_reply];
+                    const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
+                    if (activeReplies.length === 0) {
+                        lastMili = millis();
+                        player.lastinteractMili = millis();
+                        return;
+                    }
+                    if (current_reply > activeReplies.length - 1) {
+                        current_reply = max(0, activeReplies.length - 1);
+                    }
+                    const selectedReply = activeReplies[current_reply];
                     // Fire replyUsed so TellGoals can listen for it
                     window.dispatchEvent(new CustomEvent('replyUsed', {
                         detail: { npcName: player.talking.name, reply: selectedReply.phrase }
@@ -1099,9 +1109,12 @@ function takeInput() {
                         player.talking.dialouges[player.talking.current_dialouge].new_phrase = -1;
                     }
                     if(player.talking.dialouges[player.talking.current_dialouge].new_replies != -1){
-                        for(let j = 0; j < player.talking.dialouges[player.talking.current_dialouge].new_replies.length; j++){
-                            player.talking.dialouges[player.talking.current_dialouge].replies[j] = player.talking.dialouges[player.talking.current_dialouge].new_replies[j];
-                        }
+                        const newReplies = player.talking.dialouges[player.talking.current_dialouge].new_replies;
+                        player.talking.dialouges[player.talking.current_dialouge].replies = newReplies.map(r => {
+                            const clone = Object.assign({}, r);
+                            clone.consumed = !!clone.consumed;
+                            return clone;
+                        });
                         player.talking.dialouges[player.talking.current_dialouge].new_replies = -1;
                     }
                     if(selectedReply.dialouge_num == -1){

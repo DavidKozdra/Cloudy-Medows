@@ -19,10 +19,11 @@ class NPC extends GridMoveEntity {
         
         // Check ALL dialogues, not just the current one
         for(let dialogue of this.dialouges) {
-            if(!dialogue.replies) continue;
+            const replies = (dialogue.getActiveReplies && dialogue.getActiveReplies(this.name)) || dialogue.replies;
+            if(!replies) continue;
             
             // Check if any reply has a quest
-            for(let reply of dialogue.replies) {
+            for(let reply of replies) {
                 if(reply.quest && reply.quest != -1) {
                     // Check if player already has this quest
                     const questName = reply.quest.og_name || reply.quest.name;
@@ -79,6 +80,7 @@ class NPC extends GridMoveEntity {
             this.dialouges[i].amount = obj.dialouges[i].amount;
             this.dialouges[i].replies = obj.dialouges[i].replies;
             for(let j = 0; j < obj.dialouges[i].replies.length; j++){
+                this.dialouges[i].replies[j].consumed = !!obj.dialouges[i].replies[j].consumed;
                 if(obj.dialouges[i].replies[j].quest != -1){
                     this.dialouges[i].replies[j].quest = new Quest(obj.dialouges[i].replies[j].quest.og_name, obj.dialouges[i].replies[j].quest.goals, obj.dialouges[i].replies[j].quest.days, (obj.dialouges[i].replies[j].quest.reward_item == 0 ? 0 : {num: item_name_to_num(obj.dialouges[i].replies[j].quest.reward_item.name), amount: obj.dialouges[i].replies[j].quest.reward_item.amount}), obj.dialouges[i].replies[j].quest.reward_coins);
                     this.dialouges[i].replies[j].quest.load(obj.dialouges[i].replies[j].quest);

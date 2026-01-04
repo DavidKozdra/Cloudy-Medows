@@ -6,17 +6,27 @@ class Quest {
         this.failed = false;
         this.days = days;
         this.maxDays = this.days;
+        this.rewards_given = false; // Track if rewards were granted already
         this.og_name = this.name;
         if(this.maxDays > 0){
             this.name = this.og_name + ' ' + this.days + ' days left';
         }
+        this.reward_item_info = null; // Preserve display info even after reward is consumed
+        this.reward_coins_original = reward_coins || 0;
         if(reward_item == 0){
             this.reward_item = 0;
         }
-        else{
-            this.reward_item = new_item_from_num(reward_item.num, reward_item.amount);
+        else if(reward_item && reward_item.name){
+            // Already an item object (likely from a save)
+            this.reward_item = reward_item;
+            this.reward_item_info = { name: reward_item.name, amount: reward_item.amount || 1 };
         }
-        this.reward_coins = reward_coins;
+        else{
+            const createdItem = new_item_from_num(reward_item.num, reward_item.amount);
+            this.reward_item = createdItem;
+            this.reward_item_info = { name: createdItem.name, amount: createdItem.amount || reward_item.amount || 1 };
+        }
+        this.reward_coins = reward_coins || 0;
         this.current_Goal = 0;
         this.goals = goals;
         for(let i = 0; i < this.goals.length; i++){
@@ -106,6 +116,23 @@ class Quest {
         }
         if (obj.reward_coins !== undefined) {
             this.reward_coins = obj.reward_coins;
+        }
+        // Preserve display metadata even if rewards were already consumed
+        if (obj.reward_item_info !== undefined) {
+            this.reward_item_info = obj.reward_item_info;
+        } else if (obj.reward_item && obj.reward_item.name) {
+            this.reward_item_info = { name: obj.reward_item.name, amount: obj.reward_item.amount || 1 };
+        }
+        if (obj.reward_coins_original !== undefined) {
+            this.reward_coins_original = obj.reward_coins_original;
+        } else {
+            this.reward_coins_original = obj.reward_coins !== undefined ? obj.reward_coins : this.reward_coins;
+        }
+        this.rewards_given = !!obj.rewards_given;
+        const hadDisplayReward = (this.reward_item_info && this.reward_item_info.name) || (this.reward_coins_original && this.reward_coins_original > 0) || this.og_name === "Save Cloudy Meadows";
+        if (this.done && hadDisplayReward && !this.rewards_given) {
+            // Quest is complete in save data, assume rewards were already granted
+            this.rewards_given = true;
         }
     }
 
@@ -363,7 +390,16 @@ class Quest {
                 locationLine.style.marginTop = '3px';
                 detailsDiv.appendChild(locationLine);
             }
-            // If this talking goal is the final step and a reward exists, hint the gift
+        } else if (goal.class === 'TellGoal') {
+            detailsDiv.textContent = `NPC: ${goal.npc_name}`;
+            const tellLine = document.createElement('div');
+            tellLine.textContent = `Tell them: "${goal.reply_phrase}"`;
+            tellLine.style.marginTop = '3px';
+            detailsDiv.appendChild(tellLine);
+        }
+
+        // If this goal is the final step and a reward exists, hint the gift (covers TalkingGoal and TellGoal)
+        if (goal.class === 'TalkingGoal' || goal.class === 'TellGoal') {
             const isFinalGoal = this.goals[this.goals.length - 1] === goal;
             const hasRewardItem = this.reward_item && this.reward_item !== 0;
             const hasRewardCoins = this.reward_coins && this.reward_coins > 0;
@@ -381,12 +417,6 @@ class Quest {
                 rewardLine.style.color = 'rgb(70, 120, 40)';
                 detailsDiv.appendChild(rewardLine);
             }
-        } else if (goal.class === 'TellGoal') {
-            detailsDiv.textContent = `NPC: ${goal.npc_name}`;
-            const tellLine = document.createElement('div');
-            tellLine.textContent = `Tell them: "${goal.reply_phrase}"`;
-            tellLine.style.marginTop = '3px';
-            detailsDiv.appendChild(tellLine);
         } else if (goal.class === 'LocationGoal') {
             detailsDiv.textContent = `Location: ${goal.level_name}`;
         } else if (goal.class === 'SellGoal') {
@@ -606,13 +636,46 @@ class Quest {
         card.style.backgroundColor = 'rgba(255, 235, 180, 0.9)';
         card.style.borderRadius = '4px';
         card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-        
+        const rewardItemInfo = this.reward_item_info || (this.reward_item && this.reward_item.name ? { name: this.reward_item.name, amount: this.reward_item.amount || 1 } : null);
+        const rewardCoinsValue = this.reward_coins_original > 0 ? this.reward_coins_original : this.reward_coins;
+        const hasConfiguredReward = this.og_name === "Save Cloudy Meadows" || (rewardItemInfo && rewardItemInfo.name) || (rewardCoinsValue && rewardCoinsValue > 0);
+        // Header row with gift indication icon
         const header = document.createElement('div');
-        header.style.fontSize = '14px';
-        header.style.fontWeight = 'bold';
-        header.style.color = 'rgb(139, 98, 55)';
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.gap = '8px';
         header.style.marginBottom = '10px';
-        header.textContent = '🎁 Rewards';
+        
+        const headerImg = document.createElement('img');
+        headerImg.src = 'images/ui/gift_indication.png';
+        headerImg.alt = 'Gift';
+        headerImg.style.width = '24px';
+        headerImg.style.height = '24px';
+        headerImg.style.imageRendering = 'pixelated';
+        header.appendChild(headerImg);
+        
+        const headerText = document.createElement('span');
+        headerText.textContent = 'Rewards';
+        headerText.style.fontSize = '14px';
+        headerText.style.fontWeight = 'bold';
+        headerText.style.color = 'rgb(139, 98, 55)';
+        header.appendChild(headerText);
+        
+        const badge = document.createElement('span');
+        badge.style.fontSize = '11px';
+        badge.style.fontWeight = 'bold';
+        badge.style.padding = '2px 6px';
+        badge.style.borderRadius = '10px';
+        badge.style.marginLeft = 'auto';
+        badge.style.backgroundColor = this.rewards_given ? 'rgba(80, 170, 80, 0.2)' : (hasConfiguredReward ? 'rgba(255, 200, 80, 0.25)' : 'rgba(180, 180, 180, 0.3)');
+        badge.style.color = this.rewards_given ? 'rgb(50, 140, 50)' : (hasConfiguredReward ? 'rgb(150, 110, 30)' : 'rgb(110, 110, 110)');
+        if (hasConfiguredReward) {
+            badge.textContent = this.rewards_given ? 'Collected' : 'Pending';
+        } else {
+            badge.textContent = 'None';
+        }
+        header.appendChild(badge);
+        
         card.appendChild(header);
         
         const rewardsContainer = document.createElement('div');
@@ -651,7 +714,7 @@ class Quest {
         }
         // Add item reward with image
         // Check if reward_item is an object with name property (Item/Tool/Seed/etc object)
-        else if (this.reward_item && typeof this.reward_item === 'object' && this.reward_item.name) {
+        else if (rewardItemInfo && rewardItemInfo.name) {
             hasRewards = true;
             const itemReward = document.createElement('div');
             itemReward.style.display = 'flex';
@@ -662,7 +725,7 @@ class Quest {
             itemReward.style.borderRadius = '4px';
             
             const itemImg = document.createElement('img');
-            itemImg.src = this.getItemImagePath(this.reward_item.name);
+            itemImg.src = this.getItemImagePath(rewardItemInfo.name);
             itemImg.style.width = '32px';
             itemImg.style.height = '32px';
             itemImg.style.imageRendering = 'pixelated';
@@ -673,17 +736,24 @@ class Quest {
             itemReward.appendChild(itemImg);
             
             const itemText = document.createElement('span');
-            itemText.textContent = `${this.reward_item.amount || 1}x ${this.reward_item.name}`;
+            itemText.textContent = `${rewardItemInfo.amount || 1}x ${rewardItemInfo.name}`;
             itemText.style.fontSize = '13px';
             itemText.style.color = 'rgb(100, 70, 40)';
             itemText.style.fontWeight = 'bold';
             itemReward.appendChild(itemText);
             
+            const itemState = document.createElement('span');
+            itemState.textContent = this.rewards_given ? 'Collected' : 'Pending';
+            itemState.style.fontSize = '11px';
+            itemState.style.color = this.rewards_given ? 'rgb(50, 140, 50)' : 'rgb(150, 110, 30)';
+            itemState.style.marginLeft = 'auto';
+            itemReward.appendChild(itemState);
+            
             rewardsContainer.appendChild(itemReward);
         }
         
         // Add coin reward with icon
-        if (this.reward_coins && this.reward_coins > 0) {
+        if (rewardCoinsValue && rewardCoinsValue > 0) {
             hasRewards = true;
             const coinReward = document.createElement('div');
             coinReward.style.display = 'flex';
@@ -701,11 +771,18 @@ class Quest {
             coinReward.appendChild(coinImg);
             
             const coinText = document.createElement('span');
-            coinText.textContent = `${this.reward_coins} coins`;
+            coinText.textContent = `${rewardCoinsValue} coins`;
             coinText.style.fontSize = '13px';
             coinText.style.color = 'rgb(100, 70, 40)';
             coinText.style.fontWeight = 'bold';
             coinReward.appendChild(coinText);
+            
+            const coinState = document.createElement('span');
+            coinState.textContent = this.rewards_given ? 'Collected' : 'Pending';
+            coinState.style.fontSize = '11px';
+            coinState.style.color = this.rewards_given ? 'rgb(50, 140, 50)' : 'rgb(150, 110, 30)';
+            coinState.style.marginLeft = 'auto';
+            coinReward.appendChild(coinState);
             
             rewardsContainer.appendChild(coinReward);
         }
@@ -719,6 +796,13 @@ class Quest {
             noRewardsText.style.fontStyle = 'italic';
             noRewardsText.style.padding = '6px';
             rewardsContainer.appendChild(noRewardsText);
+        } else if (this.rewards_given) {
+            const collectedNote = document.createElement('div');
+            collectedNote.textContent = 'You already received these when the quest completed.';
+            collectedNote.style.fontSize = '11px';
+            collectedNote.style.color = 'rgb(90, 120, 70)';
+            collectedNote.style.padding = '4px 6px';
+            rewardsContainer.appendChild(collectedNote);
         }
         
         card.appendChild(rewardsContainer);
@@ -736,6 +820,9 @@ class Quest {
             if(this.days <= 0 && !this.done){
                 this.days = 0;
                 this.failed = true;
+            } else if(this.days > 0 && this.failed){
+                // If time remains, clear any stale failed flag
+                this.failed = false;
             }
         }
     }
@@ -761,6 +848,11 @@ class Quest {
     
     completeQuest(){
         this.done = true;
+        const hadItemReward = this.reward_item && this.reward_item !== 0;
+        const hadCoinReward = this.reward_coins && this.reward_coins > 0;
+        if (hadItemReward || hadCoinReward) {
+            this.rewards_given = true;
+        }
         
         // Dispatch quest completion event
         window.dispatchEvent(new CustomEvent('questCompleted', {
