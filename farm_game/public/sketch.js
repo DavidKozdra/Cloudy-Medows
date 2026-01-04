@@ -350,17 +350,20 @@ function updateFrogRain() {
             const randomX = Math.floor(Math.random() * mapWidth);
             const tile = currentLevelMap[randomY][randomX];
             
-            // Check if tile is empty or walkable
+            // Check if tile is empty or walkable (not an entity already)
             if (tile && tile.name != 'wall' && tile.name != 'satilite' && 
                 tile.name != 'solarpanel' && tile.class != 'Plant' && 
-                tile.name != 'Frog' && !tile.rainFrog) {
+                tile.class != 'Entity' && !tile.rainFrog) {
                 
-                // Spawn frog on this tile
+                // Create frog entity with the current tile as underlying tile
                 const newFrog = new_tile_from_num(77, randomX * tileSize, randomY * tileSize);
                 newFrog.rainFrog = true;
                 newFrog.spawnedDay = days;
                 newFrog.spawnTime = millis();
                 newFrog.rainFrogLifetime = 15000 + Math.random() * 10000; // 15-25 seconds
+                
+                // Preserve the underlying tile instead of replacing it
+                newFrog.under_tile = tile;
                 
                 currentLevelMap[randomY][randomX] = newFrog;
                 break;
@@ -379,7 +382,8 @@ function updateFrogRain() {
                 
                 // Remove if expired
                 if (age > tile.rainFrogLifetime) {
-                    currentLevelMap[y][x] = new_tile_from_num(2, x * tileSize, y * tileSize);
+                    // Restore the underlying tile if it exists
+                    currentLevelMap[y][x] = tile.under_tile ? tile.under_tile : new_tile_from_num(2, x * tileSize, y * tileSize);
                 }
             }
         }
@@ -658,8 +662,8 @@ function draw() {
                                     for(let mx = 0; mx < mapGrid[my].length; mx++){
                                         const tile = mapGrid[my][mx];
                                         if(tile && tile.rainFrog && tile.spawnedDay < days){
-                                            // Replace with grass or original tile
-                                            mapGrid[my][mx] = new_tile_from_num(2, mx * tileSize, my * tileSize);
+                                            // Restore the underlying tile if it exists
+                                            mapGrid[my][mx] = tile.under_tile ? tile.under_tile : new_tile_from_num(2, mx * tileSize, my * tileSize);
                                         }
                                     }
                                 }
