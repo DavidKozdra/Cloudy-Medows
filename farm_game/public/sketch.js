@@ -219,17 +219,23 @@ function draw() {
         if (!paused){
             // Resume GIF animations
             animatedGifs.forEach(gif => gif.play());
-            // Only update the current level (36x performance improvement)
+            // Update all levels so plants grow offscreen
+            for(let y = 0; y < levels.length; y++){
+                for(let x = 0; x < levels[y].length; x++){
+                    if(levels[y][x]){
+                        levels[y][x].update(x, y);
+                    }
+                }
+            }
+            // Track visited location and dispatch event
             const currentLevel = levels[currentLevel_y][currentLevel_x];
             if (currentLevel) {
-                // Track visited location and dispatch event
                 if (!visitedLocations.has(currentLevel.name)) {
                     visitedLocations.add(currentLevel.name);
                     window.dispatchEvent(new CustomEvent('locationVisited', {
                         detail: { locationName: currentLevel.name }
                     }));
                 }
-                currentLevel.update(currentLevel_x, currentLevel_y);
             }
         }
         else{
