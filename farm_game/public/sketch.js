@@ -87,6 +87,10 @@ var weatherLog = []; // Log of weather for each day
 var rainDroplets = []; // Array of individual rain particles
 var rainInitialized = false;
 
+// Frog rain system
+var frogRainEntities = []; // Temporary frogs that fall from sky
+var frogRainSpawnChance = 0.3; // Chance to spawn a frog each frame during frog rain
+
 // Initialize rain droplets
 function initializeRain(dropletCount = 200) {
     rainDroplets = [];
@@ -103,27 +107,29 @@ function initializeRain(dropletCount = 200) {
     }
     rainInitialized = true;
 }
-var currentWeather = 'clear'; // 'clear', 'overcast', 'rain'
+var currentWeather = 'frog-rain'; // 'clear', 'overcast', 'rain'
 var weatherLog = []; // Log of weather for each day
 
 // Generate random weather for the day
 function generateDailyWeather() {
     const weatherRoll = Math.random() * 100;
     
-    if (weatherRoll < 2) {
+    if (weatherRoll < 0.5) {
+        currentWeather = 'frog-rain'; // 0.5% - FROGS FALL FROM THE SKY
+    } else if (weatherRoll < 2.5) {
         currentWeather = 'thunderstorm'; // 2% - Heavy rain with lightning
-    } else if (weatherRoll < 10) {
+    } else if (weatherRoll < 10.5) {
         currentWeather = 'rain'; // 8% - Regular rain
-    } else if (weatherRoll < 18) {
+    } else if (weatherRoll < 18.5) {
         currentWeather = 'sunshower'; // 8% - Rain during day (bright)
-    } else if (weatherRoll < 28) {
+    } else if (weatherRoll < 28.5) {
         currentWeather = 'overcast'; // 10% - Dark and cloudy
-    } else if (weatherRoll < 43) {
+    } else if (weatherRoll < 43.5) {
         currentWeather = 'partly-cloudy'; // 15% - Slightly cloudy
-    } else if (weatherRoll < 50) {
+    } else if (weatherRoll < 50.5) {
         currentWeather = 'fog'; // 7% - Foggy conditions
     } else {
-        currentWeather = 'clear'; // 50% - Clear and sunny
+        currentWeather = 'clear'; // 49.5% - Clear and sunny
     }
     
     // Log the weather
@@ -140,6 +146,7 @@ function applyWeatherEffects() {
     if (currentWeather === 'clear') {
         // Clear - no effects, reset rain
         rainInitialized = false;
+        frogRainEntities = [];
     } else if (currentWeather === 'partly-cloudy') {
         // Slight darkening for partly cloudy
         push();
@@ -188,6 +195,15 @@ function applyWeatherEffects() {
         // Lightning flashes
         drawLightning();
         pop();
+    } else if (currentWeather === 'frog-rain') {
+        // FROGS! - bright with frogs falling
+        push();
+        fill(100, 200, 100, 60); // Greenish tint
+        rect(0, 0, canvasWidth, canvasHeight);
+        pop();
+        
+        // Spawn and update frog rain
+        updateFrogRain();
     }
 }
 
@@ -266,6 +282,142 @@ function drawLightning() {
             currentY = nextY;
         }
         
+        pop();
+    }
+}
+
+// Update and render falling frogs for frog rain
+function updateFrogRain() {
+    // SYSTEM 1: Spawn visual falling frogs from sky
+    if (Math.random() < frogRainSpawnChance && frogRainEntities.length < 15) {
+        const newFrog = {
+            x: Math.random() * canvasWidth,
+            y: -32,
+            vy: 4 + Math.random() * 2,
+            vx: (Math.random() - 0.5) * 2,
+            spawnTime: millis(),
+            lifetime: 5000 + Math.random() * 3000 // 5-8 seconds before disappearing
+        };
+        frogRainEntities.push(newFrog);
+    }
+    
+    // Update and render existing falling frogs
+    for (let i = frogRainEntities.length - 1; i >= 0; i--) {
+        const frog = frogRainEntities[i];
+        const age = millis() - frog.spawnTime;
+        
+        // Remove if expired
+        if (age > frog.lifetime) {
+            frogRainEntities.splice(i, 1);
+            continue;
+        }
+        
+        // Update position
+        frog.y += frog.vy;
+        frog.x += frog.vx;
+        
+        // Wrap horizontally
+        if (frog.x > canvasWidth) {
+            frog.x = -32;
+        } else if (frog.x < -32) {
+            frog.x = canvasWidth;
+        }
+        
+        // If frog reaches ground, remove from rain particles
+        if (frog.y > canvasHeight - tileSize) {
+            frogRainEntities.splice(i, 1);
+            continue;
+        }
+        
+        // Draw falling frog
+        push();
+        imageMode(CENTER);
+        tint(0, 200, 0, 200 - (age / frog.lifetime) * 50); // Fade out over time
+        image(frog_imgs[0][0], frog.x + tileSize/2, frog.y + tileSize/2, tileSize, tileSize);
+        pop();
+    }
+    
+    // SYSTEM 2: Spawn new frogs directly on tiles periodically
+    if (Math.random() < 0.1) { // 10% chance each frame to spawn a frog
+        const currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
+        const mapHeight = currentLevelMap.length;
+        const mapWidth = currentLevelMap[0].length;
+        
+        // Try to find an empty spot
+        let attempts = 0;
+        while (attempts < 5) {
+            const randomY = Math.floor(Math.random() * mapHeight);
+            const randomX = Math.floor(Math.random() * mapWidth);
+            const tile = currentLevelMap[randomY][randomX];
+            
+            // Check if tile is empty or walkable
+            if (tile && tile.name != 'wall' && tile.name != 'satilite' && 
+                tile.name != 'solarpanel' && tile.class != 'Plant' && 
+                tile.name != 'Frog' && !tile.rainFrog) {
+                
+                // Spawn frog on this tile
+                const newFrog = new_tile_from_num(77, randomX * tileSize, randomY * tileSize);
+                newFrog.rainFrog = true;
+                newFrog.spawnedDay = days;
+                newFrog.spawnTime = millis();
+                newFrog.rainFrogLifetime = 15000 + Math.random() * 10000; // 15-25 seconds
+                
+                currentLevelMap[randomY][randomX] = newFrog;
+                break;
+            }
+            attempts++;
+        }
+    }
+    
+    // Check all tiles in current level for expired rain frogs
+    const currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
+    for (let y = 0; y < currentLevelMap.length; y++) {
+        for (let x = 0; x < currentLevelMap[y].length; x++) {
+            const tile = currentLevelMap[y][x];
+            if (tile && tile.rainFrog && tile.spawnTime) {
+                const age = millis() - tile.spawnTime;
+                
+                // Remove if expired
+                if (age > tile.rainFrogLifetime) {
+                    currentLevelMap[y][x] = new_tile_from_num(2, x * tileSize, y * tileSize);
+                }
+            }
+        }
+    }
+    
+    // Also clean up any falling frogs that haven't landed yet
+    for (let i = frogRainEntities.length - 1; i >= 0; i--) {
+        const frog = frogRainEntities[i];
+        const age = millis() - frog.spawnTime;
+        
+        // Remove if expired
+        if (age > frog.lifetime) {
+            frogRainEntities.splice(i, 1);
+            continue;
+        }
+        
+        // Update position
+        frog.y += frog.vy;
+        frog.x += frog.vx;
+        
+        // Wrap horizontally
+        if (frog.x > canvasWidth) {
+            frog.x = -32;
+        } else if (frog.x < -32) {
+            frog.x = canvasWidth;
+        }
+        
+        // If frog reaches ground, add to level and remove from rain
+        if (frog.y > canvasHeight - tileSize) {
+            frogRainEntities.splice(i, 1);
+            continue;
+        }
+        
+        // Draw falling frog
+        push();
+        imageMode(CENTER);
+        tint(0, 200, 0, 200 - (age / frog.lifetime) * 50); // Fade out over time
+        image(frog_imgs[0][0], frog.x + tileSize/2, frog.y + tileSize/2, tileSize, tileSize);
         pop();
     }
 }
@@ -496,6 +648,25 @@ function draw() {
                             player.quests[i].daily_update();
                         }
                     }
+                    
+                    // Remove temporary frog rain frogs from yesterday
+                    for(let y = 0; y < levels.length; y++){
+                        for(let x = 0; x < levels[y].length; x++){
+                            if(levels[y][x]){
+                                const mapGrid = levels[y][x].map;
+                                for(let my = 0; my < mapGrid.length; my++){
+                                    for(let mx = 0; mx < mapGrid[my].length; mx++){
+                                        const tile = mapGrid[my][mx];
+                                        if(tile && tile.rainFrog && tile.spawnedDay < days){
+                                            // Replace with grass or original tile
+                                            mapGrid[my][mx] = new_tile_from_num(2, mx * tileSize, my * tileSize);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     saveAll();
                     newDayChime.play();
                 }
