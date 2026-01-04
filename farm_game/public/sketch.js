@@ -79,6 +79,197 @@ var lastFpsUpdate = 0;
 var displayFps = 0;
 var showFpsDebug = false;
 
+// Weather system
+var currentWeather = 'fog'; // 'clear', 'overcast', 'rain'
+var weatherLog = []; // Log of weather for each day
+
+// Rain particle system
+var rainDroplets = []; // Array of individual rain particles
+var rainInitialized = false;
+
+// Initialize rain droplets
+function initializeRain(dropletCount = 200) {
+    rainDroplets = [];
+    
+    for (let i = 0; i < dropletCount; i++) {
+        rainDroplets.push({
+            x: Math.random() * canvasWidth,
+            y: Math.random() * canvasHeight,
+            vx: -2, // Horizontal velocity (slight wind)
+            vy: 5 + Math.random() * 3, // Vertical velocity (falling speed)
+            length: 8 + Math.random() * 4, // Length of rain streak
+            opacity: 150 + Math.random() * 100
+        });
+    }
+    rainInitialized = true;
+}
+var currentWeather = 'clear'; // 'clear', 'overcast', 'rain'
+var weatherLog = []; // Log of weather for each day
+
+// Generate random weather for the day
+function generateDailyWeather() {
+    const weatherRoll = Math.random() * 100;
+    
+    if (weatherRoll < 2) {
+        currentWeather = 'thunderstorm'; // 2% - Heavy rain with lightning
+    } else if (weatherRoll < 10) {
+        currentWeather = 'rain'; // 8% - Regular rain
+    } else if (weatherRoll < 18) {
+        currentWeather = 'sunshower'; // 8% - Rain during day (bright)
+    } else if (weatherRoll < 28) {
+        currentWeather = 'overcast'; // 10% - Dark and cloudy
+    } else if (weatherRoll < 43) {
+        currentWeather = 'partly-cloudy'; // 15% - Slightly cloudy
+    } else if (weatherRoll < 50) {
+        currentWeather = 'fog'; // 7% - Foggy conditions
+    } else {
+        currentWeather = 'clear'; // 50% - Clear and sunny
+    }
+    
+    // Log the weather
+    weatherLog.push({
+        day: days,
+        weather: currentWeather
+    });
+    
+    console.log(`Day ${days}: Weather is ${currentWeather.toUpperCase()}`);
+}
+
+// Apply visual effects based on current weather
+function applyWeatherEffects() {
+    if (currentWeather === 'clear') {
+        // Clear - no effects, reset rain
+        rainInitialized = false;
+    } else if (currentWeather === 'partly-cloudy') {
+        // Slight darkening for partly cloudy
+        push();
+        fill(0, 0, 0, 30);
+        rect(0, 0, canvasWidth, canvasHeight);
+        pop();
+    } else if (currentWeather === 'overcast') {
+        // Moderate darkening for overcast weather
+        push();
+        fill(0, 0, 0, 80);
+        rect(0, 0, canvasWidth, canvasHeight);
+        pop();
+    } else if (currentWeather === 'fog') {
+        // Fog effect - white overlay with reduced opacity
+        push();
+        fill(200, 200, 200, 100);
+        rect(0, 0, canvasWidth, canvasHeight);
+        pop();
+    } else if (currentWeather === 'sunshower') {
+        // Sun shower - bright with rain (light overlay)
+        push();
+        fill(0, 0, 0, 40);
+        rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Draw lighter rain
+        drawRain(true);
+        pop();
+    } else if (currentWeather === 'rain') {
+        // Heavy rain - dark overlay with rain
+        push();
+        fill(0, 0, 0, 120);
+        rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Draw rain effect
+        drawRain(false);
+        pop();
+    } else if (currentWeather === 'thunderstorm') {
+        // Thunderstorm - very dark with heavy rain and lightning
+        push();
+        fill(0, 0, 0, 140);
+        rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Draw heavy rain
+        drawRain(false, true);
+        
+        // Lightning flashes
+        drawLightning();
+        pop();
+    }
+}
+
+// Draw animated rain with falling droplets
+function drawRain(isSunshower = false, isThunderstorm = false) {
+    // Initialize rain on first call
+    if (!rainInitialized) {
+        initializeRain(isThunderstorm ? 400 : 200);
+    }
+    
+    push();
+    
+    // Update and draw each raindrop
+    for (let i = 0; i < rainDroplets.length; i++) {
+        const drop = rainDroplets[i];
+        
+        // Update droplet position
+        drop.x += drop.vx;
+        drop.y += drop.vy;
+        
+        // Wrap horizontally (wind effect)
+        if (drop.x > canvasWidth) {
+            drop.x = -5;
+        } else if (drop.x < -5) {
+            drop.x = canvasWidth;
+        }
+        
+        // Reset to top when droplet reaches bottom
+        if (drop.y > canvasHeight) {
+            drop.y = -10;
+            drop.x = Math.random() * canvasWidth;
+        }
+        
+        // Draw the raindrop as a line
+        if (isSunshower) {
+            // Lighter blue for sun showers
+            stroke(150, 200, 255, drop.opacity * 0.7);
+        } else {
+            // Normal rain color
+            stroke(180, 210, 255, drop.opacity);
+        }
+        
+        strokeWeight(isThunderstorm ? 1.5 : 1);
+        line(drop.x, drop.y, drop.x + drop.vx * 2, drop.y + drop.length);
+    }
+    
+    pop();
+}
+
+// Draw lightning flashes for thunderstorms
+function drawLightning() {
+    const lightningChance = 0.002; // 2% chance each frame
+    
+    if (Math.random() < lightningChance) {
+        push();
+        
+        // Flash the screen with subtle white (less aggressive)
+        fill(255, 255, 255, 50);
+        rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Draw jagged lightning bolt
+        stroke(255, 255, 150, 180);
+        strokeWeight(3);
+        
+        const startX = Math.random() * canvasWidth;
+        const startY = 0;
+        let currentX = startX;
+        let currentY = startY;
+        
+        for (let i = 0; i < 8; i++) {
+            const nextX = currentX + (Math.random() - 0.5) * 60;
+            const nextY = currentY + canvasHeight / 8;
+            
+            line(currentX, currentY, nextX, nextY);
+            currentX = nextX;
+            currentY = nextY;
+        }
+        
+        pop();
+    }
+}
+
 // UI Layout Configuration - all clickable regions defined here
 const UI_BOUNDS = {
     // Player inventory bar at bottom (inv_img is 512px wide, centered)
@@ -216,6 +407,10 @@ function draw() {
         image(background_img, 0, 0);
         levels[currentLevel_y][currentLevel_x].fore_render();
         levels[currentLevel_y][currentLevel_x].render();
+        
+        // Apply weather visual effects
+        applyWeatherEffects();
+        
         if (!paused){
             // Resume GIF animations
             animatedGifs.forEach(gif => gif.play());
@@ -276,6 +471,10 @@ function draw() {
                     time = 200;
                     timephase = 1;
                     days += 1;
+                    
+                    // Generate weather for the new day
+                    generateDailyWeather();
+                    
                     if(days >= 100 && level5.map[9][2].name != 'Mr.C'){
                         level5.map[9][2] = new_tile_from_num(98, 2*tileSize, 9*tileSize);
                         if(player.quests[0].done){
@@ -344,6 +543,7 @@ function render_ui() {
 
     pop();
 
+ 
     if(levels[currentLevel_y][currentLevel_x].level_name_popup){
         levels[currentLevel_y][currentLevel_x].name_render();
     }

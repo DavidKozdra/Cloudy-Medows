@@ -29,6 +29,19 @@ class Plant extends Tile {
 
     grow(x, y) {
         this.growTimer++;
+        
+        // Apply weather modifiers to growth rate
+        if (typeof currentWeather !== 'undefined') {
+            if (currentWeather === 'rain') {
+                // Rain makes plants grow faster (80 ticks instead of 100)
+                this.growTimer += 0.25;
+            } else if (currentWeather === 'overcast') {
+                // Overcast makes plants grow slower (125 ticks instead of 100)
+                this.growTimer -= 0.2;
+            }
+            // Clear weather has no modifier (normal growth)
+        }
+        
         // Bonus growth rate when planted on beds
         if (player && player.touching && player.touching.name == 'bed') {
             this.growTimer += 2;
