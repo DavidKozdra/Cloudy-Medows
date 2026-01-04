@@ -115,7 +115,7 @@ class MoveableEntity extends Entity {
             }
         }
         else if (this.under_tile.name == 'compost_bucket') {
-            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].name == 'Corn Seed' || this.inv[this.hand].name == 'Sweet Potato Seed' || this.inv[this.hand].name == 'Strawberry Seed') {
+            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed') {
                 if(checkForSpace(this, 9)){
                     this.inv[this.hand].amount -= 1;
                     if (this.inv[this.hand].amount == 0) {

@@ -458,6 +458,7 @@ class Player extends MoveableEntity {
             this.talking = this.inv[this.hand];
             return;
         }
+        console.log(this.looking(currentLevel_x, currentLevel_y));
         if(this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.talking == 0){
             if(((this.looking(currentLevel_x, currentLevel_y).class == 'NPC' || this.looking(currentLevel_x, currentLevel_y).class == 'Shop' || this.looking(currentLevel_x, currentLevel_y).class == 'Chest' || this.looking(currentLevel_x, currentLevel_y).class == 'Robot' || this.looking(currentLevel_x, currentLevel_y).class == 'AirBallon'))){
                 temp_move_bool = this.looking(currentLevel_x, currentLevel_y).move_bool;
@@ -568,16 +569,7 @@ class Player extends MoveableEntity {
                 }
             }
         }
-        else if (this.touching.name == 'compost_bucket'){
-            if (this.inv[this.hand].name == 'Shovel'){
-                if(checkForSpace(this, 46)){
-                    addItem(this, 46, 1);
-                    let under_tile = this.touching.under_tile ? this.touching.under_tile : new_tile_from_num(2, this.touching.pos.x, this.touching.pos.y);
-                    levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = under_tile;
-                    shovelSound.play();
-                }
-            }
-        }
+
         else if (this.inv[this.hand].name == 'Axe'){
             if (this.looking(x, y) != undefined && (this.looking(x, y).name == 'wall' || this.looking(x, y).name == 'bed')){
                 let item_to_add = this.looking(x, y).name == 'wall' ? 44 : 43;
@@ -601,14 +593,32 @@ class Player extends MoveableEntity {
             }
         }
         else if (this.touching.name == 'compost_bucket') {
-            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed') {
+            console.log('🪣 Interacting with compost bucket');
+            console.log('Current hand item:', this.inv[this.hand]);
+               if (this.inv[this.hand].name == 'Shovel'){
+                if(checkForSpace(this, 46)){
+                    addItem(this, 46, 1);
+                    let under_tile = this.touching.under_tile ? this.touching.under_tile : new_tile_from_num(2, this.touching.pos.x, this.touching.pos.y);
+                    levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = under_tile;
+                    shovelSound.play();
+                }
+            }
+            if (this.inv[this.hand] && (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed')) {
+                console.log('✅ Item is valid for composting:', this.inv[this.hand].name);
                 if(checkForSpace(this, 9)){
+                    console.log('📦 Converting to compost! (item 9)');
                     this.inv[this.hand].amount -= 1;
                     if (this.inv[this.hand].amount == 0) {
                         this.inv[this.hand] = 0;
                     }
                     addItem(this, 9, 1);
                 }
+                else {
+                    console.log('❌ No space in inventory for compost!');
+                }
+            }
+            else {
+                console.log('❌ Item is not valid for composting. Need Junk or Seed.');
             }
         }
         else if (this.touching.name == 'Veggie_Press') {
