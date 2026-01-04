@@ -72,6 +72,11 @@ class Level {
                         this.map[i][j] = 0;
                         console.error('Tile doesnt exist');
                     }
+                    // Ensure sprinklers always have a base tile for rendering (covers legacy saves)
+                    if (this.map[i][j] && this.map[i][j].name === 'sprinkler' && !this.map[i][j].under_tile) {
+                        this.map[i][j].under_tile = new_tile_from_num(3, j * tileSize, i * tileSize); // plot
+                        this.map[i][j].last_under_png = this.map[i][j].under_tile.png;
+                    }
                     if (this.map[i][j].name == 'lamppost') {
                         append(this.lights, new Light(this.map[i][j].pos.x, this.map[i][j].pos.y, (tileSize * 6), 255, 255, 255));
                     }

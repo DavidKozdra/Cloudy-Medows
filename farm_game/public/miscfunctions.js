@@ -60,8 +60,6 @@ function updateQuestContent(){
 }
 
 function start(){
-
-
     triggerMenuFadeOut(() => {
         startButton.hide();
         optionsButton.hide();
@@ -81,8 +79,16 @@ function start(){
         title_screen = false;
         hideMainMenu();
     });
+}
 
-
+function hasGameSave(){
+    // Check only the keys that represent an actual world state, not options
+    try {
+        return localData.get('player') != null || localData.get('Day_curLvl_Dif') != null || localData.get('extralvlStuff') != null;
+    } catch (err) {
+        console.warn('Save detection failed, assuming no save', err);
+        return false;
+    }
 }
 
 
@@ -126,6 +132,7 @@ function showTitle(){
 
 function showMainMenu(){
     let container = document.getElementById('main-menu-container');
+    let startBtn = document.getElementById('start-btn');
     if (!container) {
         // Create structure once
         container = document.createElement('div');
@@ -144,12 +151,10 @@ function showMainMenu(){
         deluxeText.textContent = 'DELUXE';
         container.appendChild(deluxeText);
         
-        const startBtn = document.createElement('button');
+        startBtn = document.createElement('button');
         startBtn.id = 'start-btn';
         startBtn.className = 'main-menu-button';
-        // Check if there's any saved data (keys that can be deleted)
-        const hasSavedGame = localData.keys() > 0;
-        startBtn.textContent = hasSavedGame ? 'Continue' : 'Start';
+        startBtn.textContent = 'Start'; // Default label in case save check fails early
         startBtn.addEventListener('click', start);
         container.appendChild(startBtn);
         
@@ -172,6 +177,13 @@ function showMainMenu(){
             paused = false;
         });
         container.appendChild(creditsBtn);
+    }
+    // Refresh label every time in case save data was added or cleared
+    const hasSavedGame = hasGameSave();
+    if (startBtn) {
+        startBtn.textContent = hasSavedGame ? 'Continue' : 'Start';
+    } else {
+        console.warn('Main menu start button missing');
     }
     container.style.display = 'flex';
     updateCanvasPointerEvents();

@@ -62,12 +62,8 @@ class Shop extends Entity {
         stroke(0);
         strokeWeight(4);
         
-        // Show shop name and day-of-week note
-        let shopTitle = this.name;
-        if(dayOfWeek === 4 && this.name === 'Fruits') {
-            shopTitle += " - David's here!";
-        }
-        text(shopTitle, (canvasWidth / 20) + 10, canvasHeight - 140);
+        // Show shop name
+        text(this.name, (canvasWidth / 20) + 10, canvasHeight - 140);
         
         textSize(13);
         strokeWeight(2);
@@ -228,6 +224,15 @@ class Shop extends Entity {
     daily_update(dayOfWeek = 0, lastRainDay = -999, lastFrogRainDay = -999){
         // Recalculate prices with day/weather modifiers
         this.recalculatePrices();
+
+        // Immediate restock for out-of-stock items (1-day recovery)
+        for(let i = 0; i < this.inv.length; i++){
+            if(this.inv[i] != 0 && this.inv[i].amount <= 0){
+                this.inv[i].amount = Math.max(3, Math.round(random(3, 6)));
+                this.itemsSold[this.inv[i].name] = 0;
+                this.recalculateItemPrice(this.inv[i].name);
+            }
+        }
         
         // Add pumpkin to Veggie store after day 20 (day 20 onwards)
         if(days >= 20 && this.name === 'Vegetables') {
@@ -270,18 +275,25 @@ class Shop extends Entity {
                     this.inv[i].price = round(this.inv[i].price * 0.5);
                     // Also increase stock after rain
                     if(days - lastRainDay === 0) { // First day after rain
-                        this.inv[i].amount += random(5, 10);
+                        this.inv[i].amount += Math.round(random(5, 10));
                     }
                 }
             }
         }
         
-        // Reset sold tracker every 3-4 days
+        // Restock every 3-4 days: bump low stock and reset sold tracker
         if(days - this.lastMarketUpdate >= 3 + round(random(0, 1))) {
             this.itemsSold = {};
             for(let i = 0; i < this.inv.length; i++){
                 if(this.inv[i] != 0) {
                     this.itemsSold[this.inv[i].name] = 0;
+                    const minStock = 5;
+                    if(this.inv[i].amount < minStock){
+                        this.inv[i].amount = minStock;
+                    } else {
+                        this.inv[i].amount += Math.round(random(1, 3));
+                    }
+                    this.recalculateItemPrice(this.inv[i].name);
                 }
             }
             this.lastMarketUpdate = days;
@@ -297,7 +309,7 @@ class Shop extends Entity {
         // Add the sold items to the shop's inventory
         for(let i = 0; i < this.inv.length; i++){
             if(this.inv[i] != 0 && this.inv[i].name == itemName){
-                this.inv[i].amount += amount;
+                this.inv[i].amount = Math.round(this.inv[i].amount + amount);
                 this.recalculateItemPrice(itemName); // Only recalc THIS item
                 
                 // Dispatch stock change event for real-time updates
@@ -314,7 +326,7 @@ class Shop extends Entity {
         // Update item stock and recalculate prices (for purchases)
         for(let i = 0; i < this.inv.length; i++){
             if(this.inv[i] != 0 && this.inv[i].name == itemName){
-                this.inv[i].amount = newAmount;
+                this.inv[i].amount = Math.round(newAmount);
                 this.recalculateItemPrice(itemName); // Only recalc THIS item
                 
                 // Dispatch stock change event
@@ -340,7 +352,7 @@ class Shop extends Entity {
         
         for(let i = 0; i < obj.inv.length; i++){
             if(obj.inv[i] != 0 && this.inv[i] != 0){
-                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), obj.inv[i].amount);
+                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), Math.round(obj.inv[i].amount));
                 // Store original price if not already set
                 if(!this.originalPrices[i]) {
                     this.originalPrices[i] = obj.inv[i].price;
@@ -351,7 +363,7 @@ class Shop extends Entity {
                 }
             }
             else if (obj.inv[i] != 0 && this.inv[i] == 0){
-                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), obj.inv[i].amount);
+                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), Math.round(obj.inv[i].amount));
                 this.inv[i].price = obj.inv[i].price;
                 if(this.inv[i].class == 'Backpack'){
                     this.inv[i].load(obj.inv[i])

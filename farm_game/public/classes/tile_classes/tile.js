@@ -5,6 +5,8 @@ class Tile {
         this.pos = createVector(x, y);
         this.collide = collide;
         this.age = age;
+        // Remember what the sprinkler should render underneath if no under_tile object is present (helps after save/load or bad placement)
+        this.last_under_png = undefined;
         // Default variant selection
         this.variant = round(random(0, all_imgs[this.png].length-1));
         // For park grass, avoid the leaf variant by default; it will be set contextually
@@ -29,13 +31,19 @@ class Tile {
             image(all_imgs[0][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //concrete under
         }
         if (this.name == 'sprinkler'){
-            // Use the tile underneath the sprinkler, or default to grass
+            // Use the tile underneath the sprinkler; if missing, fall back to the last known base or tilled soil
+            let basePng = null;
             if(this.under_tile && typeof this.under_tile === 'object'){
-                image(all_imgs[this.under_tile.png][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //use under_tile image
+                basePng = this.under_tile.png;
+                this.last_under_png = basePng; // remember for later loads without under_tile
+            }
+            else if(this.last_under_png !== undefined){
+                basePng = this.last_under_png;
             }
             else{
-                image(all_imgs[1][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //grass under
+                basePng = 2; // tilled soil (plot) as a safe default instead of empty/grass
             }
+            image(all_imgs[basePng][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
         }
         if (this.name == 'Flower_Done'){
             image(all_imgs[1][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //grass under
@@ -70,6 +78,12 @@ class Tile {
         this.variant = obj.variant;
         if(obj.under_tile && obj.under_tile !== 0){
             this.under_tile = new_tile_from_num(tile_name_to_num(obj.under_tile.name), obj.under_tile.pos.x, obj.under_tile.pos.y);
+            if(this.name === 'sprinkler'){
+                this.last_under_png = this.under_tile.png;
+            }
+        }
+        else if(this.name === 'sprinkler' && obj.last_under_png !== undefined){
+            this.last_under_png = obj.last_under_png;
         }
     }
 };

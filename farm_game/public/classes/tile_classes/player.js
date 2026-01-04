@@ -581,6 +581,9 @@ class Player extends MoveableEntity {
                     let old_tile = levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize];
                     let new_tile = new_tile_from_num(this.inv[this.hand].tile_num, this.touching.pos.x, this.touching.pos.y);
                     new_tile.under_tile = old_tile;
+                    if(new_tile.name === 'sprinkler' && old_tile){
+                        new_tile.last_under_png = old_tile.png; // remember base for render fallback
+                    }
                     levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile;
                     if (this.inv[this.hand].name == 'Ladybugs') {
                         levels[y][x].ladybugs += 1;
