@@ -60,8 +60,8 @@ class Plant extends Tile {
                     const check_x = plant_grid_x + j;
                     
                     // Bounds check
-                    if(check_y < 0 || check_y >= levels[y].map.length || 
-                       check_x < 0 || check_x >= levels[y].map[0].length) {
+                    if(check_y < 0 || check_y >= levels[y][x].map.length || 
+                       check_x < 0 || check_x >= levels[y][x].map[0].length) {
                         continue;
                     }
                     

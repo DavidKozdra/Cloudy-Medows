@@ -107,9 +107,6 @@ function initializeRain(dropletCount = 200) {
     }
     rainInitialized = true;
 }
-var currentWeather = 'clear'; // 'clear', 'overcast', 'rain'
-var weatherLog = []; // Log of weather for each day
-
 // Generate random weather for the day
 function generateDailyWeather() {
     const weatherRoll = Math.random() * 100;
@@ -141,6 +138,22 @@ function generateDailyWeather() {
     console.log(`Day ${days}: Weather is ${currentWeather.toUpperCase()}`);
 }
 
+// Calculate dynamic opacity based on time of day (0-200 range)
+// Returns opacity value that's darker at night, brighter during day
+function getDayNightOpacity(baseOpacity) {
+    // time: 0 = midnight (darkest), 100 = noon (brightest), 200 = midnight again
+    // Create a curve: lowest at 0/200, highest at 100
+    const normalizedTime = time > 100 ? 200 - time : time;
+    const dayNightFactor = normalizedTime / 100; // 0 at night, 1 at noon
+    
+    // Apply a curve to make nights darker and days brighter
+    // Using squared factor for more dramatic effect
+    const curve = dayNightFactor * dayNightFactor;
+    
+    // Return reduced opacity at night, full opacity at day
+    return baseOpacity * (0.3 + curve * 0.7); // 30% opacity at night, 100% at day
+}
+
 // Apply visual effects based on current weather
 function applyWeatherEffects() {
     if (currentWeather === 'clear') {
@@ -150,25 +163,25 @@ function applyWeatherEffects() {
     } else if (currentWeather === 'partly-cloudy') {
         // Slight darkening for partly cloudy
         push();
-        fill(0, 0, 0, 30);
+        fill(0, 0, 0, getDayNightOpacity(30));
         rect(0, 0, canvasWidth, canvasHeight);
         pop();
     } else if (currentWeather === 'overcast') {
         // Moderate darkening for overcast weather
         push();
-        fill(0, 0, 0, 80);
+        fill(0, 0, 0, getDayNightOpacity(80));
         rect(0, 0, canvasWidth, canvasHeight);
         pop();
     } else if (currentWeather === 'fog') {
         // Fog effect - white overlay with reduced opacity
         push();
-        fill(200, 200, 200, 100);
+        fill(200, 200, 200, getDayNightOpacity(100));
         rect(0, 0, canvasWidth, canvasHeight);
         pop();
     } else if (currentWeather === 'sunshower') {
         // Sun shower - bright with rain (light overlay)
         push();
-        fill(0, 0, 0, 40);
+        fill(0, 0, 0, getDayNightOpacity(40));
         rect(0, 0, canvasWidth, canvasHeight);
         
         // Draw lighter rain
@@ -177,7 +190,7 @@ function applyWeatherEffects() {
     } else if (currentWeather === 'rain') {
         // Heavy rain - dark overlay with rain
         push();
-        fill(0, 0, 0, 120);
+        fill(0, 0, 0, getDayNightOpacity(120));
         rect(0, 0, canvasWidth, canvasHeight);
         
         // Draw rain effect
@@ -186,7 +199,7 @@ function applyWeatherEffects() {
     } else if (currentWeather === 'thunderstorm') {
         // Thunderstorm - very dark with heavy rain and lightning
         push();
-        fill(0, 0, 0, 140);
+        fill(0, 0, 0, getDayNightOpacity(140));
         rect(0, 0, canvasWidth, canvasHeight);
         
         // Draw heavy rain
@@ -257,7 +270,7 @@ function drawRain(isSunshower = false, isThunderstorm = false) {
 
 // Draw lightning flashes for thunderstorms
 function drawLightning() {
-    const lightningChance = 0.002; // 2% chance each frame
+    const lightningChance = 0.008; // 0.8% chance per frame (increased from 0.2%)
     
     if (Math.random() < lightningChance) {
         push();
@@ -266,22 +279,27 @@ function drawLightning() {
         fill(255, 255, 255, 50);
         rect(0, 0, canvasWidth, canvasHeight);
         
-        // Draw jagged lightning bolt
-        stroke(255, 255, 150, 180);
-        strokeWeight(3);
+        // Draw 1-2 lightning bolts per strike
+        const boltCount = Math.random() < 0.3 ? 2 : 1;
         
-        const startX = Math.random() * canvasWidth;
-        const startY = 0;
-        let currentX = startX;
-        let currentY = startY;
-        
-        for (let i = 0; i < 8; i++) {
-            const nextX = currentX + (Math.random() - 0.5) * 60;
-            const nextY = currentY + canvasHeight / 8;
+        for (let b = 0; b < boltCount; b++) {
+            // Draw jagged lightning bolt
+            stroke(255, 255, 150, 180);
+            strokeWeight(3);
             
-            line(currentX, currentY, nextX, nextY);
-            currentX = nextX;
-            currentY = nextY;
+            const startX = Math.random() * canvasWidth;
+            const startY = 0;
+            let currentX = startX;
+            let currentY = startY;
+            
+            for (let i = 0; i < 8; i++) {
+                const nextX = currentX + (Math.random() - 0.5) * 60;
+                const nextY = currentY + canvasHeight / 8;
+                
+                line(currentX, currentY, nextX, nextY);
+                currentX = nextX;
+                currentY = nextY;
+            }
         }
         
         pop();
