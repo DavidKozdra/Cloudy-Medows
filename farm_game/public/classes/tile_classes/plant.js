@@ -47,36 +47,37 @@ class Plant extends Tile {
             this.growTimer += 2;
         }
         
-        // Only check for water when it's time to grow to avoid unnecessary iteration
-        if (this.growTimer >= this.growthTime) {
-            let water_found = 0;
-            const plant_grid_x = this.pos.x / tileSize;
-            const plant_grid_y = this.pos.y / tileSize;
-            
-            // Check 3x3 area around plant for sprinklers with bounds checking
-            for(let i = -1; i <= 1; i++){
-                for(let j = -1; j <= 1; j++){
-                    const check_y = plant_grid_y + i;
-                    const check_x = plant_grid_x + j;
-                    
-                    // Bounds check
-                    if(check_y < 0 || check_y >= levels[y][x].map.length || 
-                       check_x < 0 || check_x >= levels[y][x].map[0].length) {
-                        continue;
-                    }
-                    
-                    const tile = levels[y][x].map[check_y][check_x];
-                    if(tile && tile.name == 'sprinkler'){
-                        water_found += 1;
-                    }
-                    else if(tile && tile.under_tile != undefined && tile.under_tile.name == 'sprinkler'){
-                        water_found += 1;
-                    }
+        // Check for water every frame so texture updates immediately
+        let water_found = 0;
+        const plant_grid_x = this.pos.x / tileSize;
+        const plant_grid_y = this.pos.y / tileSize;
+        
+        // Check 3x3 area around plant for sprinklers with bounds checking
+        for(let i = -1; i <= 1; i++){
+            for(let j = -1; j <= 1; j++){
+                const check_y = plant_grid_y + i;
+                const check_x = plant_grid_x + j;
+                
+                // Bounds check
+                if(check_y < 0 || check_y >= levels[y][x].map.length || 
+                   check_x < 0 || check_x >= levels[y][x].map[0].length) {
+                    continue;
+                }
+                
+                const tile = levels[y][x].map[check_y][check_x];
+                if(tile && tile.name == 'sprinkler'){
+                    water_found += 1;
+                }
+                else if(tile && tile.under_tile && typeof tile.under_tile === 'object' && tile.under_tile.name == 'sprinkler'){
+                    water_found += 1;
                 }
             }
-            
-            this.watermet = (water_found >= this.waterneeded);
-            
+        }
+        
+        this.watermet = (water_found >= this.waterneeded);
+        
+        // Only grow when it's time to grow
+        if (this.growTimer >= this.growthTime) {
             if (this.watermet) {
                 this.age += 1;
                 
