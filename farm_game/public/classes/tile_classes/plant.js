@@ -15,12 +15,36 @@ class Plant extends Tile {
         push();
         imageMode(CENTER);
         if(this.waterneeded > 0 && this.watermet){
+            // Has water - show water overlay
             image(all_imgs[93][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
         }
         else{
             image(all_imgs[2][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
         }
+        
+        // Draw plant with drought tint if it needs water but doesn't have it
+        if(this.waterneeded > 0 && !this.watermet){
+            tint(100, 30, 30); // Darker red for drought
+        }
         image(all_imgs[this.png][this.age], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
+        noTint();
+        
+        // Draw sprinkler icon with red X when water is NOT met
+        if(this.waterneeded > 0 && !this.watermet){
+            // Draw sprinkler icon
+            fill(100, 150, 200);
+            noStroke();
+            circle(this.pos.x + (tileSize / 2), this.pos.y - 8, 6);
+            circle(this.pos.x + (tileSize / 2) - 5, this.pos.y - 2, 3);
+            circle(this.pos.x + (tileSize / 2) + 5, this.pos.y - 2, 3);
+            
+            // Draw red X through it
+            stroke(255, 0, 0);
+            strokeWeight(2);
+            line(this.pos.x + (tileSize / 2) - 6, this.pos.y - 14, this.pos.x + (tileSize / 2) + 6, this.pos.y);
+            line(this.pos.x + (tileSize / 2) + 6, this.pos.y - 14, this.pos.x + (tileSize / 2) - 6, this.pos.y);
+        }
+        
         if(this.age == all_imgs[this.png].length - 2){
             image(done_dot, this.pos.x + (tileSize/2), this.pos.y - (tileSize/4));
         }
