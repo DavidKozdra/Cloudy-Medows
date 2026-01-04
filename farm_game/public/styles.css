@@ -3,6 +3,10 @@
     src: url('pixelFont.ttf');
 }
 
+button {
+    cursor: pointer;
+}
+
 #game-container {
     position: relative;
 }

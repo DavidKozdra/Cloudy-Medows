@@ -1261,10 +1261,11 @@ function tile_name_to_num(tile_name) {
             return i+1;
         }
     }
+    return undefined;
 }
 
 function new_tile_from_num(num, x, y) {
-    if (num-1 <= all_tiles.length) {
+    if (num && num > 0 && num <= all_tiles.length) {
         if (all_tiles[num - 1].class == 'Tile') {
             return new Tile(all_tiles[num - 1].name, all_tiles[num - 1].png, x, y, all_tiles[num - 1].collide, all_tiles[num - 1].age, all_tiles[num - 1].under_tile_num);
         }
@@ -1306,7 +1307,7 @@ function new_tile_from_num(num, x, y) {
         }
     }
     else {
-        console.error('tile created from ' + num + ' doesnt exist');
+        return undefined;
     }
 }
 
@@ -1488,9 +1489,14 @@ function loadLevel(level, lvlx = 0, lvly = 0){
         for(let i = 0; i < newLvl.map.length; i++){
             for(let j = 0; j < newLvl.map[i].length; j++){
                 if(newLvl.map[i][j] != 0 && level.map[i][j] != 0){
-                    
-                    level.map[i][j] = new_tile_from_num(tile_name_to_num(newLvl.map[i][j].name), newLvl.map[i][j].pos.x, newLvl.map[i][j].pos.y);
-                    level.map[i][j].load(newLvl.map[i][j]);
+                    const tileNum = tile_name_to_num(newLvl.map[i][j].name);
+                    if(tileNum !== undefined) {
+                        level.map[i][j] = new_tile_from_num(tileNum, newLvl.map[i][j].pos.x, newLvl.map[i][j].pos.y);
+                        level.map[i][j].load(newLvl.map[i][j]);
+                    } else {
+                        // Tile name not found, skip loading and keep original
+                        console.warn('Saved tile "' + newLvl.map[i][j].name + '" not found, keeping original tile');
+                    }
                     if (newLvl.map[i][j].name == 'lamppost') {
                         append(level.lights, new Light(level.map[i][j].pos.x, level.map[i][j].pos.y, (tileSize * 6), 255, 255, 255));
                     }

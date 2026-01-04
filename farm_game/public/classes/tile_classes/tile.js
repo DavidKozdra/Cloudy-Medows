@@ -63,5 +63,8 @@ class Tile {
     load(obj){
         this.age = obj.age;
         this.variant = obj.variant;
+        if(obj.under_tile && obj.under_tile !== 0){
+            this.under_tile = new_tile_from_num(tile_name_to_num(obj.under_tile.name), obj.under_tile.pos.x, obj.under_tile.pos.y);
+        }
     }
 };
