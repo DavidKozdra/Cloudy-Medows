@@ -71,6 +71,9 @@ class Tile {
         if(this.touching != null && this.touching != undefined){
             this.touching = 0;
         }
+        if(this.under_tile != null && this.under_tile != undefined && this.under_tile != 0){
+            this.under_tile.getReadyForSave();
+        }
     }
 
     load(obj){

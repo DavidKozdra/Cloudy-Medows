@@ -1382,11 +1382,8 @@ function new_item_from_num(num, amount) {
 
 function saveAll(){
     save_anim = 255;
-    if(player.talking == 0){
-        player.save()
-    }
-    localData.set('Day_curLvl_Dif', {days: days, currentLevel_x: currentLevel_x, currentLevel_y: currentLevel_y, dificulty: dificulty});
-    let lvlLength = 0;
+    
+    // 1. Prepare all entities in all levels (clear circular references like 'touching')
     for(let i = 0; i < levels.length; i++){
         for(let j = 0; j < levels[i].length; j++){
             if(levels[i][j] != 0 && levels[i][j] != undefined){
@@ -1397,6 +1394,22 @@ function saveAll(){
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    // 2. Prepare player (who might be touching one of those entities)
+    player.getReadyForSave();
+
+    // 3. Now save everything
+    if(player.talking == 0){
+        player.save()
+    }
+    localData.set('Day_curLvl_Dif', {days: days, currentLevel_x: currentLevel_x, currentLevel_y: currentLevel_y, dificulty: dificulty});
+    let lvlLength = 0;
+    for(let i = 0; i < levels.length; i++){
+        for(let j = 0; j < levels[i].length; j++){
+            if(levels[i][j] != 0 && levels[i][j] != undefined){
                 localData.set(levels[i][j].name, levels[i][j]);
                 if(j > lvlLength){
                     lvlLength = j

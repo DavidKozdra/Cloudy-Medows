@@ -44,7 +44,7 @@ const ITEM_DEFINITIONS = [
     /*28*/ { name: 'Robot2', png: 83, price: 110, tile_num: 47, tile_need_num: 0, class: 'Placeable'},
     /*29*/ { name: 'Add to Chest Command', png: 84, command: 'add_to_chest', class: 'Command'},
     /*30*/ { name: 'Add from Chest Command', png: 85, command: 'add_from_chest', class: 'Command'},
-    /*31*/ { name: 'Veggie Oil', png: 86, price: 12, class: 'Item'},
+    /*31*/ { name: 'Veggie Oil', png: 86, price: 15, class: 'Item'},
     /*32*/ { name: 'Shovel', png: 87, class: 'Tool'},
     /*33*/ { name: 'Backpack', png: 88, inv: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], class: 'Backpack'},
     /*34*/ { name: '1 Day Pause Command', png: 89, command: '1day_pause', class: 'Command'},
@@ -60,8 +60,8 @@ const ITEM_DEFINITIONS = [
     /*44*/ { name: 'Wall', png: 147, price: 12, tile_num: 6, tile_need_num: 0, class: 'Placeable'},
     /*45*/ { name: 'Axe', png: 56, price: 40, class: 'Tool' },
     /*46*/ { name: 'Composter', png: 148, price: 80, tile_num: 14, tile_need_num: 0, class: 'Placeable'},
-    /*47*/ { name: 'Hemp Oil', png: 86, price: 25, class: 'Item'},
-    /*48*/ { name: 'Fruit Juice', png: 86, price: 10, class: 'Item'}
+    /*47*/ { name: 'Hemp Oil', png: 86, price: 30, class: 'Item'},
+    /*48*/ { name: 'Fruit Juice', png: 86, price: 12, class: 'Item'}
 ];
 
 /*
