@@ -18,8 +18,9 @@ function updateCanvasPointerEvents() {
     const creditsMenuVisible = document.getElementById('credits-menu')?.style.display !== 'none';
     const pauseMenuVisible = document.getElementById('pause-menu')?.style.display !== 'none';
     const questsVisible = document.querySelector('.quests-container')?.style.display !== 'none';
+    const loseScreenVisible = document.getElementById('lose-screen')?.style.display !== 'none';
     
-    const anyMenuVisible = mainMenuVisible || difficultyMenuVisible || optionsMenuVisible || creditsMenuVisible || pauseMenuVisible || questsVisible;
+    const anyMenuVisible = mainMenuVisible || difficultyMenuVisible || optionsMenuVisible || creditsMenuVisible || pauseMenuVisible || questsVisible || loseScreenVisible;
     canvas.style.pointerEvents = anyMenuVisible ? 'none' : 'auto';
 }
 
@@ -366,6 +367,51 @@ function hideDifficultyMenu(){
     const difficultyMenu = document.getElementById('difficulty-menu');
     if (difficultyMenu) difficultyMenu.style.display = 'none';
     updateCanvasPointerEvents();
+}
+
+function showLoseScreen() {
+    let loseScreen = document.getElementById('lose-screen');
+    if (!loseScreen) {
+        loseScreen = document.createElement('div');
+        loseScreen.id = 'lose-screen';
+        loseScreen.className = 'lose-screen';
+        document.body.appendChild(loseScreen);
+
+        const title = document.createElement('h1');
+        title.className = 'lose-title';
+        title.textContent = 'GAME OVER';
+        loseScreen.appendChild(title);
+
+        const message = document.createElement('p');
+        message.className = 'lose-message';
+        message.textContent = 'MR.C now owns the meadows, you failed to gather the funds to stop him.';
+        loseScreen.appendChild(message);
+
+        const btn = document.createElement('button');
+        btn.className = 'lose-btn';
+        btn.textContent = 'Return to Title';
+        btn.addEventListener('click', () => {
+            deleteSave();
+            location.reload(); // Reload to reset everything
+        });
+        loseScreen.appendChild(btn);
+    }
+    loseScreen.style.display = 'flex';
+    updateCanvasPointerEvents();
+}
+
+function deleteSave() {
+    localData.remove('player');
+    localData.remove('Day_curLvl_Dif');
+    localData.remove('extralvlStuff');
+    // Remove all levels
+    for(let i = 0; i < levels.length; i++){
+        for(let j = 0; j < levels[i].length; j++){
+            if(levels[i][j] != 0 && levels[i][j] != undefined){
+                localData.remove(levels[i][j].name);
+            }
+        }
+    }
 }
 
 function selectDifficulty(difficulty){
@@ -1494,6 +1540,14 @@ function loadAll(){
     
     if(localData.get('player') != null ){
         player.load(localData.get('player'));
+        
+        // Check if main quest was already failed in the save
+        for (let q of player.quests) {
+            if (q.og_name === "Save Cloudy Meadows" && q.failed) {
+                lose_screen = true;
+                paused = true;
+            }
+        }
     }
     if(localData.get('Day_curLvl_Dif') != null){
         days = localData.get('Day_curLvl_Dif').days || 0;

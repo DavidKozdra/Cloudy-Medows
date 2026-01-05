@@ -1530,24 +1530,44 @@ button {
     transform: scale(0.95);
 }
 
-/* Custom Difficulty Styles */
-.difficulty-card-custom {
-    border-color: rgb(150, 100, 200);
-    background-color: rgba(200, 150, 255, 0.15);
+/* Lose Screen Styles */
+.lose-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    color: white;
+    text-align: center;
 }
 
-.difficulty-card-custom .difficulty-card-title {
-    color: rgb(100, 50, 150);
+.lose-title {
+    font-size: 48px;
+    color: #ff4444;
+    margin-bottom: 20px;
 }
 
-.feature-toggle-btn {
-    transition: transform 0.1s ease;
+.lose-message {
+    font-size: 24px;
+    margin-bottom: 40px;
 }
 
-.feature-toggle-btn:hover {
-    transform: scale(1.1);
+.lose-btn {
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #444;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    font-family: pixelFont;
 }
 
-.feature-toggle-btn:active {
-    transform: scale(0.95);
+.lose-btn:hover {
+    background-color: #666;
 }

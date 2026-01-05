@@ -24,6 +24,7 @@ var lastHungerMili = 0;
 var days = 0;
 var title_screen = true;
 var dificulty_screen = false;
+var lose_screen = false;
 var dificulty = 0;
 var customRules = null;
 var save_anim = 0;
@@ -600,6 +601,9 @@ function draw() {
     else if (dificulty_screen){
         showDificulty();
     }
+    else if (lose_screen) {
+        showLoseScreen();
+    }
     else {
         clear_anim = false;
         clear_movephase = 0;
@@ -703,6 +707,12 @@ function draw() {
                     for(let i = 0; i < player.quests.length; i++){
                         if(player.quests[i] != undefined){
                             player.quests[i].daily_update();
+                            
+                            // Check if main quest failed
+                            if (player.quests[i].og_name === "Save Cloudy Meadows" && player.quests[i].failed) {
+                                lose_screen = true;
+                                paused = true;
+                            }
                         }
                     }
                     
