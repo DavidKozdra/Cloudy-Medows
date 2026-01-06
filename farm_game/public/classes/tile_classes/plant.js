@@ -98,6 +98,12 @@ class Plant extends Tile {
             }
         }
         
+        // Rain counts as water source for all plants
+        if (typeof currentWeather !== 'undefined' && 
+            (currentWeather === 'rain' || currentWeather === 'thunderstorm' || currentWeather === 'sunshower')) {
+            water_found += this.waterneeded; // Rain satisfies all water needs
+        }
+        
         this.watermet = (water_found >= this.waterneeded);
         this.waterChecked = true; // Mark that we've checked water at least once
         

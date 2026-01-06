@@ -686,16 +686,28 @@ class Player extends MoveableEntity {
             }
             if (this.inv[this.hand] && (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed')) {
                 console.log('✅ Item is valid for composting:', this.inv[this.hand].name);
-                if(checkForSpace(this, 9)){
-                    console.log('📦 Converting to compost! (item 9)');
-                    this.inv[this.hand].amount -= 1;
-                    if (this.inv[this.hand].amount == 0) {
-                        this.inv[this.hand] = 0;
-                    }
-                    addItem(this, 9, 1);
+                
+                let amountToProcess = 1;
+                // SPECIAL KEY: Process all items
+                if (keyIsDown(special_key)) {
+                    amountToProcess = this.inv[this.hand].amount;
                 }
-                else {
-                    console.log('❌ No space in inventory for compost!');
+                
+                let processed = 0;
+                while(processed < amountToProcess && this.inv[this.hand] != 0){
+                    if(checkForSpace(this, 9)){
+                        console.log('📦 Converting to compost! (item 9)');
+                        this.inv[this.hand].amount -= 1;
+                        if (this.inv[this.hand].amount == 0) {
+                            this.inv[this.hand] = 0;
+                        }
+                        addItem(this, 9, 1);
+                        processed++;
+                    }
+                    else {
+                        console.log('❌ No space in inventory for compost!');
+                        break;
+                    }
                 }
             }
             else {
