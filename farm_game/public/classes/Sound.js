@@ -15,11 +15,16 @@ class Sound {
         this.sound.style.display = "none";
         document.body.appendChild(this.sound);
         this.sound.volume = fxSlider.value() * this.volume;
-        this.sound.play();
+        // Handle play errors gracefully (e.g., autoplay restrictions on mobile)
+        this.sound.play().catch(e => {
+            // Silently ignore autoplay errors
+        });
     }
 
     stop() {
-        this.sound.pause();
+        if (this.sound) {
+            this.sound.pause();
+        }
     }
 
 
@@ -46,7 +51,10 @@ class MusicPlayer {
     }
 
     play() {
-        this.player.play();
+        // Handle play errors gracefully (e.g., autoplay restrictions on mobile)
+        this.player.play().catch(e => {
+            // Silently ignore autoplay errors - will retry on next update
+        });
     }
     stop() {
         this.player.pause();

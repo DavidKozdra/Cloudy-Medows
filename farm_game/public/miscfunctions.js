@@ -96,7 +96,10 @@ function hasGameSave(){
 
 function showTitle(){
     // Render background on canvas
-    push()
+  
+        /*
+        
+          push()
     background(135, 206, 235);
     for (let i = 0; i < clouds.length; i++) {
         clouds[i].update(clouds[i].vel)
@@ -104,7 +107,7 @@ function showTitle(){
     }
     imageMode(CENTER);
     image(title_screen_img, canvasWidth / 2, (canvasHeight / 2) - 40);
-    pop();
+    pop();*/
 
     if(title_screen){
             // Show DOM-based menu
@@ -517,6 +520,11 @@ function resetControls() {
 }
 
 function renderControlButtons(container) {
+    // Skip rendering on mobile - touch controls are used instead
+    const isMobileOrSmallScreen = (typeof isMobile !== 'undefined' && isMobile) || window.innerWidth <= 768;
+    if (isMobileOrSmallScreen) {
+        return;
+    }
 
     const controlItems = [
         { label: 'Interact:', key: () => Controls_Interact_button_key || 'z', controlIndex: 1 },
@@ -750,9 +758,10 @@ function showTitleOptions(){
         audioSection.appendChild(fxRow);
         optionsMenu.appendChild(audioSection);
         
-        // Controls section
+        // Controls section (hidden on mobile)
         const controlsSection = document.createElement('div');
-        controlsSection.className = 'options-section';
+        controlsSection.className = 'options-section options-controls-section';
+        controlsSection.id = 'options-controls-section';
         const controlsTitle = document.createElement('h3');
         controlsTitle.className = 'options-section-title';
         controlsTitle.textContent = 'Controls';
@@ -762,6 +771,23 @@ function showTitleOptions(){
         controlsContainer.className = 'title-controls-container';
         controlsSection.appendChild(controlsContainer);
         optionsMenu.appendChild(controlsSection);
+        
+        // Mobile touch controls info (shown only on mobile)
+        const mobileControlsInfo = document.createElement('div');
+        mobileControlsInfo.className = 'options-section options-mobile-info';
+        mobileControlsInfo.id = 'options-mobile-info';
+        mobileControlsInfo.innerHTML = `
+            <h3 class="options-section-title">Touch Controls</h3>
+            <div class="mobile-info-grid">
+                <div class="mobile-info-item">D-Pad: Move around</div>
+                <div class="mobile-info-item">E Button: Interact with objects</div>
+                <div class="mobile-info-item">Q Button: Eat food from hotbar</div>
+                <div class="mobile-info-item">⇧ Button: Sprint / Special action</div>
+                <div class="mobile-info-item">⏸ Button: Pause the game</div>
+                <div class="mobile-info-item">← → Arrows: Scroll through hotbar</div>
+            </div>
+        `;
+        optionsMenu.appendChild(mobileControlsInfo);
         
         // Buttons section
         const buttonGroup = document.createElement('div');
@@ -898,6 +924,9 @@ function ensurePauseMenuContainer() {
     musicIcon.className = 'pause-slider-icon';
     musicIcon.src = 'images/ui/Music_Note.png';
     musicIcon.alt = 'Music';
+    const musicLabel = document.createElement('span');
+    musicLabel.className = 'pause-slider-label';
+    musicLabel.textContent = 'Music';
     const musicSliderDOM = document.createElement('input');
     musicSliderDOM.id = 'pause-music-slider';
     musicSliderDOM.type = 'range';
@@ -905,6 +934,7 @@ function ensurePauseMenuContainer() {
     musicSliderDOM.max = '1';
     musicSliderDOM.step = '0.01';
     musicRow.appendChild(musicIcon);
+    musicRow.appendChild(musicLabel);
     musicRow.appendChild(musicSliderDOM);
     sliderSection.appendChild(musicRow);
     
@@ -915,6 +945,9 @@ function ensurePauseMenuContainer() {
     fxIcon.className = 'pause-slider-icon';
     fxIcon.src = 'images/ui/fx.png';
     fxIcon.alt = 'FX';
+    const fxLabel = document.createElement('span');
+    fxLabel.className = 'pause-slider-label';
+    fxLabel.textContent = 'Sound';
     const fxSliderDOM = document.createElement('input');
     fxSliderDOM.id = 'pause-fx-slider';
     fxSliderDOM.type = 'range';
@@ -922,12 +955,13 @@ function ensurePauseMenuContainer() {
     fxSliderDOM.max = '1';
     fxSliderDOM.step = '0.01';
     fxRow.appendChild(fxIcon);
+    fxRow.appendChild(fxLabel);
     fxRow.appendChild(fxSliderDOM);
     sliderSection.appendChild(fxRow);
     
     pauseMenu.appendChild(sliderSection);
     
-    // Controls section - using renderControlButtons
+    // Controls section - only show on desktop (not mobile)
     const controlsSection = document.createElement('div');
     controlsSection.className = 'pause-controls-section';
     controlsSection.id = 'pause-controls-container';
@@ -938,13 +972,39 @@ function ensurePauseMenuContainer() {
     
     pauseMenu.appendChild(controlsSection);
     
-    // Render control buttons once
+    // Render control buttons once (only on desktop)
     renderControlButtons(controlsSection);
     
+    // Mobile touch controls info section (hidden on desktop)
+    const mobileInfoSection = document.createElement('div');
+    mobileInfoSection.className = 'pause-mobile-info';
+    mobileInfoSection.id = 'pause-mobile-info';
+    mobileInfoSection.innerHTML = `
+        <div class="mobile-info-title">Touch Controls</div>
+        <div class="mobile-info-item">D-Pad: Move around</div>
+        <div class="mobile-info-item">E Button: Interact</div>
+        <div class="mobile-info-item">Q Button: Eat food</div>
+        <div class="mobile-info-item">⇧ Button: Sprint</div>
+        <div class="mobile-info-item">⏸ Button: Pause game</div>
+        <div class="mobile-info-item">← → Arrows: Change hotbar</div>
+    `;
+    pauseMenu.appendChild(mobileInfoSection);
+    
+    //back button
+    const backBtn = document.createElement('button');
+    backBtn.id = 'pause-back-btn';
+    backBtn.className = 'pause-button';
+    backBtn.textContent = 'Resume';
+    backBtn.addEventListener('click', () => {
+        paused = false;
+        hidePaused();
+    });
+    pauseMenu.appendChild(backBtn);
+
     // Quit button
     const quitBtn = document.createElement('button');
     quitBtn.id = 'pause-quit-btn';
-    quitBtn.className = 'pause-quit-button';
+    quitBtn.className = 'pause-button';
     quitBtn.textContent = 'Save and Quit';
     quitBtn.addEventListener('click', () => {
         console.log('Saving and quitting to title screen...');
@@ -955,7 +1015,7 @@ function ensurePauseMenuContainer() {
         creditsButton.show();
         optionsButton.show();
         clearButton.hide();
-        QuitButton.hide();
+        quitButton.hide();
         saveAll();
     });
     pauseMenu.appendChild(quitBtn);
@@ -1170,9 +1230,14 @@ function showQuests(){
         }
     }
 
-    // Update close instruction
+    // Update close instruction - show mobile-friendly text on touch devices or small screens
     const closeInstruction = questsContainer.querySelector('.quests-close-instruction');
-    closeInstruction.textContent = String.fromCharCode(quest_key) + ' to close quests';
+    const isMobileOrSmallScreen = (typeof isMobile !== 'undefined' && isMobile) || window.innerWidth <= 768;
+    if (isMobileOrSmallScreen) {
+        closeInstruction.textContent = 'Tap × to close quests';
+    } else {
+        closeInstruction.textContent = String.fromCharCode(quest_key) + ' to close quests';
+    }
 
     // Hide p5.js button and show container
     questCloseButton.hide();

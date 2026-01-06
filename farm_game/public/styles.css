@@ -310,8 +310,8 @@ button {
 
 /* Quests UI styles */
 .quests-container {
+    top : -20dvw;
     position: absolute;
-    top: -400px;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgb(187, 132, 75);
@@ -631,7 +631,7 @@ button {
     padding-bottom: 5px;
 }
 
-.pause-quit-button {
+.pause-button {
     font-family: pixelFont, monospace;
     font-size: 14px;
     color: rgb(255, 255, 255);
@@ -645,12 +645,81 @@ button {
     margin-top: 10px;
 }
 
-.pause-quit-button:hover {
+.pause-button:hover {
     background-color: rgb(130, 90, 50);
     border-color: rgb(200, 150, 100);
 }
 
-.pause-quit-button:active {
+/* Pause slider labels */
+.pause-slider-label {
+    font-family: pixelFont, monospace;
+    font-size: 12px;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    min-width: 50px;
+}
+
+/* Mobile info section for pause menu - hidden by default on desktop */
+.pause-mobile-info {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.mobile-info-title {
+    font-family: pixelFont, monospace;
+    font-size: 13px;
+    color: rgb(255, 255, 200);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    margin-bottom: 8px;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    padding-bottom: 5px;
+}
+
+.mobile-info-item {
+    font-family: pixelFont, monospace;
+    font-size: 11px;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    padding: 4px 0;
+    text-align: left;
+    width: 100%;
+}
+
+.mobile-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+/* Options menu mobile info - hidden by default on desktop */
+.options-mobile-info {
+    display: none !important;
+}
+
+/* Style the mobile info inside options menu when shown */
+.options-mobile-info .mobile-info-grid {
+    padding: 10px 0;
+}
+
+.options-mobile-info .mobile-info-item {
+    font-family: pixelFont, monospace;
+    font-size: 12px;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    padding: 6px 0;
+}
+
+.pause-button:active {
     transform: translateY(2px);
 }
 
@@ -659,8 +728,8 @@ button {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    height: 100dvh;
+    width: 100dvw;
     background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 100%);
     display: flex;
     flex-direction: column;
@@ -1790,6 +1859,11 @@ button {
 
 /* Adjust for smaller screens */
 @media (max-width: 600px) {
+
+    .quests-container {
+    top: -200px !important;
+    }
+
     #dpad {
         bottom: 80px;
         left: 15px;
@@ -1825,5 +1899,400 @@ button {
     #hotbar-controls {
         gap: 150px;
         bottom: 15px;
+    }
+}
+
+/* ============================================
+   Mobile Responsive - Main Menu & Quest Screen
+   ============================================ */
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+    /* Main Menu Mobile Adjustments */
+    .main-menu {
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .main-menu-title-image {
+        width: 280px;
+        margin-bottom: 15px;
+    }
+    
+    .deluxe-text {
+        font-size: 28px;
+        letter-spacing: 4px;
+        margin-bottom: 20px;
+    }
+    
+    .main-menu-button {
+        font-size: 14px;
+        padding: 12px 30px;
+        width: 200px;
+    }
+    
+    /* Quest Screen Mobile Adjustments */
+    .quests-container {
+        min-width: 85vw;
+        max-width: 92vw;
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .quests-header h2 {
+        font-size: 16px;
+    }
+    
+    .quests-list {
+        max-height: 50vh;
+        min-height: 25vh;
+    }
+    
+    .quest-item {
+        padding: 8px;
+    }
+    
+    .quest-title {
+        font-size: 12px;
+    }
+    
+    .quest-status {
+        font-size: 10px;
+    }
+    
+    .quest-details-button {
+        font-size: 10px;
+        padding: 5px 8px;
+        height: 24px;
+    }
+    
+    .quests-close-instruction {
+        font-size: 10px;
+    }
+    
+    /* Difficulty Menu Mobile */
+    .difficulty-menu {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .difficulty-title {
+        font-size: 22px;
+    }
+    
+    .difficulty-container {
+        gap: 15px;
+    }
+    
+    .difficulty-card {
+        width: 180px;
+        min-height: 320px;
+        padding: 20px 15px;
+    }
+    
+    .difficulty-card-title {
+        font-size: 20px;
+    }
+    
+    .difficulty-feature {
+        font-size: 12px;
+    }
+    
+    .feature-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .difficulty-select-btn {
+        font-size: 14px;
+        padding: 10px 25px;
+    }
+    
+    /* Pause Menu Mobile */
+    #pause-menu {
+        min-width: 280px;
+        max-width: 90vw;
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .pause-title {
+        font-size: 22px;
+    }
+    
+    /* Hide keyboard controls on mobile, show touch info */
+    .pause-controls-section {
+        display: none !important;
+    }
+    
+    .pause-mobile-info {
+        display: flex !important;
+    }
+    
+    .options-controls-section {
+        display: none !important;
+    }
+    
+    .quests-container {
+    top: -200px !important;
+    }
+
+    .options-mobile-info {
+        display: flex !important;
+        flex-direction: column;
+    }
+    
+    /* Credits Menu Mobile */
+    .credits-content {
+        max-width: 90vw;
+        max-height: 50vh;
+        padding: 20px;
+        font-size: 12px;
+    }
+    
+    .credits-title {
+        font-size: 26px;
+    }
+}
+
+/* Phone screens (portrait) */
+@media (max-width: 480px) {
+    /* Main Menu - Very Small Screens */
+    .main-menu {
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .main-menu-title-image {
+        width: 220px;
+        margin-bottom: 10px;
+    }
+    
+    .deluxe-text {
+        font-size: 22px;
+        letter-spacing: 3px;
+        margin-bottom: 15px;
+    }
+    
+    .main-menu-button {
+        font-size: 12px;
+        padding: 10px 20px;
+        width: 180px;
+    }
+    
+    /* Quest Screen - Very Small Screens */
+    .quests-container {
+        min-width: 90vw;
+        max-width: 95vw;
+        padding: 10px;
+        gap: 8px;
+        border-width: 3px;
+    }
+    
+    .quests-header-wrapper {
+        padding-bottom: 8px;
+        gap: 5px;
+    }
+    
+    .quests-header h2 {
+        font-size: 14px;
+    }
+    
+    .quests-close-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 18px;
+    }
+    
+    .quests-list {
+        gap: 8px;
+        max-height: 45vh;
+        min-height: 20vh;
+    }
+    
+    .quest-item {
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .quest-content {
+        gap: 6px;
+    }
+    
+    .quest-title {
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    
+    .quest-status {
+        font-size: 9px;
+        margin-top: 4px;
+    }
+    
+    .quest-progress-container {
+        gap: 6px;
+        margin: 4px 0;
+    }
+    
+    .quest-details-button {
+        font-size: 9px;
+        padding: 4px 6px;
+        height: 22px;
+    }
+    
+    .quest-progress-bar {
+        flex: 1 1 100px;
+        height: 6px;
+    }
+    
+    .quest-goal-card {
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .quests-close-instruction {
+        font-size: 9px;
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+    
+    /* Difficulty Menu - Very Small Screens */
+    .difficulty-menu {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .difficulty-title {
+        font-size: 18px;
+    }
+    
+    .difficulty-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .difficulty-card {
+        width: 90%;
+        max-width: 260px;
+        min-height: auto;
+        padding: 15px 12px;
+    }
+    
+    .difficulty-card-title {
+        font-size: 18px;
+    }
+    
+    .difficulty-feature {
+        font-size: 11px;
+        padding: 5px 0;
+    }
+    
+    .feature-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .difficulty-select-btn {
+        font-size: 12px;
+        padding: 8px 20px;
+    }
+    
+    /* Pause Menu - Very Small Screens */
+    #pause-menu {
+        min-width: 90vw;
+        max-width: 95vw;
+        padding: 15px;
+        gap: 12px;
+    }
+    
+    .pause-title {
+        font-size: 18px;
+    }
+    
+    .pause-menu-label {
+        font-size: 11px;
+    }
+    
+    .pause-slider-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .pause-slider-label {
+        font-size: 10px;
+        min-width: 40px;
+    }
+    
+    .mobile-info-item {
+        font-size: 10px;
+    }
+    
+    .mobile-info-title {
+        font-size: 11px;
+    }
+    
+    /* Credits Menu - Very Small Screens */
+    .credits-menu {
+        padding: 20px 10px;
+    }
+    
+    .credits-title {
+        font-size: 20px;
+    }
+    
+    .credits-content {
+        max-width: 95vw;
+        max-height: 45vh;
+        padding: 15px;
+        font-size: 10px;
+        line-height: 1.6;
+    }
+    
+    .credits-back-button {
+        font-size: 14px;
+        padding: 10px 30px;
+    }
+}
+
+/* Landscape orientation on mobile - adjust quest panel positioning */
+@media (max-height: 500px) and (orientation: landscape) {
+    .quests-container {
+        min-height: 70vh;
+        max-height: 85vh;
+    }
+    
+    .quests-list {
+        max-height: 55vh;
+        min-height: 40vh;
+    }
+    
+    .main-menu {
+        gap: 8px;
+    }
+    
+    .main-menu-title-image {
+        width: 180px;
+        margin-bottom: 5px;
+    }
+    
+    .deluxe-text {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    
+    .main-menu-button {
+        padding: 8px 20px;
+    }
+    
+    .difficulty-container {
+        flex-direction: row;
+        max-height: fit-content;
+        padding-top: 100px;
+    }
+    
+    .difficulty-card {
+        max-height: 100px;
+        width: 28%;
     }
 }
