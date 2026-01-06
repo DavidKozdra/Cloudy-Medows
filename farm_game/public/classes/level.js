@@ -350,6 +350,7 @@ class Level {
                     if (this.map[i][j].name == 'flower') {
                         if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
+                            this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
                         }
                     }
@@ -391,6 +392,7 @@ class Level {
                     if (this.map[i][j].name == 'flower') {
                         if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
+                            this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
                         }
                     }
@@ -430,7 +432,7 @@ class Level {
                         }
                     }
                     if (this.map[i][j].name == 'Bees') {
-                        if (this.map[i][j].age >= 10) {
+                        if (this.map[i][j].age >= 7) {
                             this.map[i][j] = this.map[i][j].under_tile;
                         }
                     }
