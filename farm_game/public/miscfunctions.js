@@ -984,8 +984,8 @@ function showCreditsMenu(){
         content.className = 'credits-content';
         
         const credits = [
-            'Christian Rodriguez - Lead programmer',
-            'David Kozdra - Code Art and sound',
+            'Christian Rodriguez - Lead programmer of old system and engine',
+            'David Kozdra - Lazy Code, bad Art and sound',
             'Patrick Mayer - Misc',
             'Christian "Sealand" Rodriguez - Music',
             'Ethan Davis - Dialogue and Testing',
