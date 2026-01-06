@@ -905,9 +905,9 @@ function render_ui() {
             text(player.coins, (canvasWidth / 2) + (512 / 2) - 94 + (amountS.length-3)*20, (canvasHeight - 92.5) + ((amountS.length-4)*2.8));
         }
         else{
-            image(coin_img, (canvasWidth / 2) + (512 / 2) - 130 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 95));
-            textSize(32.5);
-            text(player.coins, (canvasWidth / 2) + (512 / 2) - 94 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 92.5));
+            image(coin_img, (canvasWidth / 2) + (512 / 2) - 85 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 95));
+            textSize(30);
+            text(player.coins, (canvasWidth / 2) + (512 / 2) - 45 - (amountS.length > 3 ? ((amountS.length-3)*25):0), (canvasHeight - 92.5));
         }
         if(player.money_anim > 0 && player.money_anim_amount > 0){
             player.money_anim -= 3;
