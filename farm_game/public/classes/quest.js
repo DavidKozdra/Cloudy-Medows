@@ -859,6 +859,16 @@ class Quest {
             detail: { quest: this }
         }));
         
+        // Switch to next incomplete quest
+        if (typeof player !== 'undefined' && player.quests) {
+            for (let i = 0; i < player.quests.length; i++) {
+                if (!player.quests[i].done && !player.quests[i].failed) {
+                    player.current_quest = i;
+                    break;
+                }
+            }
+        }
+        
         // Give item reward - force into inventory even if full
         if(this.reward_item != 0){
             const itemNum = item_name_to_num(this.reward_item.name);

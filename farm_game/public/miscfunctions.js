@@ -1102,6 +1102,11 @@ function showQuests(){
                 e.preventDefault();
                 e.stopPropagation();
                 const questIndex = parseInt(e.currentTarget.getAttribute('data-quest-index'));
+                // Don't allow selecting failed or completed quests as current
+                if (player.quests[questIndex].failed || player.quests[questIndex].done) {
+                    console.log('Cannot select failed or completed quest');
+                    return;
+                }
                 console.log('Setting current quest to:', questIndex);
                 player.current_quest = questIndex;
                 lastSelectedQuest = questIndex;
