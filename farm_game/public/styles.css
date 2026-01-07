@@ -1760,13 +1760,13 @@ button {
 #dpad-left:active, #dpad-left.pressed { transform: translateY(-50%) scale(0.95); }
 #dpad-right:active, #dpad-right.pressed { transform: translateY(-50%) scale(0.95); }
 
-/* Action Buttons Container */
+/* Action Buttons Container - simplified for 2 buttons */
 #action-buttons {
     position: absolute;
     bottom: 100px;
     right: 30px;
-    width: 140px;
-    height: 140px;
+    width: 70px;
+    height: 130px;
     pointer-events: auto;
 }
 
@@ -1788,7 +1788,7 @@ button {
     user-select: none;
     -webkit-user-select: none;
     cursor: pointer;
-    transition: background 0.1s, transform 0.1s;
+    transition: background 0.1s, transform 0.1s, box-shadow 0.2s;
 }
 
 .action-btn:active, .action-btn.pressed {
@@ -1796,17 +1796,17 @@ button {
     transform: scale(0.95);
 }
 
-/* Interact button (E) - right side, primary */
+/* Interact button (E) - bottom, hold for special */
 #btn-interact {
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     background: rgba(100, 200, 255, 0.7);
 }
 
 #btn-interact:active, #btn-interact.pressed {
     background: rgba(50, 150, 255, 0.9);
-    transform: translateY(-50%) scale(0.95);
+    transform: translateX(-50%) scale(0.95);
 }
 
 /* Eat button (Q) - top */
@@ -1822,30 +1822,11 @@ button {
     transform: translateX(-50%) scale(0.95);
 }
 
-/* Special/Shift button - left side */
-#btn-special {
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(200, 100, 255, 0.7);
-}
-
-#btn-special:active, #btn-special.pressed {
-    background: rgba(150, 50, 255, 0.9);
-    transform: translateY(-50%) scale(0.95);
-}
-
-/* Pause button - bottom */
-#btn-pause {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 100, 100, 0.7);
-}
-
-#btn-pause:active, #btn-pause.pressed {
-    background: rgba(255, 50, 50, 0.9);
-    transform: translateX(-50%) scale(0.95);
+/* Long press indicator for interact button (special action) */
+#btn-interact.long-press {
+    background: rgba(200, 100, 255, 0.9) !important;
+    border-color: rgba(150, 50, 200, 0.9);
+    box-shadow: 0 0 15px rgba(200, 100, 255, 0.8);
 }
 
 /* Hotbar Controls */

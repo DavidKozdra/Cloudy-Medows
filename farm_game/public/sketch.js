@@ -143,10 +143,43 @@ function setupMobileControls() {
     setupButton('dpad-right', 'right');
     
     // Action buttons
-    setupButton('btn-interact', 'interact');
     setupButton('btn-eat', 'eat');
-    setupButton('btn-special', 'special');
-    setupButton('btn-pause', 'pause');
+    
+    // Interact button with long-press for special
+    const interactBtn = document.getElementById('btn-interact');
+    if (interactBtn) {
+        let longPressTimer = null;
+        let isLongPress = false;
+        const LONG_PRESS_DURATION = 300; // ms
+        
+        const startPress = (e) => {
+            e.preventDefault();
+            isLongPress = false;
+            interactBtn.classList.add('pressed');
+            virtualInput.interact = true;
+            
+            longPressTimer = setTimeout(() => {
+                isLongPress = true;
+                virtualInput.special = true;
+                interactBtn.classList.add('long-press');
+            }, LONG_PRESS_DURATION);
+        };
+        
+        const endPress = (e) => {
+            e.preventDefault();
+            clearTimeout(longPressTimer);
+            interactBtn.classList.remove('pressed', 'long-press');
+            virtualInput.interact = false;
+            virtualInput.special = false;
+        };
+        
+        interactBtn.addEventListener('touchstart', startPress, { passive: false });
+        interactBtn.addEventListener('touchend', endPress, { passive: false });
+        interactBtn.addEventListener('touchcancel', endPress, { passive: false });
+        interactBtn.addEventListener('mousedown', startPress);
+        interactBtn.addEventListener('mouseup', endPress);
+        interactBtn.addEventListener('mouseleave', endPress);
+    }
     
     // Hotbar scroll buttons
     const hotbarPrev = document.getElementById('hotbar-prev');
