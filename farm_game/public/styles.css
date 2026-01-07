@@ -1662,6 +1662,40 @@ button {
     display: block;
 }
 
+/* Top Left Mobile Menu Buttons */
+#mobile-menu-buttons {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.mobile-menu-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(187, 132, 75, 0.85);
+    border: 3px solid rgba(149, 108, 65, 0.9);
+    border-radius: 8px;
+    font-size: 22px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-menu-btn:active, .mobile-menu-btn.pressed {
+    background: rgba(149, 108, 65, 0.95);
+    transform: scale(0.95);
+}
+
 /* D-Pad Container */
 #dpad {
     position: absolute;

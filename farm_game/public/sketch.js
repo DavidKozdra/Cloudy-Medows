@@ -191,6 +191,50 @@ function setupMobileControls() {
             }
         });
     }
+    
+    // Top-left menu buttons (pause & quests)
+    const mobilePauseBtn = document.getElementById('btn-mobile-pause');
+    const mobileQuestsBtn = document.getElementById('btn-mobile-quests');
+    
+    if (mobilePauseBtn) {
+        mobilePauseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!title_screen && typeof player !== 'undefined') {
+                paused = !paused;
+            }
+        });
+        mobilePauseBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            mobilePauseBtn.classList.add('pressed');
+        }, { passive: false });
+        mobilePauseBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            mobilePauseBtn.classList.remove('pressed');
+            if (!title_screen && typeof player !== 'undefined') {
+                paused = !paused;
+            }
+        }, { passive: false });
+    }
+    
+    if (mobileQuestsBtn) {
+        mobileQuestsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!title_screen && !paused && typeof player !== 'undefined') {
+                player.show_quests = !player.show_quests;
+            }
+        });
+        mobileQuestsBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            mobileQuestsBtn.classList.add('pressed');
+        }, { passive: false });
+        mobileQuestsBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            mobileQuestsBtn.classList.remove('pressed');
+            if (!title_screen && !paused && typeof player !== 'undefined') {
+                player.show_quests = !player.show_quests;
+            }
+        }, { passive: false });
+    }
 }
 
 // Show/hide mobile controls based on game state
