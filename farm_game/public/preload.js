@@ -727,14 +727,22 @@ function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement && 
         !document.mozFullScreenElement && !document.msFullscreenElement) {
         // Enter fullscreen
+        let fullscreenPromise;
         if (elem.requestFullscreen) {
-            elem.requestFullscreen();
+            fullscreenPromise = elem.requestFullscreen();
         } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
+            fullscreenPromise = elem.webkitRequestFullscreen();
         } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen();
+            fullscreenPromise = elem.mozRequestFullScreen();
         } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
+            fullscreenPromise = elem.msRequestFullscreen();
+        }
+        
+        // Handle promise rejection silently (e.g., orientation.lock() not supported)
+        if (fullscreenPromise && fullscreenPromise.catch) {
+            fullscreenPromise.catch((err) => {
+                console.log('Fullscreen request failed (possibly orientation lock not supported):', err.message);
+            });
         }
     } else {
         // Exit fullscreen

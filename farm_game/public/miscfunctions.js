@@ -990,18 +990,20 @@ function ensurePauseMenuContainer() {
     pauseMenu.appendChild(sliderSection);
     
     // Controls section - only show on desktop (not mobile)
-    const controlsSection = document.createElement('div');
-    controlsSection.className = 'pause-controls-section';
-    controlsSection.id = 'pause-controls-container';
-    const controlsTitle = document.createElement('div');
-    controlsTitle.className = 'pause-controls-title';
-    controlsTitle.textContent = 'Controls';
-    controlsSection.appendChild(controlsTitle);
-    
-    pauseMenu.appendChild(controlsSection);
-    
-    // Render control buttons once (only on desktop)
-    renderControlButtons(controlsSection);
+    if (!isMobile) {
+        const controlsSection = document.createElement('div');
+        controlsSection.className = 'pause-controls-section';
+        controlsSection.id = 'pause-controls-container';
+        const controlsTitle = document.createElement('div');
+        controlsTitle.className = 'pause-controls-title';
+        controlsTitle.textContent = 'Controls';
+        controlsSection.appendChild(controlsTitle);
+        
+        pauseMenu.appendChild(controlsSection);
+        
+        // Render control buttons once (only on desktop)
+        renderControlButtons(controlsSection);
+    }
 
     
     //back button
