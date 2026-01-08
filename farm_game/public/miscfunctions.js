@@ -1100,7 +1100,8 @@ function hideCreditsMenu(){
 }
 
 let questsContainer = null;
-let lastQuestSliderValue = -1;
+let currentQuestPage = 0;
+let questsPerPage = 6;
 let lastSelectedQuest = -1;
 
 function showQuests(){
@@ -1127,6 +1128,7 @@ function showQuests(){
             questsContainer.style.display = 'none';
             questSlider.hide();
             questCloseButton.hide();
+            currentQuestPage = 0; // Reset to first page when closing
             updateCanvasPointerEvents();
         });
         headerWrapper.appendChild(closeButton);
@@ -1137,6 +1139,38 @@ function showQuests(){
         questsContainer.appendChild(questsList);
         
         // Create footer for close instruction
+        // Create pagination controls
+        const paginationContainer = document.createElement('div');
+        paginationContainer.className = 'quest-pagination';
+        questsContainer.appendChild(paginationContainer);
+        
+        const prevButton = document.createElement('button');
+        prevButton.className = 'quest-page-btn quest-page-prev';
+        prevButton.textContent = '← Prev';
+        prevButton.addEventListener('click', () => {
+            if (currentQuestPage > 0) {
+                currentQuestPage--;
+                updateQuestsDisplay();
+            }
+        });
+        paginationContainer.appendChild(prevButton);
+        
+        const pageInfo = document.createElement('span');
+        pageInfo.className = 'quest-page-info';
+        paginationContainer.appendChild(pageInfo);
+        
+        const nextButton = document.createElement('button');
+        nextButton.className = 'quest-page-btn quest-page-next';
+        nextButton.textContent = 'Next →';
+        nextButton.addEventListener('click', () => {
+            const totalPages = Math.ceil(player.quests.length / questsPerPage);
+            if (currentQuestPage < totalPages - 1) {
+                currentQuestPage++;
+                updateQuestsDisplay();
+            }
+        });
+        paginationContainer.appendChild(nextButton);
+        
         const closeInstruction = document.createElement('div');
         closeInstruction.className = 'quests-close-instruction';
         questsContainer.appendChild(closeInstruction);
@@ -1148,129 +1182,143 @@ function showQuests(){
         }
     }
 
-    // Only update if slider position changed or quest was selected
-    const currentSliderValue = questSlider.value();
-    if (currentSliderValue !== lastQuestSliderValue || lastSelectedQuest !== player.current_quest) {
-        lastQuestSliderValue = currentSliderValue;
+    updateQuestsDisplay();
+}
+
+function updateQuestsDisplay() {
+    if (!questsContainer || !player) return;
+    
+    // Update if page changed or quest was selected
+    if (lastSelectedQuest !== player.current_quest) {
         lastSelectedQuest = player.current_quest;
+    }
+    
+    // Update quests list
+    const questsList = questsContainer.querySelector('.quests-list');
+    questsList.innerHTML = '';
+
+    // Calculate pagination
+    const totalPages = Math.ceil(player.quests.length / questsPerPage);
+    const startIndex = currentQuestPage * questsPerPage;
+    const endIndex = Math.min(startIndex + questsPerPage, player.quests.length);
+    
+    for(let i = startIndex; i < endIndex; i++){
+        const questButton = document.createElement('button');
+        questButton.className = 'quest-item';
+        questButton.setAttribute('data-quest-index', i);
         
-        // Update quests list
-        const questsList = questsContainer.querySelector('.quests-list');
-        questsList.innerHTML = '';
-
-        // Render visible quests
-        const startIndex = currentSliderValue;
-        const endIndex = Math.min(player.quests.length > 6 ? 6 + startIndex : player.quests.length, player.quests.length);
-        
-        for(let i = startIndex; i < endIndex; i++){
-            const questButton = document.createElement('button');
-            questButton.className = 'quest-item';
-            questButton.setAttribute('data-quest-index', i);
-            
-            if (player.current_quest === i) {
-                questButton.classList.add('quest-current');
-            }
-            
-            // Add click handler
-            questButton.addEventListener('click', (e) => {
-                console.log('Quest button clicked');
-                e.preventDefault();
-                e.stopPropagation();
-                const questIndex = parseInt(e.currentTarget.getAttribute('data-quest-index'));
-                // Don't allow selecting failed or completed quests as current
-                if (player.quests[questIndex].failed || player.quests[questIndex].done) {
-                    console.log('Cannot select failed or completed quest');
-                    return;
-                }
-                console.log('Setting current quest to:', questIndex);
-                player.current_quest = questIndex;
-                lastSelectedQuest = questIndex;
-                // Update UI immediately without full refresh
-                updateQuestButtonHighlight();
-            });
-            
-            const questContent = document.createElement('div');
-            questContent.className = 'quest-content';
-            
-            // Let the quest render into the DOM element
-            questContent.innerHTML = '';
-            player.quests[i].RenderQuestList(questContent, player.current_quest === i ? 'yellow' : null);
-
-            // Inline details UI built here so expanded content stays within parent quest card
-            const detailsContainer = document.createElement('div');
-            detailsContainer.className = 'quest-details-container';
-            detailsContainer.style.display = 'none';
-
-            const detailsButton = document.createElement('button');
-            detailsButton.className = 'quest-details-button';
-            detailsButton.textContent = 'Details';
-            detailsButton.onclick = (e) => {
-                e.stopPropagation();
-                const isOpen = detailsContainer.style.display === 'flex';
-                if (isOpen) {
-                    detailsContainer.innerHTML = '';
-                    detailsContainer.style.display = 'none';
-                    detailsButton.textContent = 'Details';
-                    return;
-                }
-                detailsContainer.innerHTML = '';
-                const quest = player.quests[i];
-                for (let g = 0; g < quest.goals.length; g++) {
-                    const goal = quest.goals[g];
-                    const card = quest.createGoalCard(goal, g === quest.current_Goal && !goal.done);
-                    detailsContainer.appendChild(card);
-                }
-                
-                // Always show rewards card to see what's configured
-                const rewardsCard = quest.createRewardsCard();
-                detailsContainer.appendChild(rewardsCard);
-                
-                detailsContainer.style.display = 'flex';
-                detailsButton.textContent = 'Hide';
-            };
-
-            const progressRow = questContent.querySelector('.quest-progress-container');
-            if (progressRow) {
-                progressRow.appendChild(detailsButton);
-            } else {
-                questContent.appendChild(detailsButton);
-            }
-            questContent.appendChild(detailsContainer);
-            
-            questButton.appendChild(questContent);
-            questsList.appendChild(questButton);
-
-            // Sync progress immediately in case goals were completed before opening the UI
-            updateQuestProgressBar(questButton);
+        if (player.current_quest === i) {
+            questButton.classList.add('quest-current');
         }
+        
+        // Add click handler
+        questButton.addEventListener('click', (e) => {
+            console.log('Quest button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            const questIndex = parseInt(e.currentTarget.getAttribute('data-quest-index'));
+            // Don't allow selecting failed or completed quests as current
+            if (player.quests[questIndex].failed || player.quests[questIndex].done) {
+                console.log('Cannot select failed or completed quest');
+                return;
+            }
+            console.log('Setting current quest to:', questIndex);
+            player.current_quest = questIndex;
+            lastSelectedQuest = questIndex;
+            // Update UI immediately without full refresh
+            updateQuestButtonHighlight();
+        });
+        
+        const questContent = document.createElement('div');
+        questContent.className = 'quest-content';
+        
+        // Let the quest render into the DOM element
+        questContent.innerHTML = '';
+        player.quests[i].RenderQuestList(questContent, player.current_quest === i ? 'yellow' : null);
+
+        // Inline details UI built here so expanded content stays within parent quest card
+        const detailsContainer = document.createElement('div');
+        detailsContainer.className = 'quest-details-container';
+        detailsContainer.style.display = 'none';
+
+        const detailsButton = document.createElement('button');
+        detailsButton.className = 'quest-details-button';
+        detailsButton.textContent = 'Details';
+        detailsButton.onclick = (e) => {
+            e.stopPropagation();
+            const isOpen = detailsContainer.style.display === 'flex';
+            if (isOpen) {
+                detailsContainer.innerHTML = '';
+                detailsContainer.style.display = 'none';
+                detailsButton.textContent = 'Details';
+                return;
+            }
+            detailsContainer.innerHTML = '';
+            const quest = player.quests[i];
+            for (let g = 0; g < quest.goals.length; g++) {
+                const goal = quest.goals[g];
+                const card = quest.createGoalCard(goal, g === quest.current_Goal && !goal.done);
+                detailsContainer.appendChild(card);
+            }
+            
+            // Always show rewards card to see what's configured
+            const rewardsCard = quest.createRewardsCard();
+            detailsContainer.appendChild(rewardsCard);
+            
+            detailsContainer.style.display = 'flex';
+            detailsButton.textContent = 'Hide';
+        };
+
+        const progressRow = questContent.querySelector('.quest-progress-container');
+        if (progressRow) {
+            progressRow.appendChild(detailsButton);
+        } else {
+            questContent.appendChild(detailsButton);
+        }
+        questContent.appendChild(detailsContainer);
+        
+        questButton.appendChild(questContent);
+        questsList.appendChild(questButton);
+
+        // Sync progress immediately in case goals were completed before opening the UI
+        updateQuestProgressBar(questButton);
+    }
+    
+    // Update pagination controls
+    const pageInfo = questsContainer.querySelector('.quest-page-info');
+    const prevBtn = questsContainer.querySelector('.quest-page-prev');
+    const nextBtn = questsContainer.querySelector('.quest-page-next');
+    
+    if (pageInfo) {
+        pageInfo.textContent = `Page ${currentQuestPage + 1} of ${totalPages} (${player.quests.length} quest${player.quests.length !== 1 ? 's' : ''})`;
+    }
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentQuestPage === 0;
+        prevBtn.style.opacity = currentQuestPage === 0 ? '0.5' : '1';
+        prevBtn.style.cursor = currentQuestPage === 0 ? 'not-allowed' : 'pointer';
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = currentQuestPage >= totalPages - 1;
+        nextBtn.style.opacity = currentQuestPage >= totalPages - 1 ? '0.5' : '1';
+        nextBtn.style.cursor = currentQuestPage >= totalPages - 1 ? 'not-allowed' : 'pointer';
     }
 
     // Update close instruction - show mobile-friendly text on touch devices or small screens
     const closeInstruction = questsContainer.querySelector('.quests-close-instruction');
     const isMobileOrSmallScreen = (typeof isMobile !== 'undefined' && isMobile) || window.innerWidth <= 768;
-    if (isMobileOrSmallScreen) {
-        closeInstruction.textContent = 'Tap × to close quests';
-    } else {
-        closeInstruction.textContent = String.fromCharCode(quest_key) + ' to close quests';
+    if (closeInstruction) {
+        if (isMobileOrSmallScreen) {
+            closeInstruction.textContent = 'Tap × to close quests';
+        } else {
+            closeInstruction.textContent = String.fromCharCode(quest_key) + ' to close quests';
+        }
     }
 
-    // Hide p5.js button and show container
+    // Hide p5.js buttons and show container
     questCloseButton.hide();
-
-    // Show slider only if there are more than 6 quests
-    if(player.quests.length > 6){
-        questSlider.show();
-        questSlider.style('position', 'absolute');
-        questSlider.style('bottom', 'calc(12.5% + 50px)');
-        questSlider.style('left', '50%');
-        questSlider.style('transform', 'translateX(-50%)');
-        questSlider.style('z-index', '999');
-        questSlider.style('pointer-events', 'auto');
-        questSlider.attribute('max', Math.max(0, player.quests.length - 6));
-    }
-    else{
-        questSlider.hide();
-    }
+    questSlider.hide();
 
     questsContainer.style.display = 'flex';
     updateCanvasPointerEvents();
