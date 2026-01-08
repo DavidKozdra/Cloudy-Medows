@@ -7,6 +7,7 @@ class Tile {
         this.age = age;
         // Remember what the sprinkler should render underneath if no under_tile object is present (helps after save/load or bad placement)
         this.last_under_png = undefined;
+        this.last_under_variant = 0;
         // Default variant selection
         this.variant = round(random(0, all_imgs[this.png].length-1));
         // For park grass, avoid the leaf variant by default; it will be set contextually
@@ -33,17 +34,22 @@ class Tile {
         if (this.name == 'sprinkler'){
             // Use the tile underneath the sprinkler; if missing, fall back to the last known base or tilled soil
             let basePng = null;
+            let baseVariant = 0;
             if(this.under_tile && typeof this.under_tile === 'object'){
                 basePng = this.under_tile.png;
+                baseVariant = this.under_tile.variant;
                 this.last_under_png = basePng; // remember for later loads without under_tile
+                this.last_under_variant = baseVariant; // remember variant too
             }
             else if(this.last_under_png !== undefined){
                 basePng = this.last_under_png;
+                baseVariant = this.last_under_variant !== undefined ? this.last_under_variant : 0;
             }
             else{
                 basePng = 2; // tilled soil (plot) as a safe default instead of empty/grass
+                baseVariant = 0;
             }
-            image(all_imgs[basePng][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
+            image(all_imgs[basePng][baseVariant], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
         }
         if (this.name == 'Flower_Done'){
             image(all_imgs[1][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //grass under
@@ -83,10 +89,12 @@ class Tile {
             this.under_tile = new_tile_from_num(tile_name_to_num(obj.under_tile.name), obj.under_tile.pos.x, obj.under_tile.pos.y);
             if(this.name === 'sprinkler'){
                 this.last_under_png = this.under_tile.png;
+                this.last_under_variant = this.under_tile.variant;
             }
         }
         else if(this.name === 'sprinkler' && obj.last_under_png !== undefined){
             this.last_under_png = obj.last_under_png;
+            this.last_under_variant = obj.last_under_variant !== undefined ? obj.last_under_variant : 0;
         }
     }
 };

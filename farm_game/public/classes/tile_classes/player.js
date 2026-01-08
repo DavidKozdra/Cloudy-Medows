@@ -18,7 +18,7 @@ class Player extends MoveableEntity {
         this.lastFoodnum = 2;
         this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
         this.hunger_counter = 0;
-        this.coins = 0;
+        this.coins = 1000;
         this.hp = 100;
         this.dead = false;
         this.deaths = 0;
@@ -625,6 +625,7 @@ class Player extends MoveableEntity {
                     new_tile.under_tile = old_tile;
                     if(new_tile.name === 'sprinkler' && old_tile){
                         new_tile.last_under_png = old_tile.png; // remember base for render fallback
+                        new_tile.last_under_variant = old_tile.variant; // remember variant too
                     }
                     levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile;
                     if (this.inv[this.hand].name == 'Ladybugs') {
