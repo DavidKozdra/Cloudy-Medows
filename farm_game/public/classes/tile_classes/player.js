@@ -430,7 +430,7 @@ class Player extends MoveableEntity {
     }
 
     eat() {
-        if (millis() - this.lasteatMili > 100) {
+        if (!this.dead && millis() - this.lasteatMili > 100) {
             if (this.hunger < maxHunger) {  // player only eats when hungry
                 if(this.inv[this.hand].class == 'Eat' && this.inv[this.hand].amount == 1){
                     EatSound.play();
