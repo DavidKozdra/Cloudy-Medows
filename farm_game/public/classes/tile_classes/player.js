@@ -1301,7 +1301,7 @@ function takeInput() {
                             current_reply = 0;
                         }, 'Poly Park');
                     }
-                    else if (selectedPlace == 'Swamp'){
+                    else if (selectedPlace == 'Swiggy Swamps'){
                         triggerTravelTransition(() => {
                             player.touching.collide = false;
                             player.pos.x = tileSize*17;
@@ -1313,7 +1313,7 @@ function takeInput() {
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
-                        }, 'Swamp');
+                        }, 'Swiggy Swamps');
                     }
                     else if (selectedPlace == 'Cloudy Meadows'){
                         triggerTravelTransition(() => {

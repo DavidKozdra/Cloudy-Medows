@@ -483,13 +483,7 @@ function preload() {
     fore_4_img = loadImage('images/foreground/fore4.png');
     fore_6_img = loadImage('images/foreground/Fore6.png');
     fore_empty_img = loadImage('images/foreground/building_empty.png');
-    fore_cloud_img = loadImage('images/foreground/Cloud_Tile.png');
-    fore_cloud_2_img = loadImage('images/foreground/cloud_tile2.png');
-    fore_building_img = loadImage('images/foreground/Building_Low.png');
-    fore_red_building_img = loadImage('images/foreground/Red_building_low.png');
-    fore_red_grown_building_img = loadImage('images/foreground/red_building_low2.png');
-    fore_gray_building_img = loadImage('images/foreground/building_gray.png');
-    fore_street_img = loadImage('images/foreground/street.png');
+    // Removed - now created as sky blue graphics in preload
     fore_left_img = loadImage('images/foreground/fore_left.png');
     fore_right_img = loadImage('images/foreground/fore_right.png');
     fore_both_img = loadImage('images/foreground/fore_both.png');
@@ -498,6 +492,17 @@ function preload() {
     fore_both2_img = loadImage('images/foreground/fore_both2.png');
 
     chat_icon = loadImage('images/ui/Chat_Icon.png');
+
+    // Create transparent empty image for foreground (we're on rooftops, nothing blocks view)
+    let transparentGraphic = createGraphics(tileSize, tileSize);
+    transparentGraphic.clear(); // Fully transparent
+    fore_cloud_img = transparentGraphic;
+    fore_cloud_2_img = transparentGraphic;
+    fore_building_img = transparentGraphic;
+    fore_red_building_img = transparentGraphic;
+    fore_red_grown_building_img = transparentGraphic;
+    fore_gray_building_img = transparentGraphic;
+    fore_street_img = transparentGraphic;
 
     
    all_imgs = [
