@@ -319,9 +319,28 @@ class Level {
     }
 
     renderLights() {
-        for (let i = 0; i < this.lights.length; i++) {
-            this.lights[i].render();
+        // Create a graphics buffer for the lighting mask
+        if (!this.lightingBuffer) {
+            this.lightingBuffer = createGraphics(canvasWidth, canvasHeight);
         }
+        
+        // Draw to the buffer
+        this.lightingBuffer.clear();
+        this.lightingBuffer.noStroke();
+        
+        // Fill with darkness
+        this.lightingBuffer.fill(0, 0, 0, time);
+        this.lightingBuffer.rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Use erase mode to cut holes for lights
+        this.lightingBuffer.erase(255, 255);
+        for (let i = 0; i < this.lights.length; i++) {
+            this.lights[i].renderToBuffer(this.lightingBuffer);
+        }
+        this.lightingBuffer.noErase();
+        
+        // Draw the lighting buffer to main canvas
+        image(this.lightingBuffer, 0, 0);
     }
 
     renderTreeTops(){
@@ -465,9 +484,29 @@ class Light {
         this.b = b;
     }
 
+    renderToBuffer(buffer) {
+        // Draw light circle to cut hole in darkness (in erase mode)
+        const centerX = this.pos.x + (tileSize / 2);
+        const centerY = this.pos.y + (tileSize / 2);
+        const maxRadius = this.size / 2;
+        const steps = 15;
+        
+        buffer.noStroke();
+        
+        // Draw gradient from fully erased center to no erasure at edges
+        for (let i = steps; i > 0; i--) {
+            const ratio = i / steps;
+            const radius = maxRadius * ratio;
+            // Erase strength decreases toward edges for smooth gradient
+            const eraseStrength = 255 * (1 - Math.pow(ratio, 1.5));
+            
+            buffer.fill(255, eraseStrength);
+            buffer.circle(centerX, centerY, radius * 2);
+        }
+    }
+
     render() {
-        noStroke();
-        fill(this.r/2, this.g/2, this.b/2, time / 1.5);
-        circle(this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2), this.size);
+        // Fallback render for main canvas (not used in buffer system)
+        this.renderToBuffer(window);
     }
 }

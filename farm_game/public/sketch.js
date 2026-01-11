@@ -1719,18 +1719,15 @@ function draw() {
         }
         player.render();
         
-        // Apply night overlay (but not to tree tops or lights)
+        // Tree tops render above player so they appear as canopy
         if(!player.dead){
-            push();
-            fill(0, 0, 0, time);
-            noStroke();
-            rect(0, 0, canvasWidth, canvasHeight);
-            pop();
-            
-            // Lights and tree tops render after night overlay so they stay bright
-            // Only render when player is alive
-            levels[currentLevel_y][currentLevel_x].renderLights();
             levels[currentLevel_y][currentLevel_x].renderTreeTops();
+        }
+        
+        // Apply darkness with light cutouts as final pass
+        // This ensures lights properly illuminate everything underneath
+        if(!player.dead && time > 0){
+            levels[currentLevel_y][currentLevel_x].renderLights();
         }
         
         if(!player.dead){
