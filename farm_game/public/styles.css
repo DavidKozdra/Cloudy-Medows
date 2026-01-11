@@ -2264,10 +2264,7 @@ button {
 /* Adjust for smaller screens */
 @media (max-width: 600px) {
 
-    .quests-container {
-    top: -200px !important;
-    }
-
+    
     #dpad {
         bottom: 80px;
         left: 15px;
@@ -2436,9 +2433,7 @@ button {
         display: none !important;
     }
     
-    .quests-container {
-    top: -200px !important;
-    }
+
     
     .quest-pagination {
         flex-direction: column;
@@ -2502,9 +2497,12 @@ button {
     .quests-container {
         min-width: 90vw;
         max-width: 95vw;
+        max-height: 80vh;
         padding: 10px;
         gap: 8px;
         border-width: 3px;
+        font-size: 11px;
+        top: 55%;
     }
     
     .quests-header-wrapper {
@@ -2524,8 +2522,9 @@ button {
     
     .quests-list {
         gap: 8px;
-        max-height: 45vh;
-        min-height: 20vh;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
     }
     
     .quest-item {

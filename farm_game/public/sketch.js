@@ -30,6 +30,15 @@ var clouds = [];
 var tileSize = 32;
 var canvasWidth = 23 * tileSize;
 var canvasHeight = 19 * tileSize;
+
+// Camera system for mobile
+var camera = {
+    x: 0,
+    y: 0,
+    zoom: 1,
+    enabled: false
+};
+
 var player;
 var levels = [];
 var currentLevel_y = 2;
@@ -1683,7 +1692,42 @@ function draw() {
         startButton.hide();
         optionsButton.hide();
         creditsButton.hide();
+        
+        // Enable camera for mobile devices
+        camera.enabled = isMobile;
+        camera.zoom = isMobile ? 2 : 1; // 2x zoom on mobile for better visibility
+        
+        // Update camera position to follow player
+        if (camera.enabled && player) {
+            const currentLevelObj = levels[currentLevel_y][currentLevel_x];
+            const levelWidth = currentLevelObj.map[0].length * tileSize;
+            const levelHeight = currentLevelObj.map.length * tileSize;
+            
+            // Target camera on player center
+            const targetX = player.pos.x + (tileSize / 2);
+            const targetY = player.pos.y + (tileSize / 2);
+            
+            // Calculate camera position (center viewport on player)
+            camera.x = targetX - (canvasWidth / camera.zoom) / 2;
+            camera.y = targetY - (canvasHeight / camera.zoom) / 2;
+            
+            // Clamp camera to level bounds
+            camera.x = constrain(camera.x, 0, levelWidth - (canvasWidth / camera.zoom));
+            camera.y = constrain(camera.y, 0, levelHeight - (canvasHeight / camera.zoom));
+        } else {
+            camera.x = 0;
+            camera.y = 0;
+        }
+        
         background(135, 206, 235);
+        
+        // Apply camera transformation
+        push();
+        if (camera.enabled) {
+            scale(camera.zoom);
+            translate(-camera.x, -camera.y);
+        }
+        
         image(background_img, 0, 0);
         levels[currentLevel_y][currentLevel_x].fore_render();
         levels[currentLevel_y][currentLevel_x].render();
@@ -1730,6 +1774,10 @@ function draw() {
             levels[currentLevel_y][currentLevel_x].renderLights();
         }
         
+        // End camera transformation
+        pop();
+        
+        // Render UI in screen space (outside camera transformation)
         if(!player.dead){
             render_ui();
         } else {

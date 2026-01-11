@@ -319,10 +319,14 @@ class Level {
     }
 
     renderLights() {
-        // Create a graphics buffer for the lighting mask
+        // Create a graphics buffer for the lighting mask (transient, not saved)
         if (!this.lightingBuffer) {
             this.lightingBuffer = createGraphics(canvasWidth, canvasHeight);
         }
+        
+        // Get camera offset (0 if camera disabled)
+        const camX = (typeof camera !== 'undefined' && camera.enabled) ? camera.x : 0;
+        const camY = (typeof camera !== 'undefined' && camera.enabled) ? camera.y : 0;
         
         // Draw to the buffer
         this.lightingBuffer.clear();
@@ -335,12 +339,19 @@ class Level {
         // Use erase mode to cut holes for lights
         this.lightingBuffer.erase(255, 255);
         for (let i = 0; i < this.lights.length; i++) {
-            this.lights[i].renderToBuffer(this.lightingBuffer);
+            this.lights[i].renderToBuffer(this.lightingBuffer, camX, camY);
         }
         this.lightingBuffer.noErase();
         
-        // Draw the lighting buffer to main canvas
-        image(this.lightingBuffer, 0, 0);
+        // Draw the lighting buffer to main canvas at camera position in world space
+        image(this.lightingBuffer, camX, camY);
+    }
+
+    getReadyForSave() {
+        // Remove non-serializable objects before saving
+        if (this.lightingBuffer) {
+            delete this.lightingBuffer;
+        }
     }
 
     renderTreeTops(){
@@ -484,12 +495,19 @@ class Light {
         this.b = b;
     }
 
-    renderToBuffer(buffer) {
+    renderToBuffer(buffer, camX = 0, camY = 0) {
         // Draw light circle to cut hole in darkness (in erase mode)
-        const centerX = this.pos.x + (tileSize / 2);
-        const centerY = this.pos.y + (tileSize / 2);
+        // Offset by camera position so lights appear in correct screen position
+        const centerX = this.pos.x - camX + (tileSize / 2);
+        const centerY = this.pos.y - camY + (tileSize / 2);
         const maxRadius = this.size / 2;
         const steps = 15;
+        
+        // Only render if light is visible in viewport
+        if (centerX < -maxRadius || centerX > canvasWidth + maxRadius ||
+            centerY < -maxRadius || centerY > canvasHeight + maxRadius) {
+            return;
+        }
         
         buffer.noStroke();
         
@@ -507,6 +525,6 @@ class Light {
 
     render() {
         // Fallback render for main canvas (not used in buffer system)
-        this.renderToBuffer(window);
+        this.renderToBuffer(window, 0, 0);
     }
 }

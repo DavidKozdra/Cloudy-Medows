@@ -1628,10 +1628,15 @@ function new_item_from_num(num, amount) {
 function saveAll(){
     save_anim = 255;
     
-    // 1. Prepare all entities in all levels (clear circular references like 'touching')
+    // 1. Prepare all levels and entities (clear circular references and non-serializable objects)
     for(let i = 0; i < levels.length; i++){
         for(let j = 0; j < levels[i].length; j++){
             if(levels[i][j] != 0 && levels[i][j] != undefined){
+                // Prepare the level itself
+                if(levels[i][j].getReadyForSave){
+                    levels[i][j].getReadyForSave();
+                }
+                // Prepare all entities in the level
                 for(let y = 0; y < levels[i][j].map.length; y++){
                     for(let x = 0; x < levels[i][j].map[y].length; x++){
                         if (levels[i][j].map[y][x] != 0){
