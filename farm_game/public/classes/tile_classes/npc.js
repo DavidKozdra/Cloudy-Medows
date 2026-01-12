@@ -77,7 +77,12 @@ class NPC extends GridMoveEntity {
     }
 
     dialouge_render() {
-        this.dialouges[this.current_dialouge].render(this.name, this.inv);
+        if (this.places && this.places.length) {
+            AirBallon.prototype.tp_render.call(this);
+        }
+        else {
+            this.dialouges[this.current_dialouge].render(this.name, this.inv);
+        }
     }
 
     load(obj){

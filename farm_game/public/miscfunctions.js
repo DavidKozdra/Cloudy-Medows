@@ -1561,7 +1561,7 @@ function new_tile_from_num(num, x, y) {
             return new GridMoveEntity(all_tiles[num - 1].name, all_tiles[num - 1].png, x, y, all_tiles[num - 1].inv, all_tiles[num - 1].hand, all_tiles[num - 1].facing, all_tiles[num - 1].under_tile_num, all_tiles[num - 1].instructions, all_tiles[num - 1].moving_timer);
         }
         else if (all_tiles[num - 1].class == 'NPC') {
-            return new NPC(
+            const npc = new NPC(
                 all_tiles[num - 1].name,
                 all_tiles[num - 1].png,
                 x,
@@ -1574,6 +1574,9 @@ function new_tile_from_num(num, x, y) {
                 all_tiles[num - 1].moving_timer,
                 all_tiles[num - 1].random_move
             );
+            if (all_tiles[num - 1].places) npc.places = all_tiles[num - 1].places.slice();
+            if (all_tiles[num - 1].travel_price) npc.travel_price = all_tiles[num - 1].travel_price;
+            return npc;
         }
         else if (all_tiles[num - 1].class == 'Chest'){
             return new Chest(all_tiles[num - 1].name, all_tiles[num - 1].png, x, y, all_tiles[num - 1].inv, all_tiles[num - 1].under_tile_num);

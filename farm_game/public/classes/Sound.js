@@ -63,7 +63,9 @@ class MusicPlayer {
 
     update(){ 
         this.play();
-        this.player.volume = musicSlider.value() * 0.05;
+        if (typeof musicSlider !== 'undefined' && musicSlider) {
+            this.player.volume = musicSlider.value() * 0.05;
+        }
         //console.log(this.player.src);
         //console.log(this.player.currentTime + " Not " + (this.player.duration - 0.1) + " Track " + this.currentTrack);
         if( this.player.currentTime >= this.player.duration - 0.1){ //check if done

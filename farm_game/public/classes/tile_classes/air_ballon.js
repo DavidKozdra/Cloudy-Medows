@@ -37,10 +37,11 @@ class AirBallon extends Entity {
             return !currentLocationName.includes(place);
         });
         
+        const maxLen = this.availablePlaces.reduce((m,p)=>Math.max(m, (p ? p.length : 0)), 10);
         for(let i = 0; i < this.availablePlaces.length; i++){
             fill(149, 108, 65)
             rectMode(CENTER)
-            rect((canvasWidth / 2), (canvasHeight - 110) + (i * 32) + 8 + 8, this.places[2].length*18, 25)
+            rect((canvasWidth / 2), (canvasHeight - 110) + (i * 32) + 8 + 8, maxLen*18, 25)
             if(current_reply == i){
                 fill(255, 255, 0);
             }

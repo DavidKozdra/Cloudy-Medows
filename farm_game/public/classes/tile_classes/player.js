@@ -18,7 +18,7 @@ class Player extends MoveableEntity {
         this.lastFoodnum = 2;
         this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
         this.hunger_counter = 0;
-        this.coins = 0;
+        this.coins = 1500;
         this.hp = 100;
         this.dead = false;
         this.deaths = 0;
@@ -251,7 +251,9 @@ class Player extends MoveableEntity {
                     this.facing = 1;
                     if (this.pos.x + tileSize >= canvasWidth) {
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -284,7 +286,9 @@ class Player extends MoveableEntity {
                                 levels[currentLevel_y][currentLevel_x].map[15][11] = new_tile_from_num(9, 11*tileSize, 15*tileSize);
                             }
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.x = 0;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -307,13 +311,17 @@ class Player extends MoveableEntity {
                     this.facing = 3;
                     if (this.pos.x - tileSize < 0) {
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
                         levels[currentLevel_y][currentLevel_x].ticks = 0;
                         currentLevel_x -= 1;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.x = canvasWidth - tileSize;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -336,7 +344,9 @@ class Player extends MoveableEntity {
                     this.facing = 0;
                     if (this.pos.y - tileSize < 0) {
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -352,7 +362,9 @@ class Player extends MoveableEntity {
                             levels[currentLevel_y][currentLevel_x].map[8][22] = new_tile_from_num(93, 22*tileSize, 8*tileSize);
                             levels[currentLevel_y][currentLevel_x].map[8][21] = new_tile_from_num(8, 21*tileSize, 8*tileSize);
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.y = canvasHeight - tileSize;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -375,7 +387,9 @@ class Player extends MoveableEntity {
                     this.facing = 2;
                     if (this.pos.y + tileSize >= canvasHeight) {
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -389,7 +403,9 @@ class Player extends MoveableEntity {
                             levels[currentLevel_y][currentLevel_x].map[8][22] = new_tile_from_num(93, 22*tileSize, 8*tileSize);
                             levels[currentLevel_y][currentLevel_x].map[8][21] = new_tile_from_num(8, 21*tileSize, 8*tileSize);
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.y = 0;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -1156,7 +1172,13 @@ function takeInput() {
             if ((millis() - lastMili > 200) && player.talking.class != 'Chest') {
                 current_reply -= 1;
                 if (current_reply < 0){
-                    current_reply = 0;
+                    // Check if NPC has fast travel places (Ticket Master)
+                    if (player.talking.class == 'NPC' && player.talking.places && player.talking.places.length) {
+                        current_reply = 0;
+                    }
+                    else {
+                        current_reply = 0;
+                    }
                 }
                 lastMili = millis();
             }
@@ -1165,9 +1187,18 @@ function takeInput() {
             if (millis() - lastMili > 200) {
                 current_reply += 1;
                 if (player.talking.class == 'NPC'){
-                    const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
-                    if (current_reply > activeReplies.length-1){
-                        current_reply = max(0, activeReplies.length-1);
+                    // Check if NPC has fast travel places (Ticket Master)
+                    if (player.talking.places && player.talking.places.length) {
+                        const availablePlaces = player.talking.availablePlaces || player.talking.places;
+                        if (current_reply > availablePlaces.length - 1) {
+                            current_reply = max(0, availablePlaces.length - 1);
+                        }
+                    }
+                    else {
+                        const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
+                        if (current_reply > activeReplies.length-1){
+                            current_reply = max(0, activeReplies.length-1);
+                        }
                     }
                 }
                 else if (player.talking.class == 'Shop'){
@@ -1180,7 +1211,78 @@ function takeInput() {
         }
         if (keyIsDown(interact_button) || virtualInput.interact){
             if (millis() - player.lastinteractMili > 200) {
-                if (player.talking.class == 'NPC'){
+                // Handle Ticket Master fast travel FIRST (before regular NPC dialogue)
+                if (player.talking.class == 'NPC' && player.talking.places && player.talking.places.length) {
+                    const selectedPlace = player.talking.availablePlaces ? player.talking.availablePlaces[current_reply] : player.talking.places[current_reply];
+                    const price = player.talking.travel_price || 10;
+                    if (player.coins < price) {
+                        player.talking.dialouges[player.talking.current_dialouge].new_phrase = [];
+                        let phrase = "You don't have enough coins.";
+                        for(let i = 0; i < phrase.length; i++){
+                            player.talking.dialouges[player.talking.current_dialouge].new_phrase[i] = phrase[i];
+                        }
+                        player.talking.dialouges[player.talking.current_dialouge].new_replies = [{phrase: 'Oh', dialouge_num: -1, quest: -1}];
+                        player.talking.dialouges[player.talking.current_dialouge].done = false;
+                        player.talking.dialouges[player.talking.current_dialouge].text_i = -1;
+                        player.talking.dialouges[player.talking.current_dialouge].phrase = [];
+                        current_reply = 0;
+                    }
+                    else {
+                        player.coins -= price;
+                        moneySound.play();
+                        if (selectedPlace == 'Beach'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*5;
+                                player.pos.y = tileSize*6;
+                                currentLevel_x = 0;
+                                currentLevel_y = 6;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'Beach');
+                        }
+                        else if (selectedPlace == 'The Big City'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*10;
+                                player.pos.y = tileSize*6;
+                                currentLevel_x = 1;
+                                currentLevel_y = 6;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'The Big City');
+                        }
+                        else if (selectedPlace == 'Cloudy Meadows'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*5;
+                                player.pos.y = tileSize*7;
+                                currentLevel_x = 4;
+                                currentLevel_y = 1;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'Cloudy Meadows');
+                        }
+                    }
+                    lastMili = millis();
+                    player.lastinteractMili = millis();
+                }
+                else if (player.talking.class == 'NPC'){
                     const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
                     if (activeReplies.length === 0) {
                         lastMili = millis();
@@ -1277,7 +1379,9 @@ function takeInput() {
                             currentLevel_x = 2;
                             currentLevel_y = 0;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
@@ -1291,7 +1395,9 @@ function takeInput() {
                             currentLevel_x = 3;
                             currentLevel_y = 3;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
@@ -1305,7 +1411,9 @@ function takeInput() {
                             currentLevel_x = 3;
                             currentLevel_y = 0;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;

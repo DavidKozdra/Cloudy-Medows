@@ -1732,8 +1732,10 @@ function draw() {
         }
         
         image(background_img, 0, 0);
-        levels[currentLevel_y][currentLevel_x].fore_render();
-        levels[currentLevel_y][currentLevel_x].render();
+        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+            levels[currentLevel_y][currentLevel_x].fore_render();
+            levels[currentLevel_y][currentLevel_x].render();
+        }
         
         // Apply weather visual effects
         applyWeatherEffects();
