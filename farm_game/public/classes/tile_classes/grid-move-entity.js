@@ -17,14 +17,21 @@ class GridMoveEntity extends MoveableEntity{
             if (this.instructions[this.current_instruction] == 'up') {
                 this.facing = 0;
                 if (this.pos.y - tileSize < 0) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y-1][x].map[18][this.pos.x / tileSize];
-                    levels[y-1][x].map[18][this.pos.x / tileSize] = temp;
-                    this.pos.y = canvasHeight - tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                    if (levels[y-1] && levels[y-1][x] && typeof levels[y-1][x] === 'object') {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y-1][x].map[18][this.pos.x / tileSize];
+                        levels[y-1][x].map[18][this.pos.x / tileSize] = temp;
+                        this.pos.y = canvasHeight - tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
+                    } else {
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
                 else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {

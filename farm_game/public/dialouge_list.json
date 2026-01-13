@@ -1837,6 +1837,325 @@
       "hand_num": -1,
       "amount": 0
     }
+  ],
+  "Sarah": [
+    {
+      "phrase": "Hi! I'm Sarah, a fashion designer. I love helping people express their style in the big city!",
+      "replies": [
+        {
+          "phrase": "What kind of fashion do you design?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Fashion sounds interesting.",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "See you around!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Everything from casual streetwear to elegant evening wear. I believe everyone deserves to feel confident in what they wear!",
+      "replies": [
+        {
+          "phrase": "That's cool!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Fashion is my passion! It's all about creativity and making people feel good about themselves.",
+      "replies": [
+        {
+          "phrase": "I appreciate that.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Marcus": [
+    {
+      "phrase": "Hey there! Welcome to my cafe. I serve the best coffee and pastries in the city!",
+      "replies": [
+        {
+          "phrase": "Can I grab a coffee?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Looks cozy in here.",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Maybe next time.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Of course! My espresso is legendary. Just watch out, it packs a punch!",
+      "replies": [
+        {
+          "phrase": "Sounds perfect!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Thanks! I put a lot of care into this place. It's my sanctuary in the busy city.",
+      "replies": [
+        {
+          "phrase": "Well done.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Elena": [
+    {
+      "phrase": "Hello! I'm Elena, a street artist. I create murals all over the city to bring color and life to these walls!",
+      "replies": [
+        {
+          "phrase": "Your art is amazing!",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "What inspires your art?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Great meeting you!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Thank you so much! That means a lot. I believe art should be accessible to everyone.",
+      "replies": [
+        {
+          "phrase": "I agree!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Everything around me! The people, the buildings, nature... the city is full of stories waiting to be painted.",
+      "replies": [
+        {
+          "phrase": "That's beautiful.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Thomas": [
+    {
+      "phrase": "Hey, I'm Thomas, a taxi driver. Been driving around this city for years—I know every street!",
+      "replies": [
+        {
+          "phrase": "Need a ride?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "You seem experienced.",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Take care!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Always! Fair rates and safe rides. That's my motto.",
+      "replies": [
+        {
+          "phrase": "Sounds good!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "You bet! I've picked up people from all walks of life. Each person has their own story.",
+      "replies": [
+        {
+          "phrase": "I'd love to hear some stories!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Victoria": [
+    {
+      "phrase": "Welcome! I'm Victoria, owner of the upscale restaurant here. We serve gourmet cuisine!",
+      "replies": [
+        {
+          "phrase": "What's your specialty?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Looks fancy!",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Maybe another time.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "We specialize in French and Italian cuisine, all prepared with the finest ingredients.",
+      "replies": [
+        {
+          "phrase": "Sounds delicious!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "It is! Elegance and quality are our standards. Come dine with us sometime!",
+      "replies": [
+        {
+          "phrase": "I will!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Dante": [
+    {
+      "phrase": "Ciao! I'm Dante, head chef. I prepare the finest dishes in the city!",
+      "replies": [
+        {
+          "phrase": "What do you cook?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "You seem passionate!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Modern fusion cuisine! I blend traditional techniques with creative new flavors. Every dish is an experience!",
+      "replies": [
+        {
+          "phrase": "Impressive!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ],
+  "Kai": [
+    {
+      "phrase": "Hello! I'm Kai, a city guide and travel blogger. I help visitors discover the best of the city!",
+      "replies": [
+        {
+          "phrase": "Show me around?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "What's your favorite spot?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Thanks, maybe later!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Sure! Start with the markets, hit up a local cafe, catch some street art, and enjoy the evening energy!",
+      "replies": [
+        {
+          "phrase": "Sounds perfect!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "The hidden rooftop gardens! Most tourists miss them, but they're peaceful and beautiful.",
+      "replies": [
+        {
+          "phrase": "I'll check them out!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
   ]
 }
  
