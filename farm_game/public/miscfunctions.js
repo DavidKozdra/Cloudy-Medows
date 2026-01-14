@@ -1600,7 +1600,7 @@ function new_tile_from_num(num, x, y) {
 }
 
 function new_item_from_num(num, amount) {
-    if (num <= all_items.length) {
+    if (typeof all_items !== 'undefined' && num <= all_items.length) {
         if (all_items[num].class == 'Item') {
             return new Item(all_items[num].name, amount, all_items[num].png, all_items[num].price);
         }

@@ -141,7 +141,7 @@ class Player extends MoveableEntity {
             if(this.hunger < 0){
                 this.hunger = 0;
             }
-            this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
+        this.hunger_timer = (typeof all_items !== 'undefined' && all_items[this.lastFoodnum]) ? all_items[this.lastFoodnum].hunger_timer : 2000;
         }
         push();
         imageMode(CENTER);
