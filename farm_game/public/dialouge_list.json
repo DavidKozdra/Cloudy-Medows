@@ -2765,6 +2765,391 @@
       "hand_num": -1,
       "amount": 0
     }
+  ],
+  "Coral": [
+    {
+      "phrase": "Hey dude! I'm Coral, and I basically live on my surfboard!",
+      "replies": [
+        {
+          "phrase": "That sounds awesome! Do you surf every day?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Can you teach me about surfing?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Cool, see you around!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "For sure! The waves here are totally radical. Best time is early morning when the sun's just coming up!",
+      "replies": [
+        {
+          "phrase": "Tell me more about the beach!",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "Maybe I'll try surfing sometime.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Surfing's all about balance and reading the waves. But first, you gotta respect the ocean!",
+      "replies": [
+        {
+          "phrase": "What do you mean by respecting the ocean?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "Sounds deep, thanks!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "The ocean gives us so much - waves, fish, good vibes. We gotta keep it clean! Hey, can you help me with something?",
+      "replies": [
+        {
+          "phrase": "Sure, what do you need?",
+          "dialouge_num": 4,
+          "quest": -1
+        },
+        {
+          "phrase": "Maybe later.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "I want to organize a beach cleanup, but I need some supplies. Can you bring me 15 vegetables? I'll trade them for stuff to make snacks for volunteers!",
+      "replies": [
+        {
+          "phrase": "I'll help with the beach cleanup!",
+          "dialouge_num": -1,
+          "quest": {"name": "Beach Cleanup Party", "goals": [{"class": "TalkingGoal", "npc_name": "Coral", "item_name": "Vegetables", "amount": 15}], "days": 5, "reward_item": {"num": 7, "amount": 10}, "reward_coins": 60}
+        },
+        {
+          "phrase": "That's a lot of vegetables...",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "You're the best! The beach is gonna be so clean now. Here are some fish I caught this morning - fresh from the ocean!",
+      "replies": [
+        {
+          "phrase": "Thanks Coral! Keep catching those waves!",
+          "dialouge_num": -1,
+          "quest": -1
+        },
+        {
+          "phrase": "Happy to help!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": 0,
+      "amount": 5
+    }
+  ],
+  "Fisher Joe": [
+    {
+      "phrase": "Ahoy there! Name's Fisher Joe. Been fishing these waters for 40 years!",
+      "replies": [
+        {
+          "phrase": "Wow, that's a long time! Any good stories?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Can you teach me about fishing?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Nice to meet you!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Oh, I got stories for days! Once caught a fish so big it nearly pulled me right into the water! But the real treasure is the peace and quiet out here.",
+      "replies": [
+        {
+          "phrase": "Sounds amazing! Tell me more about fishing.",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "That's quite a tale!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Fishing's simple - patience, the right bait, and knowing when to reel 'em in. The swimming and fishing here at the beach is perfect for it!",
+      "replies": [
+        {
+          "phrase": "Do you need any help?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "I'll give it a try sometime.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Actually, yeah! My old fishing net broke and I need materials to fix it. Can you bring me 20 units of any items? I'll make it worth your while!",
+      "replies": [
+        {
+          "phrase": "I'll help you fix your fishing net!",
+          "dialouge_num": -1,
+          "quest": {"name": "Fisher Joe's Net", "goals": [{"class": "TalkingGoal", "npc_name": "Fisher Joe", "item_name": "Any", "amount": 20}], "days": 6, "reward_item": {"num": 17, "amount": 5}, "reward_coins": 75}
+        },
+        {
+          "phrase": "I don't have time right now.",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "You're a good soul! My net's all fixed up now. Here, take these rare fish - caught 'em just this morning!",
+      "replies": [
+        {
+          "phrase": "Thanks Joe! Good luck with your fishing!",
+          "dialouge_num": -1,
+          "quest": -1
+        },
+        {
+          "phrase": "Always happy to help!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": 0,
+      "amount": 3
+    }
+  ],
+  "Sandy": [
+    {
+      "phrase": "Hi! I'm Sandy! I love collecting seashells and building sandcastles on the beach!",
+      "replies": [
+        {
+          "phrase": "That sounds fun! What kind of shells do you collect?",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "Do you come here often?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Have fun!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "All kinds! Spiral shells, clam shells, even some really rare ones that wash up after storms. Each one tells a story of the ocean!",
+      "replies": [
+        {
+          "phrase": "That's beautiful! Can I help with anything?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "Cool hobby!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Every single day! This beach is my happy place. I know every tide pool and hidden cove around here!",
+      "replies": [
+        {
+          "phrase": "Can I help you with something?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "That's dedication!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Actually, yes! I'm trying to visit all the amazing places around here. Can you show me around? Visit the Beach, the Big City, and Cloudy Meadows, then come back and tell me all about them!",
+      "replies": [
+        {
+          "phrase": "I'd love to be your tour guide!",
+          "dialouge_num": -1,
+          "quest": {"name": "Sandy's Grand Tour", "goals": [{"class": "LocationGoal", "level_name": "Beach"}, {"class": "LocationGoal", "level_name": "The Big City"}, {"class": "LocationGoal", "level_name": "Cloudy Meadows: Home"}, {"class": "TalkingGoal", "npc_name": "Sandy", "required_location": "Beach"}], "days": 7, "reward_item": {"num": 11, "amount": 3}, "reward_coins": 50}
+        },
+        {
+          "phrase": "That's a lot of traveling...",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Oh my gosh, thank you so much! I can't wait to hear all about your adventures! Here are some flowers I picked from around the beach!",
+      "replies": [
+        {
+          "phrase": "Thanks Sandy! Enjoy exploring!",
+          "dialouge_num": -1,
+          "quest": -1
+        },
+        {
+          "phrase": "It was my pleasure!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": 0,
+      "amount": 3
+    }
+  ],
+  "Skipper": [
+    {
+      "phrase": "Yo! I'm Skipper, professional beach volleyball player and part-time lifeguard!",
+      "replies": [
+        {
+          "phrase": "Beach volleyball sounds intense!",
+          "dialouge_num": 1,
+          "quest": -1
+        },
+        {
+          "phrase": "How's life as a lifeguard?",
+          "dialouge_num": 2,
+          "quest": -1
+        },
+        {
+          "phrase": "Catch you later!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "It's super intense! Great workout, amazing team dynamics, and nothing beats diving in the sand for an epic save!",
+      "replies": [
+        {
+          "phrase": "Do you need help with anything?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "Sounds exhausting but fun!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "It's rewarding! Keeping everyone safe while they enjoy the beach. The sunset shifts are the best - so peaceful.",
+      "replies": [
+        {
+          "phrase": "Need any help?",
+          "dialouge_num": 3,
+          "quest": -1
+        },
+        {
+          "phrase": "Keep up the good work!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "Yeah, actually! We're hosting a big beach tournament and I need to stock up on snacks and refreshments. Can you bring me 25 fruits? Gotta keep the players energized!",
+      "replies": [
+        {
+          "phrase": "I'll help supply the beach tournament!",
+          "dialouge_num": -1,
+          "quest": {"name": "Beach Tournament Prep", "goals": [{"class": "TalkingGoal", "npc_name": "Skipper", "item_name": "Fruits", "amount": 25}], "days": 6, "reward_item": {"num": 15, "amount": 8}, "reward_coins": 85}
+        },
+        {
+          "phrase": "That's a lot of fruit...",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "You're awesome! The tournament was a huge success thanks to you! Here are some fish - fresh catch of the day!",
+      "replies": [
+        {
+          "phrase": "Thanks Skipper! Hope you won!",
+          "dialouge_num": -1,
+          "quest": -1
+        },
+        {
+          "phrase": "Glad I could help!",
+          "dialouge_num": -1,
+          "quest": -1
+        }
+      ],
+      "hand_num": 0,
+      "amount": 4
+    }
   ]
 }
  
