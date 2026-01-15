@@ -1361,8 +1361,8 @@ function takeInput() {
                                 player.touching.collide = false;
                                 player.pos.x = tileSize*5;
                                 player.pos.y = tileSize*6;
-                                currentLevel_x = 0;
-                                currentLevel_y = 6;
+                                currentLevel_x = 5;
+                                currentLevel_y = 7;
                                 player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
                                 if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
                                     levels[currentLevel_y][currentLevel_x].level_name_popup = true;
