@@ -232,23 +232,109 @@ class Player extends MoveableEntity {
             }
             
         }
-           console.log("Player hunger:", player.hunger);
-        if (player.hunger <= 4) {
-            console.log("Hunger warning displayed");
+        // Centered animated hunger warning (screen-space) when not in dialogue
+        if (this.hunger <= 2 && (!this.talking || this.talking == 0)) {
+            push();
+            if (typeof camera !== 'undefined' && camera.enabled) {
+                resetMatrix();
+            }
+            let t = time;
+            let pulse = abs(sin(t * 0.02));
+            let pulseAlpha = 160 + 95 * pulse;
+            let floatOffset = sin(t * 0.01) * 12;
+            let wobble = sin(t * 0.02) * 0.06;
+            let scaleAmount = 0.4 + 0.05 * pulse;
+
+            let cx = canvasWidth / 2;
+            let cy = canvasHeight * .1 + floatOffset;
+            let cardW = Math.min(700, canvasWidth * 0.85);
+            let cardH = Math.min(180, canvasHeight * 0.25);
+
+            // Dim background
+            noStroke();
+            fill(0, 0, 0, 110 * (0.6 + 0.4 * pulse));
+            rect(0, 0, canvasWidth, canvasHeight);
+
+            // Card group
+            push();
+            translate(cx, cy);
+            scale(scaleAmount);
+            rotate(wobble);
+
+            // Outer glow
+            noStroke();
+            for (let i = 0; i < 3; i++) {
+                fill(255, 60, 60, 50 - i * 12);
+                rectMode(CENTER);
+                rect(0, 0, cardW + 40 + i * 24, cardH + 40 + i * 24, 18 + i * 6);
+            }
+
+            // Clip and background stripes
+            let ctx = drawingContext;
+            ctx.save();
+            ctx.beginPath();
+            let r = 16;
+            ctx.moveTo(-cardW/2 + r, -cardH/2);
+            ctx.lineTo(cardW/2 - r, -cardH/2);
+            ctx.quadraticCurveTo(cardW/2, -cardH/2, cardW/2, -cardH/2 + r);
+            ctx.lineTo(cardW/2, cardH/2 - r);
+            ctx.quadraticCurveTo(cardW/2, cardH/2, cardW/2 - r, cardH/2);
+            ctx.lineTo(-cardW/2 + r, cardH/2);
+            ctx.quadraticCurveTo(-cardW/2, cardH/2, -cardW/2, cardH/2 - r);
+            ctx.lineTo(-cardW/2, -cardH/2 + r);
+            ctx.quadraticCurveTo(-cardW/2, -cardH/2, -cardW/2 + r, -cardH/2);
+            ctx.closePath();
+            ctx.clip();
+
+            ctx.fillStyle = 'rgba(40, 10, 10, 0.94)';
+            ctx.fillRect(-cardW/2, -cardH/2, cardW, cardH);
+
+            ctx.save();
+            ctx.rotate(-Math.PI / 8);
+            let spacing = 26;
+            let stripeW = 12;
+            let offset = (millis() * 0.06) % spacing;
+            ctx.globalAlpha = 0.22;
+            ctx.fillStyle = 'rgba(255, 90, 90, 1)';
+            for (let x = -cardW; x < cardW; x += spacing) {
+                ctx.fillRect(x + offset - cardW, -cardH, stripeW, cardH * 2);
+            }
+            ctx.restore();
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.fillRect(-cardW/2, -cardH/2, cardW, cardH * 0.35);
+            ctx.restore();
+
+            // Border
+            stroke(255, 90, 90, 200);
+            strokeWeight(3);
+            noFill();
+            rectMode(CENTER);
+            rect(0, 0, cardW, cardH, 16);
+
+       
+            // Text
             textFont(player_2);
-            // Responsive text size based on screen width
-            let warningTextSize = max(8, canvasWidth * 0.008);
-            textSize(warningTextSize);
-            
-            // Pulsing animation using time variable - keep min opacity at 150 so always visible
-            let pulseAlpha = 150 + abs(sin(time * 0.01)) * 105; // Ranges from 150-255
-            fill(255, 0, 0, pulseAlpha);
-            textAlign(LEFT, TOP);
-            
-            // Responsive positioning
-            let warningX = canvasWidth / 5;
-            let warningY = canvasHeight - 155;
-            text("You are hungry eat something soon!", warningX, warningY);
+            textAlign(CENTER, CENTER);
+            let titleSize = max(22, canvasWidth * 0.06);
+            let msgSize = titleSize * 0.55;
+
+            stroke(0, 0, 0, 220);
+            strokeWeight(4);
+            fill(255, 160, 160, pulseAlpha);
+            textSize(titleSize);
+            text('YOU ARE HUNGRY', 0, -cardH * 0.04);
+
+            stroke(0, 0, 0, 160);
+            strokeWeight(3);
+            fill(255, 210, 120, pulseAlpha);
+            textSize(msgSize);
+            text('Eat something soon!', 0, cardH * 0.32 - msgSize);
+
+          
+            pop();
+            pop();
         }
     }
 
