@@ -135,7 +135,9 @@ const TILE_DEFINITIONS = [
     /*116*/ { name: 'Priya Patel', png: 151, inv: [{num: 36, amount: 5}, {num: 37, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
     /*117*/ { name: 'Marcus Brown', png: 152, inv: [{num: 35, amount: 15}, {num: 38, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', quest_giver: true, random_move: false },
     /*118*/ { name: 'Sophia Moore', png: 153, inv: [{num: 2, amount: 8}, {num: 35, amount: 6}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
-    /*119*/ { name: 'Jordan Kim', png: 154, inv: [{num: 13, amount: 4}, {num: 26, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 90, class: 'NPC', quest_giver: true, random_move: false }
+    /*119*/ { name: 'Jordan Kim', png: 154, inv: [{num: 13, amount: 4}, {num: 26, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 90, class: 'NPC', quest_giver: true, random_move: false },
+    /*120*/ { name: 'sand', png: 159, collide: false, age: -1, class: 'Tile' },
+    /*121*/ { name: 'water12', png: 160, collide: true, age: -1, class: 'Tile' }
 ];
 
 /*
