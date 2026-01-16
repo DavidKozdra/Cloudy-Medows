@@ -130,6 +130,7 @@ const TILE_DEFINITIONS = [
     /*111*/ { name: 'Coral', png: 155, inv: [{num: 7, amount: 10}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', random_move: false },
     /*112*/ { name: 'Fisher Joe', png: 156, inv: [{num: 17, amount: 5}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 150, class: 'NPC', random_move: false },
     /*113*/ { name: 'Sandy', png: 157, inv: [{num: 11, amount: 5}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', random_move: false },
+    /*114*/ { name: 'Skipper', png: 158, inv: [{num: 15, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 130, class: 'NPC', random_move: false },
     /*115*/ { name: 'Alex Chen', png: 150, inv: [{num: 35, amount: 10}, {num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
     /*116*/ { name: 'Priya Patel', png: 151, inv: [{num: 36, amount: 5}, {num: 37, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
     /*117*/ { name: 'Marcus Brown', png: 152, inv: [{num: 35, amount: 15}, {num: 38, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', quest_giver: true, random_move: false },
