@@ -3175,15 +3175,15 @@
       "amount": 0
     },
     {
-      "phrase": "I run a logistics company here in the city. We ship goods all over! Actually, I could use some help right now.",
+      "phrase": "I run a logistics company here in the city. We ship goods all over.",
       "replies": [
         {
-          "phrase": "What do you need?",
-          "dialouge_num": 3,
+          "phrase": "Sounds impressive!",
+          "dialouge_num": -1,
           "quest": -1
         },
         {
-          "phrase": "I'm busy right now",
+          "phrase": "Nice—see you around.",
           "dialouge_num": -1,
           "quest": -1
         }
@@ -3209,15 +3209,15 @@
       "amount": 0
     },
     {
-      "phrase": "I need you to deliver some goods to three different locations in the city and beyond. Visit The Big City, Cloudy Meadows, and Beach. Can you do that?",
+      "phrase": "Enjoy exploring the city—check out the markets, parks, and harbor. Lots to see!",
       "replies": [
         {
-          "phrase": "I'll make those deliveries!",
+          "phrase": "I'll check it out!",
           "dialouge_num": -1,
-          "quest": {"name": "City Deliveries", "goals": [{"class": "LocationGoal", "level_name": "The Big City"}, {"class": "LocationGoal", "level_name": "Cloudy Meadows"}, {"class": "LocationGoal", "level_name": "Beach"}], "days": 5, "reward_item": {"num": 35, "amount": 10}, "reward_coins": 100}
+          "quest": -1
         },
         {
-          "phrase": "That's too much work",
+          "phrase": "See you around",
           "dialouge_num": -1,
           "quest": -1
         }
