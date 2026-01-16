@@ -232,6 +232,24 @@ class Player extends MoveableEntity {
             }
             
         }
+           console.log("Player hunger:", player.hunger);
+        if (player.hunger <= 4) {
+            console.log("Hunger warning displayed");
+            textFont(player_2);
+            // Responsive text size based on screen width
+            let warningTextSize = max(8, canvasWidth * 0.008);
+            textSize(warningTextSize);
+            
+            // Pulsing animation using time variable - keep min opacity at 150 so always visible
+            let pulseAlpha = 150 + abs(sin(time * 0.01)) * 105; // Ranges from 150-255
+            fill(255, 0, 0, pulseAlpha);
+            textAlign(LEFT, TOP);
+            
+            // Responsive positioning
+            let warningX = canvasWidth / 5;
+            let warningY = canvasHeight - 155;
+            text("You are hungry eat something soon!", warningX, warningY);
+        }
     }
 
     deathConsequence(dif){

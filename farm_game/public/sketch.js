@@ -2010,6 +2010,8 @@ function render_ui() {
         for (let i = 0; i < player.hunger; i++) {
             image(hunger_f, (canvasWidth / 20) + (30 * i), (canvasHeight - 185));
         }
+        // Show animated hunger warning if food is low
+    
         textFont(player_2);
         textSize(30.5);
         fill(0);
