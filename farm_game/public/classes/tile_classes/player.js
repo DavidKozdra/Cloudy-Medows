@@ -247,7 +247,7 @@ class Player extends MoveableEntity {
 
             let cx = canvasWidth / 2;
             let cy = canvasHeight * .1 + floatOffset;
-            let cardW = Math.min(700, canvasWidth * 0.85);
+            let cardW = Math.min(900, canvasWidth * 0.95);
             let cardH = Math.min(180, canvasHeight * 0.25);
 
             // Dim background
@@ -296,8 +296,8 @@ class Player extends MoveableEntity {
             let offset = (millis() * 0.06) % spacing;
             ctx.globalAlpha = 0.22;
             ctx.fillStyle = 'rgba(255, 90, 90, 1)';
-            for (let x = -cardW; x < cardW; x += spacing) {
-                ctx.fillRect(x + offset - cardW, -cardH, stripeW, cardH * 2);
+            for (let x = -cardW; x < cardW * 10; x += spacing) {
+                ctx.fillRect(x + offset - cardW , -cardH, stripeW, cardH * 2);
             }
             ctx.restore();
 
