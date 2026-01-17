@@ -122,7 +122,7 @@ const TILE_DEFINITIONS = [
     /*103*/ { name: 'Sarah', png: 164, inv: [{num: 36, amount: 5}, {num: 45, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*104*/ { name: 'Elena', png: 167, inv: [{num: 35, amount: 8}, {num: 36, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: ['up', 'right', 'down', 'left'], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*106*/ { name: 'Thomas', png: 165, inv: [{num: 35, amount: 20}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
-    /*107*/ { name: 'Victoria', png: 165, inv: [{num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*107*/ { name: 'Victoria', png: 166, inv: [{num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*108*/ { name: 'Dante', png: 26, inv: [{num: 13, amount: 5}, {num: 2, amount: 10}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*109*/ { name: 'Kai', png: 26, inv: [{num: 35, amount: 5}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*110*/ { name: 'Job Board', png: 0, class: 'Tile', jobs_available: ['Construction Worker', 'Delivery Driver', 'Cleaner', 'Security Guard', 'Office Assistant'], daily_wages: [25, 30, 20, 35, 40] },
