@@ -1075,7 +1075,6 @@ function ensureConfigModal() {
         'Dog': 'images/npc/dog_right.png',
         'Ticket Master': 'images/npc/Ticket_Master.png',
         'Sarah': 'images/npc/mira.png',
-        'Marcus': 'images/npc/marcus.png',
         'Elena': 'images/npc/Sophia.png',
         'Thomas': 'images/npc/vinny.png',
         'Victoria': 'images/npc/supertina.png',
@@ -1089,8 +1088,11 @@ function ensureConfigModal() {
         'Priya Patel': 'images/npc/priya.png',
         'Marcus Brown': 'images/npc/marcus.png',
         'Sophia Moore': 'images/npc/Sophia.png',
-        'Jordan Kim': 'images/npc/Jake.png',
-        'Kiah': 'images/npc/coral.png'
+        'Jordan Kim': 'images/npc/Jordan_Kim.png',
+        'Kiah': 'images/npc/Kiah.png',
+        'Jake': 'images/npc/Jake.png',
+        'Chef': 'images/npc/chef.png',
+        'Rob Botus': 'images/npc/Rob_Botus.png'
     };
     
     npcNames.forEach(name => {

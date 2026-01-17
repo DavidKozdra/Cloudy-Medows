@@ -288,7 +288,7 @@ function preload() {
     //Jordan Kim
     jordan_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
     jordan_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
-    jordan_tile_down_img = loadImage('images/npc/priya.png');
+    jordan_tile_down_img = loadImage('images/npc/Jordan_Kim.png');
     jordan_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
     jordan_tile_imgs = [[jordan_tile_up_img], [jordan_tile_right_img], [jordan_tile_down_img], [jordan_tile_left_img]];
 
@@ -319,6 +319,13 @@ function preload() {
     skipper_tile_down_img = loadImage('images/npc/skipper.png');
     skipper_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
     skipper_tile_imgs = [[skipper_tile_up_img], [skipper_tile_right_img], [skipper_tile_down_img], [skipper_tile_left_img]];
+
+    //Kiah
+    kiah_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    kiah_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    kiah_tile_down_img = loadImage('images/npc/Kiah.png');
+    kiah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    kiah_tile_imgs = [[kiah_tile_up_img], [kiah_tile_right_img], [kiah_tile_down_img], [kiah_tile_left_img]];
 
     //Mr.C
     mrC_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
@@ -741,6 +748,7 @@ function preload() {
     all_imgs[159] = [sand_tile_img];
     all_imgs[160] = [water12_tile_img];
     all_imgs[161] = [towel_tile_img];
+    all_imgs[162] = kiah_tile_imgs;
 
    /*
     class           obj

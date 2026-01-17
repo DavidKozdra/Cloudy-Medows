@@ -120,8 +120,7 @@ const TILE_DEFINITIONS = [
     /*101*/ { name: 'Building Supplies', png: 42, inv: [{num: 43, amount: 8}, {num: 44, amount: 12}, {num: 45, amount: 5}], under_tile_num: 1, class: 'Shop' },
     /*102*/ { name: 'Ticket Master', png: 149, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', places: ['Beach', 'The Big City', 'Cloudy Meadows'], travel_price: 10 },
     /*103*/ { name: 'Sarah', png: 26, inv: [{num: 36, amount: 5}, {num: 45, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
-    /*104*/ { name: 'Marcus', png: 26, inv: [{num: 7, amount: 10}, {num: 35, amount: 15}, {num: 13, amount: 8}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
-    /*105*/ { name: 'Elena', png: 26, inv: [{num: 35, amount: 8}, {num: 36, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: ['up', 'right', 'down', 'left'], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*104*/ { name: 'Elena', png: 26, inv: [{num: 35, amount: 8}, {num: 36, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: ['up', 'right', 'down', 'left'], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*106*/ { name: 'Thomas', png: 26, inv: [{num: 35, amount: 20}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*107*/ { name: 'Victoria', png: 26, inv: [{num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 57, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
     /*108*/ { name: 'Dante', png: 26, inv: [{num: 13, amount: 5}, {num: 2, amount: 10}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
@@ -139,7 +138,7 @@ const TILE_DEFINITIONS = [
     /*120*/ { name: 'sand', png: 159, collide: false, age: -1, class: 'Tile' },
     /*121*/ { name: 'water12', png: 160, collide: true, age: -1, class: 'Tile' },
     /*122*/ { name: 'towel', png: 161, collide: false, age: -1, class: 'Tile' },
-    /*123*/ { name: 'Kiah', png: 26, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: false, random_move: false }
+    /*123*/ { name: 'Kiah', png: 162, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: false, random_move: false }
 ];
 
 /*
