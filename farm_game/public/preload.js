@@ -327,6 +327,27 @@ function preload() {
     kiah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
     kiah_tile_imgs = [[kiah_tile_up_img], [kiah_tile_right_img], [kiah_tile_down_img], [kiah_tile_left_img]];
 
+    //Sarah
+    sarah_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    sarah_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    sarah_tile_down_img = loadImage('images/npc/sarah.png');
+    sarah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    sarah_tile_imgs = [[sarah_tile_up_img], [sarah_tile_right_img], [sarah_tile_down_img], [sarah_tile_left_img]];
+
+    //Thomas
+    thomas_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    thomas_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    thomas_tile_down_img = loadImage('images/npc/Thomas.png');
+    thomas_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    thomas_tile_imgs = [[thomas_tile_up_img], [thomas_tile_right_img], [thomas_tile_down_img], [thomas_tile_left_img]];
+
+    //Victoria
+    victoria_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    victoria_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    victoria_tile_down_img = loadImage('images/npc/Victoria.png');
+    victoria_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    victoria_tile_imgs = [[victoria_tile_up_img], [victoria_tile_right_img], [victoria_tile_down_img], [victoria_tile_left_img]];
+
     //Mr.C
     mrC_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
     mrC_tile_right_img = loadImage('images/npc/mrC_Right.png');
@@ -744,7 +765,10 @@ function preload() {
     /*159*/[sand_tile_img],
     /*160*/[water12_tile_img],
     /*161*/[towel_tile_img],
-    /*162*/kiah_tile_imgs
+    /*162*/kiah_tile_imgs,
+    /*163*/sarah_tile_imgs,
+    /*164*/thomas_tile_imgs,
+    /*165*/victoria_tile_imgs
     ];
     
     // Beach tiles and Kiah properly defined in array above
