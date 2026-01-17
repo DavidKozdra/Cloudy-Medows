@@ -19,6 +19,7 @@ function preload() {
     veggy_press_img = loadImage('images/items/veg_oil_maker.png');
     bed_item_img = loadImage('images/tiles/Bed.png');
     wall_item_img = loadImage('images/tiles/Wood.png');
+    axe_img = loadImage('images/items/Axe.png');
 
     //Tile
     grass_tile_img = loadImage('images/tiles/Grass.png');
@@ -330,7 +331,7 @@ function preload() {
     //Sarah
     sarah_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
     sarah_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
-    sarah_tile_down_img = loadImage('images/npc/sarah.png');
+    sarah_tile_down_img = loadImage('images/npc/Sarah.png');
     sarah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
     sarah_tile_imgs = [[sarah_tile_up_img], [sarah_tile_right_img], [sarah_tile_down_img], [sarah_tile_left_img]];
 
@@ -347,6 +348,13 @@ function preload() {
     victoria_tile_down_img = loadImage('images/npc/Victoria.png');
     victoria_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
     victoria_tile_imgs = [[victoria_tile_up_img], [victoria_tile_right_img], [victoria_tile_down_img], [victoria_tile_left_img]];
+
+    //Elena
+    elena_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    elena_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    elena_tile_down_img = loadImage('images/npc/elena.png');
+    elena_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    elena_tile_imgs = [[elena_tile_up_img], [elena_tile_right_img], [elena_tile_down_img], [elena_tile_left_img]];
 
     //Mr.C
     mrC_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
@@ -766,9 +774,11 @@ function preload() {
     /*160*/[water12_tile_img],
     /*161*/[towel_tile_img],
     /*162*/kiah_tile_imgs,
-    /*163*/sarah_tile_imgs,
-    /*164*/thomas_tile_imgs,
-    /*165*/victoria_tile_imgs
+    /*163*/axe_img,
+    /*164*/sarah_tile_imgs,
+    /*165*/thomas_tile_imgs,
+    /*166*/victoria_tile_imgs,
+    /*167*/elena_tile_imgs
     ];
     
     // Beach tiles and Kiah properly defined in array above
