@@ -1452,6 +1452,20 @@ function drawLightning() {
 
 // Update and render falling frogs for frog rain
 function updateFrogRain() {
+    // Check if frogs are disabled in critter settings
+    console.log('window.customRules:', window.customRules);
+    const crittersEnabled = window.customRules?.crittersEnabled;
+    const frogsEnabled = !crittersEnabled || crittersEnabled['Frog'] !== false;
+    
+    console.log('updateFrogRain check - crittersEnabled:', crittersEnabled, 'Frog value:', crittersEnabled?.['Frog'], 'frogsEnabled:', frogsEnabled);
+    
+    // If frogs disabled, clear any existing frog rain entities and don't spawn
+    if (!frogsEnabled) {
+        frogRainEntities = [];
+        console.log('Frogs DISABLED - not spawning');
+        return;
+    }
+    
     // Don't update weather when paused
     if (paused) {
         // Still render but don't update positions
@@ -1469,7 +1483,9 @@ function updateFrogRain() {
     }
     
     // SYSTEM 1: Spawn visual falling frogs from sky
+    console.log('SYSTEM 1 CHECK - about to spawn visual frog');
     if (Math.random() < frogRainSpawnChance && frogRainEntities.length < 15) {
+        console.log('SYSTEM 1 SPAWNING VISUAL FROG!');
         const newFrog = {
             x: Math.random() * canvasWidth,
             y: -32,
@@ -1519,7 +1535,9 @@ function updateFrogRain() {
     }
     
     // SYSTEM 2: Spawn new frogs directly on tiles periodically
-    if (Math.random() < 0.02) { // 10% chance each frame to spawn a frog
+    console.log('SYSTEM 2 CHECK - about to spawn tile frog');
+    if (Math.random() < 0.02) { // 2% chance each frame to spawn a frog
+        console.log('SYSTEM 2 SPAWNING TILE FROG!');
         const currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
         const mapHeight = currentLevelMap.length;
         const mapWidth = currentLevelMap[0].length;

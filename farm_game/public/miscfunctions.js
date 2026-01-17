@@ -504,6 +504,7 @@ function selectCustomDifficulty(features){
         // PRESERVE all custom config from modal!
         weatherWeights: modalRules.weatherWeights || null,
         npcEnabled: modalRules.npcEnabled || null,
+        crittersEnabled: modalRules.crittersEnabled || null,
         areasEnabled: modalRules.areasEnabled || null,
         itemsEnabled: modalRules.itemsEnabled || null,
         itemPriceMultiplier: modalRules.itemPriceMultiplier ?? 100
@@ -516,6 +517,7 @@ function selectCustomDifficulty(features){
         startingCoins: 0,
         weatherWeights: null,
         npcEnabled: null,
+        crittersEnabled: null,
         areasEnabled: null,
         itemsEnabled: null,
         itemPriceMultiplier: 100
@@ -1644,6 +1646,7 @@ function saveConfigModal() {
                     out[name] = el.classList.contains('active');
                 });
             }
+            console.log('SAVING crittersEnabled:', out);
             return out;
         })(),
         // Per-item prices
@@ -1664,6 +1667,7 @@ function saveConfigModal() {
     };
 
     window.customRules = newRules;
+    console.log('AFTER SAVE - window.customRules.crittersEnabled:', window.customRules.crittersEnabled);
 
     // Persist to Day_curLvl_Dif without clobbering other fields
     try {
