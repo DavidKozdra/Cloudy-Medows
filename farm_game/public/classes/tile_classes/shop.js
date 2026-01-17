@@ -85,11 +85,43 @@ class Shop extends Entity {
         push()
         imageMode(CENTER);
         this.under_tile.render()
-        if(this.name == 'Hotdog Stand'){
-            image(all_imgs[this.png][this.variant], this.pos.x + (tileSize / 2)-9, this.pos.y + (tileSize / 2));
+        
+        // Safety check: ensure image exists
+        if (!all_imgs[this.png]) {
+            console.warn('Missing image for shop:', this.name, 'png:', this.png);
+            pop();
+            return;
         }
-        else{
-            image(all_imgs[this.png][this.variant], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
+        
+        // Check if this is an NPC-style sprite (3D array with facing) or a tile-style sprite (2D array with variants)
+        const isNPCStyle = Array.isArray(all_imgs[this.png][0]) && all_imgs[this.png][0].length > 0;
+        
+        if (isNPCStyle) {
+            // NPC-style: all_imgs[png][facing][frame]
+            const facing = this.facing !== undefined ? this.facing : 2; // Default to facing down
+            if (!all_imgs[this.png][facing] || !all_imgs[this.png][facing][0]) {
+                console.warn('Missing NPC image for shop:', this.name, 'png:', this.png, 'facing:', facing);
+                pop();
+                return;
+            }
+            if(this.name == 'Hotdog Stand'){
+                image(all_imgs[this.png][facing][0], this.pos.x + (tileSize / 2)-9, this.pos.y + (tileSize / 2));
+            } else {
+                image(all_imgs[this.png][facing][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
+            }
+        } else {
+            // Tile-style: all_imgs[png][variant]
+            const variant = this.variant !== undefined ? this.variant : 0;
+            if (!all_imgs[this.png][variant]) {
+                console.warn('Missing tile image for shop:', this.name, 'png:', this.png, 'variant:', variant);
+                pop();
+                return;
+            }
+            if(this.name == 'Hotdog Stand'){
+                image(all_imgs[this.png][variant], this.pos.x + (tileSize / 2)-9, this.pos.y + (tileSize / 2));
+            } else {
+                image(all_imgs[this.png][variant], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
+            }
         }
         pop()
     }

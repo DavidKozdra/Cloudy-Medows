@@ -15,6 +15,12 @@ class MoveableEntity extends Entity {
         if(this.under_tile != 0){
             this.under_tile.render();
         }
+        // Safety check: ensure the image exists before rendering
+        if (!all_imgs[this.png] || !all_imgs[this.png][this.facing] || !all_imgs[this.png][this.facing][0]) {
+            console.warn('Missing image for entity:', this.name, 'png:', this.png, 'facing:', this.facing);
+            pop();
+            return;
+        }
         image(all_imgs[this.png][this.facing][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); // [0] => [this.anim] if we ever get more frames
         pop();
     }

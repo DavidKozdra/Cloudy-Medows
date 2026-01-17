@@ -1646,7 +1646,6 @@ function saveConfigModal() {
                     out[name] = el.classList.contains('active');
                 });
             }
-            console.log('SAVING crittersEnabled:', out);
             return out;
         })(),
         // Per-item prices
@@ -1667,7 +1666,6 @@ function saveConfigModal() {
     };
 
     window.customRules = newRules;
-    console.log('AFTER SAVE - window.customRules.crittersEnabled:', window.customRules.crittersEnabled);
 
     // Persist to Day_curLvl_Dif without clobbering other fields
     try {

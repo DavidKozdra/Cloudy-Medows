@@ -63,8 +63,15 @@ class Tile {
         if (this.name == 'hori_fence' || this.name == 'vert_fence' || this.name == 'top_right_corner_fence' || this.name == 'bottom_right_corner_fence' || this.name == 'top_left_corner_fence' || this.name == 'bottom_left_corner_fence') {
             image(all_imgs[94][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); //park grass under
         }
+        // Safety check: ensure the image exists before rendering
+        if (!all_imgs[this.png] || !all_imgs[this.png][this.variant]) {
+            console.warn('Missing image for tile:', this.name, 'png:', this.png, 'variant:', this.variant);
+            pop();
+            return;
+        }
         image(all_imgs[this.png][this.variant], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2));
         pop()
+        if (!all_imgs[this.png] || !all_imgs[this.png][this.variant]) return;
         if(paused){
             all_imgs[this.png][this.variant].pause();
         }

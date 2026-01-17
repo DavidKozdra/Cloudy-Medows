@@ -150,7 +150,8 @@ class GridMoveEntity extends MoveableEntity{
             }
 
             this.anim += 1;
-            if (this.anim > all_imgs[this.png][this.facing].length) {
+            // Safety check: ensure the image exists before checking length
+            if (all_imgs[this.png] && all_imgs[this.png][this.facing] && this.anim > all_imgs[this.png][this.facing].length) {
                 this.anim = 0;
             }
             this.moving_timer = this.max_moving_timer;

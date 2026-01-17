@@ -387,7 +387,10 @@ class Level {
                         this.map[i][j].randomMove(x, y);
                     }
                     if (this.map[i][j].name == 'flower') {
-                        if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
+                        // Check if Bees are enabled before spawning
+                        const beesEnabled = !window.customRules || !window.customRules.crittersEnabled || 
+                                           window.customRules.crittersEnabled['Bees'] !== false;
+                        if (beesEnabled && this.map[i][j].age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
                             this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
@@ -429,7 +432,10 @@ class Level {
                         this.map[i][j].randomMove(j, i);
                     }
                     if (this.map[i][j].name == 'flower') {
-                        if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
+                        // Check if Bees are enabled before spawning
+                        const beesEnabled = !window.customRules || !window.customRules.crittersEnabled || 
+                                           window.customRules.crittersEnabled['Bees'] !== false;
+                        if (beesEnabled && this.map[i][j].age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
                             this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
