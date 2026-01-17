@@ -64,10 +64,18 @@ class Shop extends Entity {
 
     getSellPrice(itemName) {
         // Price player gets for selling to shop (25% discount on BASE price)
+        // First check shop inventory
         for(let i = 0; i < this.inv.length; i++){
             if(this.inv[i] != 0 && this.inv[i].name == itemName){
                 let basePrice = this.originalPrices[i] || this.inv[i].price;
                 return round(basePrice * 0.75);
+            }
+        }
+        // If not in shop inv, check all_items for the price (including custom prices)
+        if (typeof item_name_to_num === 'function' && typeof all_items !== 'undefined') {
+            const itemNum = item_name_to_num(itemName);
+            if (itemNum >= 0 && all_items[itemNum] && all_items[itemNum].price) {
+                return round(all_items[itemNum].price * 0.75);
             }
         }
         return 0;

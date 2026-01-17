@@ -1355,7 +1355,7 @@ button {
 
 /* Sprite grid styling */
 .config-sprite-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 }
 .config-sprite-item {
     display: flex;
@@ -1383,6 +1383,56 @@ button {
 .config-grid-item:not(.active) .config-sprite-canvas,
 .config-grid-item:not(.active) .config-sprite-img {
     filter: grayscale(100%) brightness(0.6);
+}
+
+/* Items grid - use table-like layout for alignment */
+#cfg-items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.config-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+}
+.config-item-row .config-sprite-item {
+    flex-direction: row;
+    gap: 8px;
+    min-width: 150px;
+    justify-content: flex-start;
+}
+.config-item-row .config-sprite-label {
+    font-size: 12px;
+    text-align: left;
+}
+.config-price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.config-price-label {
+    font-size: 14px;
+    color: #8f8;
+    font-weight: bold;
+}
+.config-item-price {
+    width: 70px;
+    padding: 4px 6px;
+    font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    text-align: right;
+}
+.config-item-price:focus {
+    outline: none;
+    border-color: #4a90d9;
 }
 
 .config-more-btn {

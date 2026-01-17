@@ -294,6 +294,14 @@ class Player extends MoveableEntity {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 1;
                     if (this.pos.x + tileSize >= canvasWidth) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y] ? levels[currentLevel_y][currentLevel_x + 1] : null;
+                        // For RIGHT, we allow undefined (creates extra levels) but not 0
+                        if (nextLevel === 0) {
+                            // Level slot is 0 (blocked) - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
                         if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
                             levels[currentLevel_y][currentLevel_x].level_name_popup = false;
@@ -354,6 +362,13 @@ class Player extends MoveableEntity {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 3;
                     if (this.pos.x - tileSize < 0) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y] ? levels[currentLevel_y][currentLevel_x - 1] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level to the left - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
                         if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
                             levels[currentLevel_y][currentLevel_x].level_name_popup = false;
@@ -387,6 +402,13 @@ class Player extends MoveableEntity {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 0;
                     if (this.pos.y - tileSize < 0) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y - 1] ? levels[currentLevel_y - 1][currentLevel_x] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level above - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
                         if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
                             levels[currentLevel_y][currentLevel_x].level_name_popup = false;
@@ -430,6 +452,13 @@ class Player extends MoveableEntity {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 2;
                     if (this.pos.y + tileSize >= canvasHeight) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y + 1] ? levels[currentLevel_y + 1][currentLevel_x] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level below - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
                         if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
                             levels[currentLevel_y][currentLevel_x].level_name_popup = false;

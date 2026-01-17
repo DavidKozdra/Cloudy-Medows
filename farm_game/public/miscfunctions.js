@@ -577,7 +577,7 @@ function selectCustomDifficulty(features){
     applyNPCFilterRules();
     applyCritterFilterRules();
     applyAreaRules();
-    applyItemPriceMultiplier();
+    applyItemPrices();
     removeDisabledItemsFromInventory();
 
     levels[currentLevel_y][currentLevel_x].level_name_popup = true;
@@ -1294,37 +1294,7 @@ function ensureConfigModal() {
         moreBtn.textContent = isHidden ? '▼ More Options' : '▶ More Options';
     });
 
-    // Item Min Cost slider
-    const itemCostTitle = document.createElement('div');
-    itemCostTitle.className = 'config-subtitle';
-    itemCostTitle.textContent = 'Item Price Multiplier';
-    moreSection.appendChild(itemCostTitle);
-
-    const itemCostRow = document.createElement('div');
-    itemCostRow.className = 'config-row';
-    const itemCostLabel = document.createElement('label');
-    itemCostLabel.className = 'config-label';
-    itemCostLabel.textContent = 'Price Multiplier';
-    const itemCostSlider = document.createElement('input');
-    itemCostSlider.type = 'range';
-    itemCostSlider.id = 'cfg-item-price-mult';
-    itemCostSlider.className = 'config-slider';
-    itemCostSlider.min = '0';
-    itemCostSlider.max = '500';
-    itemCostSlider.step = '10';
-    itemCostSlider.value = '100';
-    const itemCostBadge = document.createElement('span');
-    itemCostBadge.className = 'config-slider-value';
-    itemCostBadge.textContent = '100%';
-    itemCostSlider.addEventListener('input', () => {
-        itemCostBadge.textContent = itemCostSlider.value + '%';
-    });
-    itemCostRow.appendChild(itemCostLabel);
-    itemCostRow.appendChild(itemCostSlider);
-    itemCostRow.appendChild(itemCostBadge);
-    moreSection.appendChild(itemCostRow);
-
-    // Items toggle grid
+    // Items toggle grid with individual prices
     const itemsTitle = document.createElement('div');
     itemsTitle.className = 'config-subtitle';
     itemsTitle.textContent = 'Items (Enable/Disable)';
@@ -1390,6 +1360,14 @@ function ensureConfigModal() {
     itemDefs.forEach((item, idx) => {
         if (!item || idx === 0) return; // Skip empty slot
         if (!item.name) return;
+        
+        // Container for item row
+        const itemRow = document.createElement('div');
+        itemRow.className = 'config-item-row';
+        itemRow.dataset.itemIdx = idx;
+        itemRow.dataset.itemName = item.name;
+        
+        // Toggle button
         const btn = document.createElement('button');
         btn.className = 'config-grid-item config-sprite-item active'; // Items on by default
         btn.dataset.itemIdx = idx;
@@ -1415,7 +1393,34 @@ function ensureConfigModal() {
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
         });
-        itemsGrid.appendChild(btn);
+        itemRow.appendChild(btn);
+        
+        // Price input (only for items that have a base price)
+        const basePrice = item.price || 0;
+        if (basePrice > 0) {
+            const priceWrapper = document.createElement('div');
+            priceWrapper.className = 'config-price-wrapper';
+            
+            const priceLabel = document.createElement('span');
+            priceLabel.className = 'config-price-label';
+            priceLabel.textContent = '$';
+            priceWrapper.appendChild(priceLabel);
+            
+            const priceInput = document.createElement('input');
+            priceInput.type = 'number';
+            priceInput.className = 'config-item-price';
+            priceInput.dataset.itemIdx = idx;
+            priceInput.min = '1';
+            priceInput.max = '999999';
+            priceInput.value = basePrice;
+            priceInput.title = 'Price for ' + item.name;
+            priceInput.placeholder = basePrice;
+            priceWrapper.appendChild(priceInput);
+            
+            itemRow.appendChild(priceWrapper);
+        }
+        
+        itemsGrid.appendChild(itemRow);
     });
     moreSection.appendChild(itemsGrid);
     // Items quick actions
@@ -1522,11 +1527,19 @@ function showConfigModal() {
     // Items grid state (in More section)
     const itemsGrid = document.getElementById('cfg-items-grid');
     const itemsEnabled = rules.itemsEnabled || null;
+    const itemPrices = rules.itemPrices || {};
     if (itemsGrid) {
         Array.from(itemsGrid.querySelectorAll('.config-grid-item')).forEach(el => {
             const idx = el.dataset.itemIdx;
             const isOn = itemsEnabled == null ? true : !!itemsEnabled[idx];
             el.classList.toggle('active', isOn);
+        });
+        // Load per-item prices
+        Array.from(itemsGrid.querySelectorAll('.config-item-price')).forEach(inp => {
+            const idx = inp.dataset.itemIdx;
+            if (itemPrices[idx] !== undefined) {
+                inp.value = itemPrices[idx];
+            }
         });
     }
 
@@ -1539,14 +1552,6 @@ function showConfigModal() {
             const isOn = crittersEnabled == null ? true : !!crittersEnabled[name];
             el.classList.toggle('active', isOn);
         });
-    }
-
-    // Item price multiplier
-    const priceMultSlider = document.getElementById('cfg-item-price-mult');
-    const priceMultBadge = priceMultSlider?.parentElement?.querySelector('.config-slider-value');
-    if (priceMultSlider) {
-        priceMultSlider.value = rules.itemPriceMultiplier ?? 100;
-        if (priceMultBadge) priceMultBadge.textContent = (rules.itemPriceMultiplier ?? 100) + '%';
     }
 
     overlay.style.display = 'flex';
@@ -1641,8 +1646,21 @@ function saveConfigModal() {
             }
             return out;
         })(),
-        // Item price multiplier (percentage)
-        itemPriceMultiplier: clampInt(document.getElementById('cfg-item-price-mult')?.value, 0, 500, 100)
+        // Per-item prices
+        itemPrices: (() => {
+            const grid = document.getElementById('cfg-items-grid');
+            const out = {};
+            if (grid) {
+                Array.from(grid.querySelectorAll('.config-item-price')).forEach(inp => {
+                    const idx = inp.dataset.itemIdx;
+                    const price = parseInt(inp.value);
+                    if (!isNaN(price) && price > 0) {
+                        out[idx] = price;
+                    }
+                });
+            }
+            return out;
+        })()
     };
 
     window.customRules = newRules;
@@ -1662,7 +1680,7 @@ function saveConfigModal() {
     applyNPCFilterRules();
     applyCritterFilterRules();
     applyAreaRules();
-    applyItemPriceMultiplier();
+    applyItemPrices();
     removeDisabledItemsFromInventory();
     // Immediately re-generate today's weather using the new weights
     if (typeof generateDailyWeather === 'function') {
@@ -1897,11 +1915,10 @@ function removeDisabledItemsFromInventory() {
     console.log('removeDisabledItemsFromInventory: Removed', removedCount, 'items');
 }
 
-// Apply item price multiplier to all items
-function applyItemPriceMultiplier() {
+// Apply per-item custom prices
+function applyItemPrices() {
     if (!window.customRules) return;
-    const mult = (window.customRules.itemPriceMultiplier ?? 100) / 100;
-    if (mult === 1) return; // No change needed
+    const prices = window.customRules.itemPrices || {};
     
     // Store original prices if not already stored
     if (!window._originalItemPrices) {
@@ -1915,15 +1932,45 @@ function applyItemPriceMultiplier() {
         }
     }
     
-    // Apply multiplier
+    // Apply custom prices to all_items
     if (typeof all_items !== 'undefined') {
-        for (let i = 0; i < all_items.length; i++) {
-            if (all_items[i] && window._originalItemPrices[i] !== undefined) {
-                all_items[i].price = Math.max(1, Math.round(window._originalItemPrices[i] * mult));
+        for (const [idx, price] of Object.entries(prices)) {
+            const i = parseInt(idx);
+            if (!isNaN(i) && all_items[i] && price > 0) {
+                all_items[i].price = price;
+                console.log('Set all_items[' + i + '].price =', price, '(' + all_items[i].name + ')');
             }
         }
     }
-    console.log('Item prices multiplied by', mult);
+    
+    // Also update shop inventories and their originalPrices cache
+    if (typeof levels !== 'undefined' && levels) {
+        for (let y = 0; y < levels.length; y++) {
+            for (let x = 0; x < levels[y].length; x++) {
+                const lvl = levels[y][x];
+                if (!lvl || !lvl.map) continue;
+                for (let row of lvl.map) {
+                    for (let tile of row) {
+                        if (tile && tile.class === 'Shop' && tile.inv) {
+                            for (let j = 0; j < tile.inv.length; j++) {
+                                if (tile.inv[j] != 0 && tile.inv[j].name) {
+                                    const itemNum = typeof item_name_to_num === 'function' ? item_name_to_num(tile.inv[j].name) : -1;
+                                    const strKey = String(itemNum);
+                                    if (prices[strKey] !== undefined && prices[strKey] > 0) {
+                                        tile.inv[j].price = prices[strKey];
+                                        tile.originalPrices[j] = prices[strKey];
+                                        console.log('Updated shop', tile.name, 'item', tile.inv[j].name, 'price to', prices[strKey]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    console.log('Applied custom item prices:', prices);
 }
 
 // Get effective item - returns false if item is disabled
@@ -2896,7 +2943,7 @@ function loadAll(){
     applyNPCFilterRules();
     applyCritterFilterRules();
     applyAreaRules();
-    applyItemPriceMultiplier();
+    applyItemPrices();
     removeDisabledItemsFromInventory();
 }
 
