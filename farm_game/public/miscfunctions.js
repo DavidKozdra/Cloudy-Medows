@@ -19,8 +19,9 @@ function updateCanvasPointerEvents() {
     const pauseMenuVisible = document.getElementById('pause-menu')?.style.display !== 'none';
     const questsVisible = document.querySelector('.quests-container')?.style.display !== 'none';
     const loseScreenVisible = document.getElementById('lose-screen')?.style.display !== 'none';
+    const configModalVisible = document.getElementById('config-overlay')?.style.display !== 'none';
     
-    const anyMenuVisible = mainMenuVisible || difficultyMenuVisible || optionsMenuVisible || creditsMenuVisible || pauseMenuVisible || questsVisible || loseScreenVisible;
+    const anyMenuVisible = mainMenuVisible || difficultyMenuVisible || optionsMenuVisible || creditsMenuVisible || pauseMenuVisible || questsVisible || loseScreenVisible || configModalVisible;
     canvas.style.pointerEvents = anyMenuVisible ? 'none' : 'auto';
 }
 
@@ -285,9 +286,7 @@ function showDifficultyMenu(){
                 features: [
                     { label: 'Money Loss', icon: 'checkmark.png', enabled: true, toggleable: true },
                     { label: 'Food Rot', icon: 'checkmark.png', enabled: true, toggleable: true },
-                    { label: 'Perma Death', icon: 'x.png', enabled: false, toggleable: true },
-                    { label: 'Quest Coins', type: 'number', value: 10000, id: 'custom-quest-coins' },
-                    { label: 'Quest Days', type: 'number', value: 100, id: 'custom-quest-days' }
+                    { label: 'Perma Death', icon: 'x.png', enabled: false, toggleable: true }
                 ],
                 difficulty: 3
             }
@@ -371,6 +370,18 @@ function showDifficultyMenu(){
                 }
             });
             card.appendChild(btn);
+
+            // Add Configure button for Custom difficulty to open modal
+            if (diff.id === 'custom') {
+                const cfgBtn = document.createElement('button');
+                cfgBtn.className = 'difficulty-select-btn';
+                cfgBtn.textContent = 'Configure';
+                cfgBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showConfigModal();
+                });
+                card.appendChild(cfgBtn);
+            }
             
             container.appendChild(card);
         }
@@ -477,15 +488,24 @@ function selectCustomDifficulty(features){
     
     const questCoinsInput = document.getElementById('custom-quest-coins');
     const questDaysInput = document.getElementById('custom-quest-days');
-
-    // Store custom rules globally
-    window.customRules = {
+    // Prefer rules saved via modal; otherwise build from card state
+    const modalRules = window.customRules || null;
+    const rules = modalRules ? {
+        moneyLoss: typeof modalRules.moneyLoss === 'boolean' ? modalRules.moneyLoss : features[0].enabled,
+        foodRot: typeof modalRules.foodRot === 'boolean' ? modalRules.foodRot : features[1].enabled,
+        permaDeath: typeof modalRules.permaDeath === 'boolean' ? modalRules.permaDeath : features[2].enabled,
+        mainQuestCoins: (typeof modalRules.mainQuestCoins === 'number' ? modalRules.mainQuestCoins : (questCoinsInput ? parseInt(questCoinsInput.value) : 10000)),
+        mainQuestDays: (typeof modalRules.mainQuestDays === 'number' ? modalRules.mainQuestDays : (questDaysInput ? parseInt(questDaysInput.value) : 100)),
+        startingCoins: (typeof modalRules.startingCoins === 'number' ? modalRules.startingCoins : 0)
+    } : {
         moneyLoss: features[0].enabled,
         foodRot: features[1].enabled,
         permaDeath: features[2].enabled,
         mainQuestCoins: questCoinsInput ? parseInt(questCoinsInput.value) : 10000,
-        mainQuestDays: questDaysInput ? parseInt(questDaysInput.value) : 100
+        mainQuestDays: questDaysInput ? parseInt(questDaysInput.value) : 100,
+        startingCoins: 0
     };
+    window.customRules = rules;
     
     try {
         localData.set('Day_curLvl_Dif', {day: 0, currentLevel_y, currentLevel_x, dificulty, customRules: window.customRules});
@@ -519,7 +539,22 @@ function selectCustomDifficulty(features){
                 }
             }
         }
+        // Apply starting coins immediately on new games (no saved player yet)
+        try {
+            const hasSavedPlayer = localData.get('player') != null;
+            if (!hasSavedPlayer && typeof window.customRules?.startingCoins === 'number') {
+                player.coins = window.customRules.startingCoins;
+            }
+        } catch (e) {
+            // If localData is unavailable, fall back to applying when coins are zero
+            if (player.coins === 0 && typeof window.customRules?.startingCoins === 'number') {
+                player.coins = window.customRules.startingCoins;
+            }
+        }
     }
+
+    // Apply NPC filter rules immediately when starting with custom difficulty
+    applyNPCFilterRules();
 
     levels[currentLevel_y][currentLevel_x].level_name_popup = true;
 }
@@ -845,6 +880,7 @@ function showTitleOptions(){
             }
         });
         buttonGroup.appendChild(clearBtn);
+
         optionsMenu.appendChild(buttonGroup);
         
         const backBtn = document.createElement('button');
@@ -884,6 +920,406 @@ function hideTitleOptions(){
     const optionsMenu = document.getElementById('options-menu');
     if (optionsMenu) optionsMenu.style.display = 'none';
     updateCanvasPointerEvents();
+}
+
+// ==================== CONFIG MODAL ====================
+function ensureConfigModal() {
+    let overlay = document.getElementById('config-overlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'config-overlay';
+    overlay.className = 'config-overlay';
+    document.body.appendChild(overlay);
+
+    const modal = document.createElement('div');
+    modal.className = 'config-modal';
+    overlay.appendChild(modal);
+
+    const title = document.createElement('h3');
+    title.className = 'config-title';
+    title.textContent = 'Configure Game Rules';
+    modal.appendChild(title);
+
+    const rows = [];
+    function addSliderRow(labelText, id, min = 0, max = 100, step = 1) {
+        const row = document.createElement('div');
+        row.className = 'config-row';
+        const label = document.createElement('label');
+        label.className = 'config-label';
+        label.htmlFor = id;
+        label.textContent = labelText;
+        const input = document.createElement('input');
+        input.type = 'range';
+        input.id = id;
+        input.className = 'config-slider';
+        input.min = String(min);
+        input.max = String(max);
+        input.step = String(step);
+        const valueBadge = document.createElement('span');
+        valueBadge.className = 'config-slider-value';
+        valueBadge.textContent = '0';
+        input.addEventListener('input', () => {
+            valueBadge.textContent = String(input.value);
+            // Keep total at 100 by balancing with Clear
+            normalizeWeatherTotal(id);
+        });
+        row.appendChild(label);
+        row.appendChild(input);
+        row.appendChild(valueBadge);
+        modal.appendChild(row);
+        rows.push(input);
+    }
+    function addNumberRow(labelText, id, placeholder) {
+        const row = document.createElement('div');
+        row.className = 'config-row';
+        const label = document.createElement('label');
+        label.className = 'config-label';
+        label.htmlFor = id;
+        label.textContent = labelText;
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.id = id;
+        input.className = 'config-input';
+        input.placeholder = placeholder || '';
+        row.appendChild(label);
+        row.appendChild(input);
+        modal.appendChild(row);
+        rows.push(input);
+    }
+
+    function addToggleRow(labelText, id) {
+        const row = document.createElement('div');
+        row.className = 'config-row';
+        const label = document.createElement('label');
+        label.className = 'config-label';
+        label.htmlFor = id;
+        label.textContent = labelText;
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = id;
+        input.className = 'config-checkbox';
+        row.appendChild(label);
+        row.appendChild(input);
+        modal.appendChild(row);
+        rows.push(input);
+    }
+
+    addNumberRow('Main Quest Coins', 'cfg-main-quest-coins', 'e.g. 10000');
+    addNumberRow('Main Quest Days', 'cfg-main-quest-days', 'e.g. 100');
+    addNumberRow('Starting Coins', 'cfg-starting-coins', 'e.g. 0');
+    addToggleRow('Money Loss', 'cfg-money-loss');
+    addToggleRow('Food Rot', 'cfg-food-rot');
+    addToggleRow('Perma Death', 'cfg-perma-death');
+
+    // NPC toggle grid
+    const npcTitle = document.createElement('div');
+    npcTitle.className = 'config-subtitle';
+    npcTitle.textContent = 'NPCs (Enable/Disable)';
+    modal.appendChild(npcTitle);
+    const npcGrid = document.createElement('div');
+    npcGrid.id = 'cfg-npc-grid';
+    npcGrid.className = 'config-grid';
+    // Build grid from dialogue keys (fallback to empty list)
+    const npcNames = Object.keys(typeof Dialouge_JSON !== 'undefined' && Dialouge_JSON ? Dialouge_JSON : {});
+    npcNames.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'config-grid-item';
+        btn.dataset.npcName = name;
+        btn.textContent = name;
+        // Click toggles active state
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+        });
+        npcGrid.appendChild(btn);
+    });
+    modal.appendChild(npcGrid);
+    // Quick actions
+    const npcActions = document.createElement('div');
+    npcActions.className = 'config-actions';
+    const allOnBtn = document.createElement('button');
+    allOnBtn.className = 'config-btn';
+    allOnBtn.textContent = 'All On';
+    allOnBtn.addEventListener('click', () => {
+        Array.from(npcGrid.querySelectorAll('.config-grid-item')).forEach(el => el.classList.add('active'));
+    });
+    const allOffBtn = document.createElement('button');
+    allOffBtn.className = 'config-btn';
+    allOffBtn.textContent = 'All Off';
+    allOffBtn.addEventListener('click', () => {
+        Array.from(npcGrid.querySelectorAll('.config-grid-item')).forEach(el => el.classList.remove('active'));
+    });
+    npcActions.appendChild(allOnBtn);
+    npcActions.appendChild(allOffBtn);
+    modal.appendChild(npcActions);
+
+    // Weather rarity sliders (weights; higher = more likely)
+    const weatherTitle = document.createElement('div');
+    weatherTitle.className = 'config-subtitle';
+    weatherTitle.textContent = 'Weather Rarity (Weights)';
+    modal.appendChild(weatherTitle);
+    addSliderRow('Clear', 'cfg-weather-clear', 0, 100, 1);
+    addSliderRow('Partly Cloudy', 'cfg-weather-partly', 0, 100, 1);
+    addSliderRow('Overcast', 'cfg-weather-overcast', 0, 100, 1);
+    addSliderRow('Fog', 'cfg-weather-fog', 0, 100, 1);
+    addSliderRow('Sunshower', 'cfg-weather-sunshower', 0, 100, 1);
+    addSliderRow('Rain', 'cfg-weather-rain', 0, 100, 1);
+    addSliderRow('Thunderstorm', 'cfg-weather-thunderstorm', 0, 100, 1);
+    addSliderRow('Frog Rain', 'cfg-weather-frog', 0, 100, 1);
+
+    // Total indicator (always kept at 100%)
+    const totalRow = document.createElement('div');
+    totalRow.className = 'config-row';
+    const totalSpacer = document.createElement('div');
+    totalSpacer.style.flex = '1';
+    const totalBadge = document.createElement('div');
+    totalBadge.id = 'cfg-weather-total';
+    totalBadge.className = 'config-slider-remaining';
+    totalBadge.textContent = 'Total: 100%';
+    totalRow.appendChild(totalSpacer);
+    totalRow.appendChild(totalBadge);
+    modal.appendChild(totalRow);
+
+
+    const actions = document.createElement('div');
+    actions.className = 'config-actions';
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'config-btn';
+    saveBtn.textContent = 'Save';
+    saveBtn.addEventListener('click', () => {
+        saveConfigModal();
+    });
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'config-btn';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', hideConfigModal);
+    actions.appendChild(cancelBtn);
+    actions.appendChild(saveBtn);
+    modal.appendChild(actions);
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) hideConfigModal();
+    });
+
+    return overlay;
+}
+
+function showConfigModal() {
+    const overlay = ensureConfigModal();
+    // Populate fields from current rules or defaults
+    const rules = window.customRules || {};
+    document.getElementById('cfg-main-quest-coins').value = (rules.mainQuestCoins ?? 10000);
+    document.getElementById('cfg-main-quest-days').value = (rules.mainQuestDays ?? 100);
+    document.getElementById('cfg-starting-coins').value = (rules.startingCoins ?? 0);
+    document.getElementById('cfg-money-loss').checked = !!(rules.moneyLoss ?? true);
+    document.getElementById('cfg-food-rot').checked = !!(rules.foodRot ?? true);
+    document.getElementById('cfg-perma-death').checked = !!(rules.permaDeath ?? false);
+    // NPC grid state
+    const npcGrid = document.getElementById('cfg-npc-grid');
+    const enabled = rules.npcEnabled || null;
+    if (npcGrid) {
+        const items = Array.from(npcGrid.querySelectorAll('.config-grid-item'));
+        items.forEach(el => {
+            const name = el.dataset.npcName;
+            const isOn = enabled == null ? true : !!enabled[name];
+            el.classList.toggle('active', isOn);
+            // Special visual emphasis for Mr.C
+            if (name === 'Mr.C') {
+                el.setAttribute('data-npc-name', 'Mr.C');
+            }
+        });
+    }
+    // Weather weights defaults mirror current system probabilities
+    const ww = rules.weatherWeights ?? {
+        'clear': 49.5,
+        'partly-cloudy': 15,
+        'overcast': 10,
+        'fog': 7,
+        'sunshower': 8,
+        'rain': 8,
+        'thunderstorm': 2,
+        'frog-rain': 0.5
+    };
+    const setSlider = (id, v) => { const el = document.getElementById(id); const badge = el?.parentElement?.querySelector('.config-slider-value'); if (el) el.value = v; if (badge) badge.textContent = String(v); };
+    setSlider('cfg-weather-clear', ww['clear']);
+    setSlider('cfg-weather-partly', ww['partly-cloudy']);
+    setSlider('cfg-weather-overcast', ww['overcast']);
+    setSlider('cfg-weather-fog', ww['fog']);
+    setSlider('cfg-weather-sunshower', ww['sunshower']);
+    setSlider('cfg-weather-rain', ww['rain']);
+    setSlider('cfg-weather-thunderstorm', ww['thunderstorm']);
+    setSlider('cfg-weather-frog', ww['frog-rain']);
+
+    // Normalize total to 100 by adjusting Clear accordingly
+    normalizeWeatherTotal(null);
+
+    overlay.style.display = 'flex';
+    updateCanvasPointerEvents();
+}
+
+function hideConfigModal() {
+    const overlay = document.getElementById('config-overlay');
+    if (overlay) overlay.style.display = 'none';
+    updateCanvasPointerEvents();
+}
+
+function clampInt(val, min, max, fallback) {
+    const n = parseInt(val);
+    if (isNaN(n)) return fallback;
+    return Math.max(min, Math.min(max, n));
+}
+
+function saveConfigModal() {
+    const newRules = {
+        mainQuestCoins: clampInt(document.getElementById('cfg-main-quest-coins').value, 0, 100000000, 10000),
+        mainQuestDays: clampInt(document.getElementById('cfg-main-quest-days').value, 0, 100000, 100),
+        startingCoins: clampInt(document.getElementById('cfg-starting-coins').value, 0, 100000000, 0),
+        moneyLoss: !!document.getElementById('cfg-money-loss').checked,
+        foodRot: !!document.getElementById('cfg-food-rot').checked,
+        permaDeath: !!document.getElementById('cfg-perma-death').checked,
+        // Build npcEnabled map from grid
+        npcEnabled: (() => {
+            const grid = document.getElementById('cfg-npc-grid');
+            const out = {};
+            if (grid) {
+                Array.from(grid.querySelectorAll('.config-grid-item')).forEach(el => {
+                    const name = el.dataset.npcName;
+                    out[name] = el.classList.contains('active');
+                });
+            }
+            return out;
+        })(),
+        weatherWeights: {
+            'clear': clampInt(document.getElementById('cfg-weather-clear').value, 0, 100, 49.5),
+            'partly-cloudy': clampInt(document.getElementById('cfg-weather-partly').value, 0, 100, 15),
+            'overcast': clampInt(document.getElementById('cfg-weather-overcast').value, 0, 100, 10),
+            'fog': clampInt(document.getElementById('cfg-weather-fog').value, 0, 100, 7),
+            'sunshower': clampInt(document.getElementById('cfg-weather-sunshower').value, 0, 100, 8),
+            'rain': clampInt(document.getElementById('cfg-weather-rain').value, 0, 100, 8),
+            'thunderstorm': clampInt(document.getElementById('cfg-weather-thunderstorm').value, 0, 100, 2),
+            'frog-rain': clampInt(document.getElementById('cfg-weather-frog').value, 0, 100, 0.5)
+        }
+    };
+
+    window.customRules = newRules;
+
+    // Persist to Day_curLvl_Dif without clobbering other fields
+    try {
+        const prev = localData.get('Day_curLvl_Dif') || { day: days || 0, currentLevel_y, currentLevel_x, dificulty };
+        prev.customRules = newRules;
+        localData.set('Day_curLvl_Dif', prev);
+        console.log('Updated custom rules:', newRules);
+    } catch(e) {
+        console.warn('Failed saving custom rules', e);
+    }
+
+    // Apply to active game for main quest values
+    applyCustomRulesToActiveGame();
+    applyNPCFilterRules();
+    hideConfigModal();
+}
+
+function applyCustomRulesToActiveGame() {
+    if (!window.customRules) return;
+    if (typeof player !== 'undefined' && player.quests) {
+        for (let q of player.quests) {
+            if (q.og_name === "Save Cloudy Meadows") {
+                // Update days and goal funding amount
+                q.days = window.customRules.mainQuestDays ?? q.days;
+                q.maxDays = q.days;
+                for (let goal of q.goals) {
+                    if (goal.class === 'FundingGoal') {
+                        goal.amount = window.customRules.mainQuestCoins ?? goal.amount;
+                    }
+                }
+                if (q.maxDays > 0) {
+                    q.name = q.og_name + ' ' + q.days + ' days left';
+                }
+            }
+        }
+    }
+}
+
+// Keep weather sliders totaling 100% by balancing with Clear
+function normalizeWeatherTotal(changedId) {
+    const ids = [
+        'cfg-weather-clear',
+        'cfg-weather-partly',
+        'cfg-weather-overcast',
+        'cfg-weather-fog',
+        'cfg-weather-sunshower',
+        'cfg-weather-rain',
+        'cfg-weather-thunderstorm',
+        'cfg-weather-frog'
+    ];
+    const get = (id) => { const el = document.getElementById(id); return el ? parseInt(el.value) || 0 : 0; };
+    const set = (id, v) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const val = Math.max(0, Math.min(100, Math.round(v)));
+            el.value = String(val);
+            const badge = el.parentElement?.querySelector('.config-slider-value');
+            if (badge) badge.textContent = String(val);
+        }
+    };
+    const sumExcept = (excludeId) => ids.reduce((s, id) => id === excludeId ? s : s + get(id), 0);
+    // Recompute clear based on others
+    const clearId = 'cfg-weather-clear';
+    const sumOthers = sumExcept(clearId);
+    if (changedId === clearId) {
+        // Clamp clear so total does not exceed 100
+        const maxClear = Math.max(0, 100 - sumExcept(clearId));
+        const desired = get(clearId);
+        set(clearId, Math.min(desired, maxClear));
+    } else {
+        // Cap changed slider to remaining budget
+        if (changedId) {
+            const desired = get(changedId);
+            const maxAllowed = Math.max(0, 100 - sumExcept(changedId) - get(clearId));
+            // When changing non-clear, we don't consider existing clear; we balance clear after
+            const maxByOthers = Math.max(0, 100 - sumExcept(changedId));
+            set(changedId, Math.min(desired, maxByOthers));
+        }
+        const newSumOthers = sumExcept(clearId);
+        const newClear = Math.max(0, 100 - newSumOthers);
+        set(clearId, newClear);
+    }
+    // Update total badge
+    const totalBadge = document.getElementById('cfg-weather-total');
+    if (totalBadge) {
+        const total = ids.reduce((s, id) => s + get(id), 0);
+        totalBadge.textContent = `Total: ${Math.round(total)}%`;
+    }
+}
+
+function applyNPCFilterRules() {
+    if (!window.customRules || !levels) return;
+    const enabledMap = window.customRules.npcEnabled;
+    const mode = window.customRules.npcMode; // legacy: 'all' | 'only-mr-c' | 'none'
+    const useLegacy = !enabledMap || Object.keys(enabledMap).length === 0;
+    if (useLegacy && (!mode || mode === 'all')) return; // nothing to do
+    for (let y = 0; y < levels.length; y++) {
+        for (let x = 0; x < levels[y].length; x++) {
+            const lvl = levels[y][x];
+            if (!lvl || !lvl.map) continue;
+            for (let r = 0; r < lvl.map.length; r++) {
+                for (let c = 0; c < lvl.map[r].length; c++) {
+                    const tile = lvl.map[r][c];
+                    if (tile && tile.class === 'NPC') {
+                        let keep = true;
+                        if (useLegacy) {
+                            keep = (mode === 'only-mr-c' && tile.name === 'Mr.C') ? true : (mode === 'none' ? false : true);
+                        } else {
+                            // default to true if not specified in map
+                            keep = enabledMap.hasOwnProperty(tile.name) ? !!enabledMap[tile.name] : true;
+                        }
+                        if (!keep) {
+                            lvl.map[r][c] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 function showPaused(){
@@ -1733,6 +2169,18 @@ function loadAll(){
         currentLevel_y = localData.get('Day_curLvl_Dif').currentLevel_y;
         dificulty = localData.get('Day_curLvl_Dif').dificulty;
         window.customRules = localData.get('Day_curLvl_Dif').customRules || null;
+        // If this is a new game (no saved player yet), apply starting coins now
+        try {
+            const hasSavedPlayer = localData.get('player') != null;
+            if (!hasSavedPlayer && player && typeof window.customRules?.startingCoins === 'number') {
+                player.coins = window.customRules.startingCoins;
+            }
+        } catch (e) {
+            // If localData access fails, avoid crashing
+        }
+
+        // Apply NPC rules on load so existing worlds respect configuration
+        applyNPCFilterRules();
         
         // Load weather state
         currentWeather = localData.get('Day_curLvl_Dif').currentWeather || 'clear';

@@ -138,7 +138,8 @@ const TILE_DEFINITIONS = [
     /*119*/ { name: 'Jordan Kim', png: 154, inv: [{num: 13, amount: 4}, {num: 26, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 90, class: 'NPC', quest_giver: true, random_move: false },
     /*120*/ { name: 'sand', png: 159, collide: false, age: -1, class: 'Tile' },
     /*121*/ { name: 'water12', png: 160, collide: true, age: -1, class: 'Tile' },
-    /*122*/ { name: 'towel', png: 161, collide: false, age: -1, class: 'Tile' }
+    /*122*/ { name: 'towel', png: 161, collide: false, age: -1, class: 'Tile' },
+    /*123*/ { name: 'Kiah', png: 26, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: false, random_move: false }
 ];
 
 /*

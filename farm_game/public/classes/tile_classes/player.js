@@ -4,9 +4,11 @@ class Player extends MoveableEntity {
         
         let mainQuestCoins = 10000;
         let mainQuestDays = 100;
+        let startingCoins = 0;
         if (window.customRules) {
             if (window.customRules.mainQuestCoins !== undefined) mainQuestCoins = window.customRules.mainQuestCoins;
             if (window.customRules.mainQuestDays !== undefined) mainQuestDays = window.customRules.mainQuestDays;
+            if (window.customRules.startingCoins !== undefined) startingCoins = window.customRules.startingCoins;
         }
 
         this.quests = [new Quest("Save Cloudy Meadows", [{class: "TalkingGoal", npc_name: "Mr.C", item_name: 0, amount: 0}, {class: "FundingGoal", amount: mainQuestCoins}], mainQuestDays, 0, 0),
@@ -18,7 +20,8 @@ class Player extends MoveableEntity {
         this.lastFoodnum = 2;
         this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
         this.hunger_counter = 0;
-        this.coins = 1500;
+        // Starting coins can be configured via custom rules (defaults to 0)
+        this.coins = startingCoins;
         this.hp = 100;
         this.dead = false;
         this.deaths = 0;

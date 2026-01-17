@@ -3526,6 +3526,26 @@
       "amount": 0
     }
   ]
+  ,
+  "Kiah": [
+    {
+      "phrase": "Hi! I'm Kiah. I love exploring the Big City and finding great food spots.",
+      "replies": [
+        { "phrase": "Nice to meet you, Kiah!", "dialouge_num": 1, "quest": -1 },
+        { "phrase": "Enjoy the city!", "dialouge_num": -1, "quest": -1 }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    },
+    {
+      "phrase": "If you're hungry, try the local markets and cafes—fresh veggies and fruit everywhere!",
+      "replies": [
+        { "phrase": "Thanks for the tip!", "dialouge_num": -1, "quest": -1 }
+      ],
+      "hand_num": -1,
+      "amount": 0
+    }
+  ]
 }
  
 

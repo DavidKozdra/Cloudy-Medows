@@ -1197,35 +1197,45 @@ function initializeRain(dropletCount = 200) {
 }
 // Generate random weather for the day
 function generateDailyWeather() {
-    const weatherRoll = Math.random() * 100;
-    
-    if (weatherRoll < 0.5) {
-        currentWeather = 'frog-rain'; // 0.5% - FROGS FALL FROM THE SKY
-        lastFrogRainDay = days; // Track frog-rain
-    } else if (weatherRoll < 2.5) {
-        currentWeather = 'thunderstorm'; // 2% - Heavy rain with lightning
-        lastRainDay = days; // Track rain
-    } else if (weatherRoll < 10.5) {
-        currentWeather = 'rain'; // 8% - Regular rain
-        lastRainDay = days; // Track rain
-    } else if (weatherRoll < 18.5) {
-        currentWeather = 'sunshower'; // 8% - Rain during day (bright)
-        lastRainDay = days; // Track rain
-    } else if (weatherRoll < 28.5) {
-        currentWeather = 'overcast'; // 10% - Dark and cloudy
-    } else if (weatherRoll < 43.5) {
-        currentWeather = 'partly-cloudy'; // 15% - Slightly cloudy
-    } else if (weatherRoll < 50.5) {
-        currentWeather = 'fog'; // 7% - Foggy conditions
-    } else {
-        currentWeather = 'clear'; // 49.5% - Clear and sunny
+    // Default weights mirror original probabilities
+    let weights = {
+        'frog-rain': 0.5,
+        'thunderstorm': 2,
+        'rain': 8,
+        'sunshower': 8,
+        'overcast': 10,
+        'partly-cloudy': 15,
+        'fog': 7,
+        'clear': 49.5
+    };
+    // Override with custom rules if provided
+    if (typeof window !== 'undefined' && window.customRules && window.customRules.weatherWeights) {
+        weights = Object.assign(weights, window.customRules.weatherWeights);
     }
-    
+    // Weighted random selection
+    const entries = Object.entries(weights);
+    const total = entries.reduce((sum, [, w]) => sum + (isNaN(w) ? 0 : Number(w)), 0);
+    if (total <= 0) {
+        currentWeather = 'clear';
+    } else {
+        let roll = Math.random() * total;
+        let selected = 'clear';
+        for (let i = 0; i < entries.length; i++) {
+            const [name, w] = entries[i];
+            roll -= Number(w) || 0;
+            if (roll <= 0) { selected = name; break; }
+        }
+        currentWeather = selected;
+    }
+    // Track rain-related days
+    if (currentWeather === 'rain' || currentWeather === 'sunshower' || currentWeather === 'thunderstorm') {
+        lastRainDay = days;
+    }
+    if (currentWeather === 'frog-rain') {
+        lastFrogRainDay = days;
+    }
     // Log the weather
-    weatherLog.push({
-        day: days,
-        weather: currentWeather
-    });
+    weatherLog.push({ day: days, weather: currentWeather });
     
     console.log(`Day ${days}: Weather is ${currentWeather.toUpperCase()}`);
 }
