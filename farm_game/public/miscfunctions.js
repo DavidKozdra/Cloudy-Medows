@@ -1040,14 +1040,77 @@ function ensureConfigModal() {
     modal.appendChild(npcTitle);
     const npcGrid = document.createElement('div');
     npcGrid.id = 'cfg-npc-grid';
-    npcGrid.className = 'config-grid';
+    npcGrid.className = 'config-grid config-sprite-grid';
     // Build grid from dialogue keys (fallback to empty list)
     const npcNames = Object.keys(typeof Dialouge_JSON !== 'undefined' && Dialouge_JSON ? Dialouge_JSON : {});
+    
+    // NPC name to image path mapping
+    const NPC_SPRITE_MAP = {
+        'Deb': 'images/npc/deb.png',
+        'Rick': 'images/npc/cowboy_rick.png',
+        'Meb': 'images/npc/meb.png',
+        'Mario': 'images/npc/mario.png',
+        'Garry': 'images/npc/garry.png',
+        'Mira': 'images/npc/mira.png',
+        'OldManJ': 'images/npc/old_man_jay1.png',
+        'Brandon': 'images/npc/brandon.png',
+        'Brent': 'images/npc/brent.png',
+        'BlindPete': 'images/npc/blind_pete.png',
+        'James': 'images/npc/james.png',
+        'Liam': 'images/npc/liam.png',
+        'Zoda': 'images/npc/christian.png',
+        'Super Tina': 'images/npc/supertina.png',
+        'Guy': 'images/npc/Guy.png',
+        'Vinny': 'images/npc/vinny.png',
+        'Kenny': 'images/npc/kenny.png',
+        'Ishmil': 'images/npc/Ishmil.png',
+        'David': 'images/npc/David.png',
+        'Adam': 'images/npc/Adam.png',
+        'Barry': 'images/npc/Barry.png',
+        'Mr.C': 'images/npc/mrC.png',
+        'Dog': 'images/npc/dog_right.png',
+        'Ticket Master': 'images/npc/Ticket_Master.png',
+        'Sarah': 'images/npc/mira.png',
+        'Marcus': 'images/npc/marcus.png',
+        'Elena': 'images/npc/Sophia.png',
+        'Thomas': 'images/npc/vinny.png',
+        'Victoria': 'images/npc/supertina.png',
+        'Dante': 'images/npc/Barry.png',
+        'Kai': 'images/npc/kenny.png',
+        'Coral': 'images/npc/coral.png',
+        'Fisher Joe': 'images/npc/fisher_joe.png',
+        'Sandy': 'images/npc/sandy.png',
+        'Skipper': 'images/npc/skipper.png',
+        'Alex Chen': 'images/npc/chen.png',
+        'Priya Patel': 'images/npc/priya.png',
+        'Marcus Brown': 'images/npc/marcus.png',
+        'Sophia Moore': 'images/npc/Sophia.png',
+        'Jordan Kim': 'images/npc/Jake.png',
+        'Kiah': 'images/npc/coral.png'
+    };
+    
     npcNames.forEach(name => {
         const btn = document.createElement('button');
-        btn.className = 'config-grid-item';
+        btn.className = 'config-grid-item config-sprite-item';
         btn.dataset.npcName = name;
-        btn.textContent = name;
+        
+        // Create sprite img element
+        const spriteImg = document.createElement('img');
+        spriteImg.className = 'config-sprite-img';
+        spriteImg.width = 32;
+        spriteImg.height = 32;
+        spriteImg.style.imageRendering = 'pixelated';
+        const imgPath = NPC_SPRITE_MAP[name] || 'images/npc/cowboy_rick.png';
+        spriteImg.src = imgPath;
+        spriteImg.alt = name;
+        btn.appendChild(spriteImg);
+        
+        // Add name label
+        const label = document.createElement('span');
+        label.className = 'config-sprite-label';
+        label.textContent = name;
+        btn.appendChild(label);
+        
         // Click toggles active state
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
@@ -1204,17 +1267,87 @@ function ensureConfigModal() {
     moreSection.appendChild(itemsTitle);
     const itemsGrid = document.createElement('div');
     itemsGrid.id = 'cfg-items-grid';
-    itemsGrid.className = 'config-grid';
+    itemsGrid.className = 'config-grid config-sprite-grid';
+    
+    // Item name to image path mapping
+    const ITEM_SPRITE_MAP = {
+        'Hoe': 'images/items/Hoe.png',
+        'Corn': 'images/items/Corn_item.png',
+        'Corn Seed': 'images/items/Corn_Seed_bag.png',
+        'Junk': 'images/items/junk.png',
+        'Sweet Potatoes': 'images/items/SweetPotato.png',
+        'Sweet Potato Seed': 'images/items/seedbag_sp.png',
+        'Strawberries': 'images/items/Stawberry.png',
+        'Strawberry Seed': 'images/items/SeedBag_Stawberry.png',
+        'Compost': 'images/items/Compost.png',
+        'Ladybugs': 'images/items/Lady_Bug_bag.png',
+        'Flower Seed': 'images/items/SeedBagFlower.png',
+        'Sprinkler': 'images/items/Sprinkler.png',
+        'Full Course': 'images/items/FullCourse.png',
+        'Tomato Seed': 'images/items/tomato_bag.png',
+        'Tomato': 'images/items/tomato.png',
+        'Watermelon Seed': 'images/items/seedbagwatermelon.png',
+        'Watermelon': 'images/items/watermelon2.png',
+        'Robot3': 'images/items/robot.png',
+        'Up Command': 'images/items/floppy_up.png',
+        'Right Command': 'images/items/floppy_right.png',
+        'Down Command': 'images/items/floppy_down.png',
+        'Left Command': 'images/items/floppy_left.png',
+        'Interact Command': 'images/items/floppy_interact.png',
+        'Hemp Seed': 'images/items/hemp_seeds.png',
+        'Hemp Flower': 'images/items/hemp.png',
+        'Restart Command': 'images/items/floppy_restart.png',
+        'Robot1': 'images/items/robot.png',
+        'Robot2': 'images/items/robot2.png',
+        'Add to Chest Command': 'images/items/Floppy_addChestt.png',
+        'Add from Chest Command': 'images/items/floppy_removechest.png',
+        'Veggie Oil': 'images/items/veg_oil.png',
+        'Shovel': 'images/items/shovel.png',
+        'Backpack': 'images/items/backPack.png',
+        '1 Day Pause Command': 'images/items/Floppy_Pause.png',
+        'Hotdog': 'images/items/HotDog.png',
+        'Chest': 'images/items/Chest.png',
+        'Grinder': 'images/items/Grinder.png',
+        'Veggie Press': 'images/items/veg_oil_maker.png',
+        'Carrot': 'images/items/carrot.png',
+        'Carrot Seed': 'images/items/seedbag_carrot.png',
+        'Pumpkin': 'images/items/Pumpkin.png',
+        'Pumpkin Seed': 'images/items/Pumpkin_seedBag.png',
+        'Bed': 'images/tiles/Bed.png',
+        'Wall': 'images/tiles/Wood.png',
+        'Axe': 'images/items/Hoe.png',
+        'Composter': 'images/tiles/Worm_Bucket.png',
+        'Hemp Oil': 'images/items/veg_oil.png',
+        'Fruit Juice': 'images/items/veg_oil.png'
+    };
+    
     // Build item list from ITEM_DEFINITIONS
     const itemDefs = typeof ITEM_DEFINITIONS !== 'undefined' ? ITEM_DEFINITIONS : [];
     itemDefs.forEach((item, idx) => {
         if (!item || idx === 0) return; // Skip empty slot
         if (!item.name) return;
         const btn = document.createElement('button');
-        btn.className = 'config-grid-item active'; // Items on by default
+        btn.className = 'config-grid-item config-sprite-item active'; // Items on by default
         btn.dataset.itemIdx = idx;
         btn.dataset.itemName = item.name;
-        btn.textContent = item.name;
+        
+        // Create sprite img element
+        const spriteImg = document.createElement('img');
+        spriteImg.className = 'config-sprite-img';
+        spriteImg.width = 32;
+        spriteImg.height = 32;
+        spriteImg.style.imageRendering = 'pixelated';
+        const imgPath = ITEM_SPRITE_MAP[item.name] || 'images/items/junk.png';
+        spriteImg.src = imgPath;
+        spriteImg.alt = item.name;
+        btn.appendChild(spriteImg);
+        
+        // Add name label
+        const label = document.createElement('span');
+        label.className = 'config-sprite-label';
+        label.textContent = item.name;
+        btn.appendChild(label);
+        
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
         });
@@ -1411,9 +1544,14 @@ function saveConfigModal() {
             if (grid) {
                 Array.from(grid.querySelectorAll('.config-grid-item')).forEach(el => {
                     const idx = el.dataset.itemIdx;
-                    out[idx] = el.classList.contains('active');
+                    const isActive = el.classList.contains('active');
+                    out[idx] = isActive;
+                    if (!isActive) {
+                        console.log('Disabling item idx:', idx, 'name:', el.dataset.itemName);
+                    }
                 });
             }
+            console.log('Built itemsEnabled map:', out);
             return out;
         })(),
         // Item price multiplier (percentage)
@@ -1508,11 +1646,22 @@ function normalizeWeatherTotal(changedId) {
 }
 
 function applyNPCFilterRules() {
-    if (!window.customRules || !levels) return;
+    if (!window.customRules || !levels) {
+        console.log('applyNPCFilterRules: No customRules or levels');
+        return;
+    }
     const enabledMap = window.customRules.npcEnabled;
     const mode = window.customRules.npcMode; // legacy: 'all' | 'only-mr-c' | 'none'
     const useLegacy = !enabledMap || Object.keys(enabledMap).length === 0;
-    if (useLegacy && (!mode || mode === 'all')) return; // nothing to do
+    
+    console.log('applyNPCFilterRules: enabledMap=', enabledMap, 'useLegacy=', useLegacy);
+    
+    if (useLegacy && (!mode || mode === 'all')) {
+        console.log('applyNPCFilterRules: Nothing to do (legacy all)');
+        return;
+    }
+    
+    let removedCount = 0;
     for (let y = 0; y < levels.length; y++) {
         for (let x = 0; x < levels[y].length; x++) {
             const lvl = levels[y][x];
@@ -1529,15 +1678,18 @@ function applyNPCFilterRules() {
                             keep = enabledMap.hasOwnProperty(tile.name) ? !!enabledMap[tile.name] : true;
                         }
                         if (!keep) {
+                            console.log('Removing NPC:', tile.name, 'at level', y, x);
                             // Restore the ground tile beneath the NPC when removing
                             const replacement = (tile && tile.under_tile) ? tile.under_tile : 0;
                             lvl.map[r][c] = replacement;
+                            removedCount++;
                         }
                     }
                 }
             }
         }
     }
+    console.log('applyNPCFilterRules: Removed', removedCount, 'NPCs');
 }
 
 // Apply area access rules - block travel to disabled areas
@@ -1594,12 +1746,33 @@ function applyItemPriceMultiplier() {
     console.log('Item prices multiplied by', mult);
 }
 
-// Get effective item - returns null if item is disabled
+// Get effective item - returns false if item is disabled
 function getEffectiveItem(itemIdx) {
-    if (!window.customRules || !window.customRules.itemsEnabled) return true;
+    if (!window.customRules || !window.customRules.itemsEnabled) {
+        return true; // No rules = all enabled
+    }
     const enabled = window.customRules.itemsEnabled;
-    // Default to enabled if not in map
-    return enabled.hasOwnProperty(itemIdx) ? !!enabled[itemIdx] : true;
+    // Check both string and number keys since dataset values are strings
+    const strKey = String(itemIdx);
+    const numKey = Number(itemIdx);
+    
+    // Check if this key exists in the map
+    const hasStrKey = enabled.hasOwnProperty(strKey);
+    const hasNumKey = enabled.hasOwnProperty(numKey);
+    
+    let result;
+    if (hasStrKey) {
+        result = !!enabled[strKey];
+    } else if (hasNumKey) {
+        result = !!enabled[numKey];
+    } else {
+        result = true; // Not in map = enabled by default
+    }
+    
+    if (!result) {
+        console.log('getEffectiveItem:', itemIdx, 'strKey:', strKey, 'hasStrKey:', hasStrKey, 'val:', enabled[strKey], '-> DISABLED');
+    }
+    return result;
 }
 
 // ======== Progress gating helpers ========
@@ -2490,10 +2663,7 @@ function loadAll(){
             // If localData access fails, avoid crashing
         }
 
-        // Apply NPC rules on load so existing worlds respect configuration
-        applyNPCFilterRules();
-        applyAreaRules();
-        applyItemPriceMultiplier();
+        // NPC/Area/Price rules are applied AFTER levels load below
         
         // Load weather state
         currentWeather = localData.get('Day_curLvl_Dif').currentWeather || 'clear';
@@ -2541,6 +2711,11 @@ function loadAll(){
             }
         }
     }
+    
+    // Apply NPC/Area/Price rules AFTER all levels have loaded from storage
+    applyNPCFilterRules();
+    applyAreaRules();
+    applyItemPriceMultiplier();
 }
 
 function loadLevel(level, lvlx = 0, lvly = 0){

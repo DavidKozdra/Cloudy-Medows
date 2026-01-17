@@ -13,7 +13,43 @@ class Shop extends Entity {
             }
         }
         this.class = 'Shop';
+        // Cache for enabled item indices (updated lazily)
+        this._enabledIndices = null;
 	}
+
+    // Get list of inventory indices for items that are enabled in customRules
+    getEnabledIndices() {
+        const indices = [];
+        for (let i = 0; i < this.inv.length; i++) {
+            if (this.inv[i] != 0) {
+                // Get item number from name
+                const itemNum = typeof item_name_to_num === 'function' ? item_name_to_num(this.inv[i].name) : -1;
+                // Check if item is enabled (default to true if no rules)
+                const enabled = typeof getEffectiveItem === 'function' ? getEffectiveItem(itemNum) : true;
+                if (enabled) {
+                    indices.push(i);
+                } else {
+                    console.log('Shop filtering out disabled item:', this.inv[i].name, 'itemNum:', itemNum, 'shopInvIdx:', i);
+                }
+            }
+        }
+        console.log('Shop', this.name, 'enabled indices:', indices, 'of', this.inv.length, 'total');
+        return indices;
+    }
+
+    // Get the actual inventory index from a visible (filtered) index
+    getActualIndex(visibleIndex) {
+        const enabled = this.getEnabledIndices();
+        if (visibleIndex >= 0 && visibleIndex < enabled.length) {
+            return enabled[visibleIndex];
+        }
+        return -1;
+    }
+
+    // Get number of enabled items
+    getEnabledCount() {
+        return this.getEnabledIndices().length;
+    }
 
     getBuyPrice(itemName) {
         // Price player pays to buy from shop (25% markup on BASE price)
@@ -69,8 +105,19 @@ class Shop extends Entity {
         strokeWeight(2);
         text(String.fromCharCode(eat_button) + ' to leave', ((3*canvasWidth) / 4) + 10, canvasHeight - 140);
         text('Item,                cost,   quantity in store', (canvasWidth / 20) + 42, canvasHeight - 115);
-        if(current_reply < 1 || this.inv.length <= 3){
-            for(let i = 0; i < min(this.inv.length, 3); i++){
+        
+        // Get only enabled items
+        const enabledIndices = this.getEnabledIndices();
+        const enabledCount = enabledIndices.length;
+        
+        if (enabledCount === 0) {
+            // No items available (all disabled)
+            fill(150);
+            textSize(13);
+            text('No items available', (canvasWidth / 20) + 42, (canvasHeight - 100) + 8);
+        } else if(current_reply < 1 || enabledCount <= 3){
+            for(let vi = 0; vi < min(enabledCount, 3); vi++){
+                const i = enabledIndices[vi]; // Get actual inventory index
                 const buyPrice = this.getBuyPrice(this.inv[i].name); // Get actual buy price
                 if(this.inv[i].amount <= 0){
                     fill(0, 0, 255);
@@ -83,26 +130,27 @@ class Shop extends Entity {
                         fill(255, 0, 0)
                     }
                 }
-                if(current_reply == i){
+                if(current_reply == vi){
                     stroke(255);
                 }
                 else{
                     stroke(0);
                 }
-                image(all_imgs[this.inv[i].png], (canvasWidth / 20) + 10, (canvasHeight - 100) + (i * 32), 32, 32);
+                image(all_imgs[this.inv[i].png], (canvasWidth / 20) + 10, (canvasHeight - 100) + (vi * 32), 32, 32);
                 // Dynamically size item name text based on length
                 let itemNameLength = this.inv[i].name.length;
                 let itemNameSize = itemNameLength > 20 ? 9 : (itemNameLength > 15 ? 11 : 13);
                 textSize(itemNameSize);
-                text(this.inv[i].name, (canvasWidth / 20) + 42, (canvasHeight - 100) + (i * 32) + 8);
+                text(this.inv[i].name, (canvasWidth / 20) + 42, (canvasHeight - 100) + (vi * 32) + 8);
                 // Reset text size for price and amount
                 textSize(13);
-                text(buyPrice, (canvasWidth / 20) + 332, (canvasHeight - 100) + (i * 32) + 8);
-                text(this.inv[i].amount, (canvasWidth / 20) + 492, (canvasHeight - 100) + (i * 32) + 8);
+                text(buyPrice, (canvasWidth / 20) + 332, (canvasHeight - 100) + (vi * 32) + 8);
+                text(this.inv[i].amount, (canvasWidth / 20) + 492, (canvasHeight - 100) + (vi * 32) + 8);
             }
         }
         else{
-            for(let i = current_reply - 1; i < min(current_reply + 2, this.inv.length); i++){
+            for(let vi = current_reply - 1; vi < min(current_reply + 2, enabledCount); vi++){
+                const i = enabledIndices[vi]; // Get actual inventory index
                 const buyPrice = this.getBuyPrice(this.inv[i].name); // Get actual buy price
                 if(this.inv[i].amount <= 0){
                     fill(0, 0, 255);
@@ -115,28 +163,28 @@ class Shop extends Entity {
                         fill(255, 0, 0)
                     }
                 }
-                if(current_reply == i){
+                if(current_reply == vi){
                     stroke(255);
                 }
                 else{
                     stroke(0);
                 }
-                image(all_imgs[this.inv[i].png], (canvasWidth / 20) + 10, (canvasHeight - 100) + ((i-(current_reply)+1) * 32), 32, 32);
+                image(all_imgs[this.inv[i].png], (canvasWidth / 20) + 10, (canvasHeight - 100) + ((vi-(current_reply)+1) * 32), 32, 32);
                 // Dynamically size item name text based on length
                 let itemNameLength = this.inv[i].name.length;
                 let itemNameSize = itemNameLength > 20 ? 9 : (itemNameLength > 15 ? 11 : 13);
                 textSize(itemNameSize);
-                text(this.inv[i].name, (canvasWidth / 20) + 42, (canvasHeight - 100) + ((i-(current_reply)+1) * 32) + 8);
+                text(this.inv[i].name, (canvasWidth / 20) + 42, (canvasHeight - 100) + ((vi-(current_reply)+1) * 32) + 8);
                 // Reset text size for price and amount
                 textSize(13);
-                text(buyPrice, (canvasWidth / 20) + 332, (canvasHeight - 100) + ((i-(current_reply)+1) * 32) + 8);
-                text(this.inv[i].amount, (canvasWidth / 20) + 492, (canvasHeight - 100) + ((i-(current_reply)+1) * 32) + 8);
+                text(buyPrice, (canvasWidth / 20) + 332, (canvasHeight - 100) + ((vi-(current_reply)+1) * 32) + 8);
+                text(this.inv[i].amount, (canvasWidth / 20) + 492, (canvasHeight - 100) + ((vi-(current_reply)+1) * 32) + 8);
             }
         }
-        if(current_reply < this.inv.length - 2){
+        if(current_reply < enabledCount - 2){
             image(done_dot, (canvasWidth / 20) + 512, (canvasHeight - 90) + (2 * 32) + 8);
         }
-        if(current_reply > this.inv.length-3 && this.inv.length > 3){
+        if(current_reply > enabledCount-3 && enabledCount > 3){
             image(up_dot, (canvasWidth / 20) + 512, (canvasHeight - 100));
         }
         pop()

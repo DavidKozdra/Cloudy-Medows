@@ -1797,14 +1797,15 @@ function draw() {
         player.render();
         
         // Tree tops render above player so they appear as canopy
-        if(!player.dead){
-            levels[currentLevel_y][currentLevel_x].renderTreeTops();
+        const currentLvl = levels[currentLevel_y]?.[currentLevel_x];
+        if(!player.dead && currentLvl && typeof currentLvl.renderTreeTops === 'function'){
+            currentLvl.renderTreeTops();
         }
         
         // Apply darkness with light cutouts as final pass
         // This ensures lights properly illuminate everything underneath
-        if(!player.dead && time > 0){
-            levels[currentLevel_y][currentLevel_x].renderLights();
+        if(!player.dead && time > 0 && currentLvl && typeof currentLvl.renderLights === 'function'){
+            currentLvl.renderLights();
         }
         
         // End camera transformation
@@ -2211,6 +2212,15 @@ function render_ui() {
                 player.inv[i] = 0;
             }
             if (player.inv[i] != 0) {
+                // Check if item is disabled in custom rules
+                const itemNum = typeof item_name_to_num === 'function' ? item_name_to_num(player.inv[i].name) : -1;
+                const isDisabled = typeof getEffectiveItem === 'function' && !getEffectiveItem(itemNum);
+                
+                if (isDisabled) {
+                    // Skip rendering disabled items - show empty slot
+                    continue;
+                }
+                
                 player.inv[i].render(invBar.getSlotX(i), invBar.top);
                 if (i == player.hand) {
                     push();

@@ -1332,8 +1332,9 @@ function takeInput() {
                     }
                 }
                 else if (player.talking.class == 'Shop'){
-                    if (current_reply > player.talking.inv.length-1){
-                        current_reply = player.talking.inv.length-1;
+                    const enabledCount = player.talking.getEnabledCount();
+                    if (current_reply > enabledCount - 1){
+                        current_reply = max(0, enabledCount - 1);
                     }
                 }
                 lastMili = millis();
@@ -1498,14 +1499,16 @@ function takeInput() {
                     }
                 }
                 else if (player.talking.class == 'Shop'){
-                    if(player.talking.inv[current_reply].amount >= 1){
+                    // Map visible index (current_reply) to actual inventory index
+                    const actualIdx = player.talking.getActualIndex(current_reply);
+                    if(actualIdx >= 0 && player.talking.inv[actualIdx].amount >= 1){
                         // Use getBuyPrice for market-based pricing with 10% markup
-                        const buyPrice = player.talking.getBuyPrice(player.talking.inv[current_reply].name);
-                        if(player.coins >= buyPrice && checkForSpace(player, item_name_to_num(player.talking.inv[current_reply].name))){    //check if you have the money
+                        const buyPrice = player.talking.getBuyPrice(player.talking.inv[actualIdx].name);
+                        if(player.coins >= buyPrice && checkForSpace(player, item_name_to_num(player.talking.inv[actualIdx].name))){    //check if you have the money
                             moneySound.play()
-                            addItem(player, item_name_to_num(player.talking.inv[current_reply].name), 1);
+                            addItem(player, item_name_to_num(player.talking.inv[actualIdx].name), 1);
                             player.coins -= buyPrice; //reduce money by buy price
-                            player.talking.updateItemStock(player.talking.inv[current_reply].name, player.talking.inv[current_reply].amount - 1); //shop.inv -1 and recalc prices
+                            player.talking.updateItemStock(player.talking.inv[actualIdx].name, player.talking.inv[actualIdx].amount - 1); //shop.inv -1 and recalc prices
                         }
                     }
                 }
