@@ -742,12 +742,11 @@ function preload() {
     /*157*/sandy_tile_imgs,
     /*158*/skipper_tile_imgs,
     /*159*/[sand_tile_img],
-    /*160*/[water12_tile_img]
+    /*160*/[water12_tile_img],
+    /*161*/[towel_tile_img]
     ];
     
-    all_imgs[159] = [sand_tile_img];
-    all_imgs[160] = [water12_tile_img];
-    all_imgs[161] = [towel_tile_img];
+    // Beach tiles properly defined in array above
     all_imgs[162] = kiah_tile_imgs;
 
    /*
