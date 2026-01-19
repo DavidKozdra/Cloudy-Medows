@@ -1478,8 +1478,22 @@ function updateFrogRain() {
         return;
     }
     
+    // === FROG POOL CAP ===
+    // Count all rain frogs on tiles in the current level
+    let currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
+    let rainFrogTileCount = 0;
+    for (let y = 0; y < currentLevelMap.length; y++) {
+        for (let x = 0; x < currentLevelMap[y].length; x++) {
+            const tile = currentLevelMap[y][x];
+            if (tile && tile.rainFrog) rainFrogTileCount++;
+        }
+    }
+    // Cap for both falling frogs and rain frogs on tiles
+    const FROG_POOL_CAP = 75;
+    const totalFrogs = frogRainEntities.length + rainFrogTileCount;
+
     // SYSTEM 1: Spawn visual falling frogs from sky
-    if (Math.random() < frogRainSpawnChance && frogRainEntities.length < 15) {
+    if (Math.random() < frogRainSpawnChance && frogRainEntities.length < 15 && totalFrogs < FROG_POOL_CAP) {
         const newFrog = {
             x: Math.random() * canvasWidth,
             y: -32,
@@ -1529,33 +1543,27 @@ function updateFrogRain() {
     }
     
     // SYSTEM 2: Spawn new frogs directly on tiles periodically
-    if (Math.random() < 0.02) { // 2% chance each frame to spawn a frog
-        const currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
+    if (Math.random() < 0.02 && totalFrogs < FROG_POOL_CAP) { // 2% chance each frame to spawn a frog
         const mapHeight = currentLevelMap.length;
         const mapWidth = currentLevelMap[0].length;
-        
         // Try to find an empty spot
         let attempts = 0;
         while (attempts < 5) {
             const randomY = Math.floor(Math.random() * mapHeight);
             const randomX = Math.floor(Math.random() * mapWidth);
             const tile = currentLevelMap[randomY][randomX];
-            
             // Check if tile is empty or walkable (not an entity already)
             if (tile && tile.name != 'wall' && tile.name != 'satilite' && 
                 tile.name != 'solarpanel' && tile.class != 'Plant' && 
                 tile.class != 'Entity' && !tile.rainFrog) {
-                
                 // Create frog entity with the current tile as underlying tile
                 const newFrog = new_tile_from_num(77, randomX * tileSize, randomY * tileSize);
                 newFrog.rainFrog = true;
                 newFrog.spawnedDay = days;
                 newFrog.spawnTime = millis();
                 newFrog.rainFrogLifetime = 15000 + Math.random() * 10000; // 15-25 seconds
-                
                 // Preserve the underlying tile instead of replacing it
                 newFrog.under_tile = tile;
-                
                 currentLevelMap[randomY][randomX] = newFrog;
                 break;
             }
@@ -1564,7 +1572,7 @@ function updateFrogRain() {
     }
     
     // Check all tiles in current level for expired rain frogs
-    const currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
+    currentLevelMap = levels[currentLevel_y][currentLevel_x].map;
     for (let y = 0; y < currentLevelMap.length; y++) {
         for (let x = 0; x < currentLevelMap[y].length; x++) {
             const tile = currentLevelMap[y][x];
