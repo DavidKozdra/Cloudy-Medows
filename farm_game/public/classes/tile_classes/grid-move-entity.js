@@ -34,15 +34,18 @@ class GridMoveEntity extends MoveableEntity{
                         }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize];
-                    levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize] = temp;
-                    this.pos.y -= tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize];
+                        levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize] = temp;
+                        this.pos.y -= tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
@@ -66,15 +69,18 @@ class GridMoveEntity extends MoveableEntity{
                         }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1];
-                    levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1] = temp;
-                    this.pos.x += tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1];
+                        levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1] = temp;
+                        this.pos.x += tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
@@ -98,15 +104,18 @@ class GridMoveEntity extends MoveableEntity{
                         }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize];
-                    levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize] = temp;
-                    this.pos.y += tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize];
+                        levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize] = temp;
+                        this.pos.y += tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
@@ -130,15 +139,18 @@ class GridMoveEntity extends MoveableEntity{
                         }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1];
-                    levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1] = temp;
-                    this.pos.x -= tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1];
+                        levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1] = temp;
+                        this.pos.x -= tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }

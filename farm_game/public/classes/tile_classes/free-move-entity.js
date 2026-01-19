@@ -18,7 +18,7 @@ class FreeMoveEntity extends GridMoveEntity{
             this.instructions.push(random(this.options));
         }
         this.move(x, y);
-        if(this.under_tile.class == 'Plant' && this.grow_timer <= 0){
+        if(this.under_tile && this.under_tile.class == 'Plant' && this.grow_timer <= 0){
             this.under_tile.grow_timer -= 10;
             this.grow_timer = 100;
         }
