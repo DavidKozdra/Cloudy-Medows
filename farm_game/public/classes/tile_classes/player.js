@@ -197,6 +197,9 @@ class Player extends MoveableEntity {
                     if(this.ticks == 1){
                         onDeathSound.play();
                         this.dead = true;
+                        if (typeof this.touching !== 'object' || this.touching === null) {
+                            this.touching = this.tileTouching(currentLevel_x, currentLevel_y);
+                        }
                         this.touching.collide = false;
                     }
                     if(this.ticks >= 51){

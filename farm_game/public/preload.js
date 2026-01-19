@@ -17,6 +17,7 @@ function preload() {
     chest_img = loadImage('images/items/Chest.png');
     grinder_img = loadImage('images/items/Grinder.png');
     veggy_press_img = loadImage('images/items/veg_oil_maker.png');
+    worm_bucket_img = loadImage('images/tiles/Worm_Bucket.png');
     bed_item_img = loadImage('images/tiles/Bed.png');
     wall_item_img = loadImage('images/tiles/Wood.png');
     axe_img = loadImage('images/items/Axe.png');

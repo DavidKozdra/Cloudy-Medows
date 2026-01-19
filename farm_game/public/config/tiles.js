@@ -34,7 +34,11 @@ const TILE_DEFINITIONS = [
     /*15*/  { name: 'cart_s', png: 14, collide: true, age: -1, class: 'Tile' },
     /*16*/  { name: 'Vegetables', png: 15, inv: [{ num: 2, amount: 7}, {num: 5, amount: 6}, {num: 39, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*17*/  { name: 'Ladybugs and Flowers', png: 16, inv: [{num: 10, amount: 6}, {num: 11, amount: 6}], under_tile_num: 1, class: 'Shop' },
-    /*18*/  { name: 'Farming Utils', png: 17, inv: [{num: 12, amount: 6}, {num: 46, amount: 3}], under_tile_num: 1, class: 'Shop' },
+    /*18*/  { name: 'Farming Utils', png: 17, inv: [
+        {num: 1, amount: 2, price: 20}, // Hoe
+        {num: 12, amount: 6}, // Sprinkler
+        {num: 46, amount: 3}  // Composter
+    ], under_tile_num: 1, class: 'Shop' },
     /*19*/  { name: 'Veggie Seeds', png: 18, inv: [{ num: 3, amount: 7}, {num: 6, amount: 6}, {num: 40, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*20*/  { name: 'sprinkler', png: 19, collide: false, age: -1, class: 'Tile' },
     /*21*/  { name: 'corn', png: 20, collide: false, age: 0, eat_num: 2, waterneed: 0, growthTime: 2000, class: 'Plant' },
@@ -102,7 +106,11 @@ const TILE_DEFINITIONS = [
     /*83*/  { name: 'grinder', png: 122, collide: false, age: -1, class: 'Tile' },
     /*84*/  { name: 'Tile Shop', png: 123, inv: [{num: 36, amount: 3}, {num: 37, amount: 1}, {num: 38, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*85*/  { name: 'computer', png: 124, collide: false, age: -1, class: 'Tile'},
-    /*86*/  { name: 'Tool Shop', png: 126, inv: [{num: 1, amount: 2}, {num: 32, amount: 2}, {num: 45, amount: 2}], under_tile_num: 57, class: 'Shop'},
+    /*86*/  { name: 'Tool Shop', png: 126, inv: [
+        {num: 1, amount: 2, price: 20}, // Hoe
+        {num: 32, amount: 2, price: 25}, // Shovel
+        {num: 45, amount: 2, price: 40}  // Axe
+    ], under_tile_num: 57, class: 'Shop'},
     /*87*/  { name: 'Rob Botus', png: 127, inv: [{num: 27, amount: 1}, {num: 28, amount: 1}, {num: 18, amount: 1}, {num: 19, amount: 4}, {num: 20, amount: 4}, {num: 21, amount: 4}, {num: 22, amount: 4}, {num: 23, amount: 2}, {num: 29, amount: 4}, {num: 30, amount: 4}, {num: 26, amount: 4}, {num: 34, amount: 4}], under_tile_num: 57, class: 'Shop'},
     /*88*/  { name: 'Jake', png: 128, inv: [{num: 25, amount: 3}, {num: 24, amount: 1}], under_tile_num: 57, class: 'Shop'},
     /*89*/  { name: 'Dog', png: 129, inv: [0], hand: 0, facing: 2, under_tile_num: 71, instructions: [], moving_timer: 80, random_move: true, class: 'NPC'},
