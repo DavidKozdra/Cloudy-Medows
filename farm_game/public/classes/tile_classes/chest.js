@@ -6,10 +6,18 @@ class Chest extends Entity{
     }
 
     chest_render(){
+        // On mobile, use the DOM-based inventory UI
+        if (typeof isMobile !== 'undefined' && isMobile && typeof openMobileInventory === 'function') {
+            if (typeof mobileInventoryState !== 'undefined' && !mobileInventoryState.isOpen) {
+                openMobileInventory('Chest', this);
+            }
+            return; // Don't render p5 UI on mobile
+        }
+        
         robotBoomButton.show();
         robotBoomButton.style('background-color','rgb(187, 132, 75)');
         robotBoomButton.style('color','rgb(255, 0, 0)');
-        robotBoomButton.position(canvasWidth/4 + canvasWidth/2 - 50, canvasHeight/4 - 5);
+        robotBoomButton.position((canvasWidth/4) + (canvasWidth/2) + 10, (canvasHeight/4) - 35);
         push()
         stroke(149, 108, 65);
         strokeWeight(5);

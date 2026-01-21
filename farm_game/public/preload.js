@@ -17,6 +17,10 @@ function preload() {
     chest_img = loadImage('images/items/Chest.png');
     grinder_img = loadImage('images/items/Grinder.png');
     veggy_press_img = loadImage('images/items/veg_oil_maker.png');
+    worm_bucket_img = loadImage('images/tiles/Worm_Bucket.png');
+    bed_item_img = loadImage('images/tiles/Bed.png');
+    wall_item_img = loadImage('images/tiles/Wood.png');
+    axe_img = loadImage('images/items/Axe.png');
 
     //Tile
     grass_tile_img = loadImage('images/tiles/Grass.png');
@@ -80,6 +84,8 @@ function preload() {
     water_tile_img = loadImage('images/tiles/water.gif');
     water_tile_var_img = loadImage('images/tiles/Flower_water.png');
     water_tile_var2_img = loadImage('images/tiles/water2.png');
+    sand_tile_img = loadImage('images/tiles/sand.png');
+    water12_tile_img = loadImage('images/tiles/water12.png');
     kitchen_tile_img = loadImage('images/tiles/restaurant_tile.png');
     table_tile_img = loadImage('images/tiles/chair_and_table.png');
     dirt_path_tile_img = loadImage('images/tiles/dirt_path.png');
@@ -91,9 +97,13 @@ function preload() {
     grinder_tile_img = loadImage('images/tiles/Grinder.gif');
     tile_shop_tile_img = loadImage('images/tiles/tile_shop.png');
     pc_tile_img = loadImage('images/tiles/Computer.png');
+    sand_tile_img = loadImage('images/tiles/sand.png');
+    water12_tile_img = loadImage('images/tiles/water12.png');
+    towel_tile_img = loadImage('images/tiles/towel.png');
 
     //NPC
     quest_marker_img = loadImage('images/ui/QuestMarker.png');
+    gift_indication_img = loadImage('images/ui/gift_indication.png');
     Dialouge_JSON = loadJSON('dialouge_list.json');
     //Cowboy Rick
     rick_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
@@ -244,6 +254,108 @@ function preload() {
     barry_down_img = loadImage('images/npc/Barry.png');
     barry_left_img = loadImage('images/npc/cowboy_rick_left.png');
     barry_tile_imgs = [[barry_tile_up_img], [barry_tile_right_img], [barry_down_img], [barry_left_img]];
+
+    //Ticket Master
+    ticket_master_tile_img = loadImage('images/npc/Ticket_Master.png');
+    ticket_master_tile_imgs = [[ticket_master_tile_img], [ticket_master_tile_img], [ticket_master_tile_img], [ticket_master_tile_img]];
+
+    //Alex Chen
+    chen_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    chen_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    chen_tile_down_img = loadImage('images/npc/chen.png');
+    chen_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    chen_tile_imgs = [[chen_tile_up_img], [chen_tile_right_img], [chen_tile_down_img], [chen_tile_left_img]];
+
+    //Priya Patel
+    priya_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    priya_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    priya_tile_down_img = loadImage('images/npc/priya.png');
+    priya_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    priya_tile_imgs = [[priya_tile_up_img], [priya_tile_right_img], [priya_tile_down_img], [priya_tile_left_img]];
+
+    //Marcus Brown
+    marcus_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    marcus_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    marcus_tile_down_img = loadImage('images/npc/marcus.png');
+    marcus_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    marcus_tile_imgs = [[marcus_tile_up_img], [marcus_tile_right_img], [marcus_tile_down_img], [marcus_tile_left_img]];
+
+    //Sophia Moore
+    sophia_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    sophia_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    sophia_tile_down_img = loadImage('images/npc/Sophia.png');
+    sophia_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    sophia_tile_imgs = [[sophia_tile_up_img], [sophia_tile_right_img], [sophia_tile_down_img], [sophia_tile_left_img]];
+
+    //Jordan Kim
+    jordan_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    jordan_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    jordan_tile_down_img = loadImage('images/npc/Jordan_Kim.png');
+    jordan_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    jordan_tile_imgs = [[jordan_tile_up_img], [jordan_tile_right_img], [jordan_tile_down_img], [jordan_tile_left_img]];
+
+    //Coral
+    coral_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    coral_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    coral_tile_down_img = loadImage('images/npc/coral.png');
+    coral_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    coral_tile_imgs = [[coral_tile_up_img], [coral_tile_right_img], [coral_tile_down_img], [coral_tile_left_img]];
+
+    //Fisher Joe
+    fisher_joe_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    fisher_joe_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    fisher_joe_tile_down_img = loadImage('images/npc/fisher_joe.png');
+    fisher_joe_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    fisher_joe_tile_imgs = [[fisher_joe_tile_up_img], [fisher_joe_tile_right_img], [fisher_joe_tile_down_img], [fisher_joe_tile_left_img]];
+
+    //Sandy
+    sandy_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    sandy_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    sandy_tile_down_img = loadImage('images/npc/sandy.png');
+    sandy_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    sandy_tile_imgs = [[sandy_tile_up_img], [sandy_tile_right_img], [sandy_tile_down_img], [sandy_tile_left_img]];
+
+    //Skipper
+    skipper_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    skipper_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    skipper_tile_down_img = loadImage('images/npc/skipper.png');
+    skipper_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    skipper_tile_imgs = [[skipper_tile_up_img], [skipper_tile_right_img], [skipper_tile_down_img], [skipper_tile_left_img]];
+
+    //Kiah
+    kiah_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    kiah_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    kiah_tile_down_img = loadImage('images/npc/Kiah.png');
+    kiah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    kiah_tile_imgs = [[kiah_tile_up_img], [kiah_tile_right_img], [kiah_tile_down_img], [kiah_tile_left_img]];
+
+    //Sarah
+    sarah_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    sarah_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    sarah_tile_down_img = loadImage('images/npc/Sarah.png');
+    sarah_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    sarah_tile_imgs = [[sarah_tile_up_img], [sarah_tile_right_img], [sarah_tile_down_img], [sarah_tile_left_img]];
+
+    //Thomas
+    thomas_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    thomas_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    thomas_tile_down_img = loadImage('images/npc/Thomas.png');
+    thomas_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    thomas_tile_imgs = [[thomas_tile_up_img], [thomas_tile_right_img], [thomas_tile_down_img], [thomas_tile_left_img]];
+
+    //Victoria
+    victoria_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    victoria_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    victoria_tile_down_img = loadImage('images/npc/Victoria.png');
+    victoria_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    victoria_tile_imgs = [[victoria_tile_up_img], [victoria_tile_right_img], [victoria_tile_down_img], [victoria_tile_left_img]];
+
+    //Elena
+    elena_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
+    elena_tile_right_img = loadImage('images/npc/cowboy_rick_right.png');
+    elena_tile_down_img = loadImage('images/npc/elena.png');
+    elena_tile_left_img = loadImage('images/npc/cowboy_rick_left.png');
+    elena_tile_imgs = [[elena_tile_up_img], [elena_tile_right_img], [elena_tile_down_img], [elena_tile_left_img]];
 
     //Mr.C
     mrC_tile_up_img = loadImage('images/npc/cowboy_rick_back.png');
@@ -476,13 +588,7 @@ function preload() {
     fore_4_img = loadImage('images/foreground/fore4.png');
     fore_6_img = loadImage('images/foreground/Fore6.png');
     fore_empty_img = loadImage('images/foreground/building_empty.png');
-    fore_cloud_img = loadImage('images/foreground/Cloud_Tile.png');
-    fore_cloud_2_img = loadImage('images/foreground/cloud_tile2.png');
-    fore_building_img = loadImage('images/foreground/Building_Low.png');
-    fore_red_building_img = loadImage('images/foreground/Red_building_low.png');
-    fore_red_grown_building_img = loadImage('images/foreground/red_building_low2.png');
-    fore_gray_building_img = loadImage('images/foreground/building_gray.png');
-    fore_street_img = loadImage('images/foreground/street.png');
+    // Removed - now created as sky blue graphics in preload
     fore_left_img = loadImage('images/foreground/fore_left.png');
     fore_right_img = loadImage('images/foreground/fore_right.png');
     fore_both_img = loadImage('images/foreground/fore_both.png');
@@ -491,6 +597,17 @@ function preload() {
     fore_both2_img = loadImage('images/foreground/fore_both2.png');
 
     chat_icon = loadImage('images/ui/Chat_Icon.png');
+
+    // Create transparent empty image for foreground (we're on rooftops, nothing blocks view)
+    let transparentGraphic = createGraphics(tileSize, tileSize);
+    transparentGraphic.clear(); // Fully transparent
+    fore_cloud_img = transparentGraphic;
+    fore_cloud_2_img = transparentGraphic;
+    fore_building_img = transparentGraphic;
+    fore_red_building_img = transparentGraphic;
+    fore_red_grown_building_img = transparentGraphic;
+    fore_gray_building_img = transparentGraphic;
+    fore_street_img = transparentGraphic;
 
     
    all_imgs = [
@@ -588,6 +705,7 @@ function preload() {
     /*91*/[fore_cloud_2_img],
     /*92*/[fore_building_img, fore_red_building_img, fore_red_grown_building_img, fore_gray_building_img, fore_street_img],
     /*93*/[plot_wet_tile_img],
+    // Park grass variants (leaf variant present but placed intentionally near trees)
     /*94*/[park_grass_tile_img, park_grass_tile_img, park_grass_tile_img, park_grass_tile_img, park_grass_tile_img, park_grass_tile_img, park_grass_tile2_img, park_grass_tile3_img],
     /*95*/[fence_horizontal_tile_img],
     /*96*/[fence_vertical_tile_img],
@@ -639,8 +757,32 @@ function preload() {
     /*142*/mrC_tile_imgs,
     /*143*/pumpkin_tile_imgs,
     /*144*/pumpkin_img,
-    /*145*/pumpkin_seed_img
+    /*145*/pumpkin_seed_img,
+    /*146*/bed_item_img,
+    /*147*/wall_item_img,
+    /*148*/compost_bucket_tile_img,
+    /*149*/ticket_master_tile_imgs,
+    /*150*/chen_tile_imgs,
+    /*151*/priya_tile_imgs,
+    /*152*/marcus_tile_imgs,
+    /*153*/sophia_tile_imgs,
+    /*154*/jordan_tile_imgs,
+    /*155*/coral_tile_imgs,
+    /*156*/fisher_joe_tile_imgs,
+    /*157*/sandy_tile_imgs,
+    /*158*/skipper_tile_imgs,
+    /*159*/[sand_tile_img],
+    /*160*/[water12_tile_img],
+    /*161*/[towel_tile_img],
+    /*162*/kiah_tile_imgs,
+    /*163*/axe_img,
+    /*164*/sarah_tile_imgs,
+    /*165*/thomas_tile_imgs,
+    /*166*/victoria_tile_imgs,
+    /*167*/elena_tile_imgs
     ];
+    
+    // Beach tiles and Kiah properly defined in array above
 
    /*
     class           obj
@@ -681,7 +823,32 @@ function setupFullscreen() {
         }
     });
     
+    // Listen for window resize events
+    window.addEventListener('resize', () => {
+        resizeCanvasForFullscreen();
+        // Re-check mobile status on resize
+        if (typeof updateMobileStatus === 'function') {
+            updateMobileStatus();
+        }
+    });
+    
+    // Listen for fullscreen change events (all browser prefixes)
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+    document.addEventListener('mozfullscreenchange', onFullscreenChange);
+    document.addEventListener('MSFullscreenChange', onFullscreenChange);
+}
 
+// Handle fullscreen state changes
+function onFullscreenChange() {
+    // Small delay to let the browser finish transitioning
+    setTimeout(() => {
+        resizeCanvasForFullscreen();
+        if (typeof updateMobileStatus === 'function') {
+            updateMobileStatus();
+        }
+        console.log('Fullscreen changed, resizing canvas');
+    }, 100);
 }
 
 function toggleFullscreen() {
@@ -690,14 +857,30 @@ function toggleFullscreen() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement && 
         !document.mozFullScreenElement && !document.msFullscreenElement) {
         // Enter fullscreen
+        let fullscreenPromise;
         if (elem.requestFullscreen) {
-            elem.requestFullscreen();
+            fullscreenPromise = elem.requestFullscreen();
         } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
+            fullscreenPromise = elem.webkitRequestFullscreen();
         } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen();
+            fullscreenPromise = elem.mozRequestFullScreen();
         } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
+            fullscreenPromise = elem.msRequestFullscreen();
+        }
+        
+        // Try to lock orientation if supported (safe, non-blocking)
+        if (fullscreenPromise && typeof screen !== 'undefined' && screen.orientation && screen.orientation.lock) {
+            fullscreenPromise.then(() => {
+                // Try to lock to landscape, but ignore errors
+                screen.orientation.lock('landscape').catch(() => {});
+            }).catch((err) => {
+                // Fullscreen request failed (possibly orientation lock not supported)
+                console.log('Fullscreen request failed (possibly orientation lock not supported):', err && err.message);
+            });
+        } else if (fullscreenPromise && fullscreenPromise.catch) {
+            fullscreenPromise.catch((err) => {
+                console.log('Fullscreen request failed (possibly orientation lock not supported):', err && err.message);
+            });
         }
     } else {
         // Exit fullscreen
@@ -717,10 +900,29 @@ function resizeCanvasForFullscreen() {
         const canvas = document.querySelector('canvas');
         if (!canvas) return;
         
+        // Check if we're in fullscreen mode
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || document.msFullscreenElement;
+        
         // Calculate scale to fill screen while maintaining aspect ratio
         const scaleX = window.innerWidth / canvasWidth;
         const scaleY = window.innerHeight / canvasHeight;
-        const scale = Math.max(scaleX, scaleY) * .7; // Use max to fill screen completely
+        
+        // On mobile/small screens, use a larger scale factor to fill more of the screen
+        const isMobileSize = window.innerWidth <= 768 || window.innerHeight <= 600;
+        
+        // Use different scale factors based on context
+        let scaleFactor;
+        if (isFullscreen) {
+            scaleFactor = 0.98; // Nearly fill the screen in fullscreen
+        } else if (isMobileSize) {
+            scaleFactor = 0.90; // Fill most of mobile screen
+        } else {
+            scaleFactor = 0.85; // Desktop windowed mode
+        }
+        
+        // Use min to fit within screen (contain)
+        const scale = Math.min(scaleX, scaleY) * scaleFactor;
         
         // Apply CSS transform to scale canvas
         canvas.style.width = (canvasWidth * scale) + 'px';
@@ -729,7 +931,13 @@ function resizeCanvasForFullscreen() {
         canvas.style.left = '50%';
         canvas.style.top = '50%';
         canvas.style.transform = 'translate(-50%, -50%)';
-  
+        
+        // On mobile with controls visible, position canvas a bit higher to leave room for controls
+        if (isMobileSize && typeof isMobile !== 'undefined' && isMobile && !isFullscreen) {
+            canvas.style.top = '42%';
+        }
+        
+        console.log(`Canvas resized: ${Math.round(canvasWidth * scale)}x${Math.round(canvasHeight * scale)}, fullscreen: ${!!isFullscreen}`);
 }
 
 function setup() {
@@ -812,15 +1020,36 @@ function setup() {
     robotBoomButton.parent('game-container');
     robotBoomButton.position(((14*canvasWidth)/16) - 30, canvasHeight/8 - 5);
     robotBoomButton.mousePressed(() => {
-        if(checkForSpace(player, item_name_to_num(player.looking(currentLevel_x, currentLevel_y).name))){
-            addItem(player, item_name_to_num(player.looking(currentLevel_x, currentLevel_y).name), 1);
-            if (player.touching != 0) {
-                levels[currentLevel_y][currentLevel_x].map[(player.looking(currentLevel_x, currentLevel_y).pos.y / tileSize)][player.looking(currentLevel_x, currentLevel_y).pos.x / tileSize] = player.looking(currentLevel_x, currentLevel_y).under_tile;
+        // Handle chest destruction
+        if (player.talking && player.talking.class === 'Chest') {
+            if (confirm('Are you sure? Booming the chest will REMOVE EVERYTHING inside it!')) {
+                // Try to add the chest to player inventory
+                if(checkForSpace(player, item_name_to_num('Chest'))){
+                    addItem(player, item_name_to_num('Chest'), 1);
+                    // Remove chest from map and replace with under_tile
+                    let chestTile = player.talking;
+                    levels[currentLevel_y][currentLevel_x].map[(chestTile.pos.y / tileSize)][(chestTile.pos.x / tileSize)] = chestTile.under_tile;
+                    player.talking = 0;
+                    robotBoomButton.hide();
+                }
             }
-            robotPlayButton.hide();
-            robotPauseButton.hide();
-            robotBoomButton.hide();
-            player.talking = 0;
+            return;
+        }
+        
+        // Handle robot destruction
+        if (player.looking(currentLevel_x, currentLevel_y) && player.looking(currentLevel_x, currentLevel_y).class === 'Robot') {
+            if (confirm('Are you sure? Booming the robot will REMOVE ALL its inventory and it cannot be recovered!')) {
+                if(checkForSpace(player, item_name_to_num(player.looking(currentLevel_x, currentLevel_y).name))){
+                    addItem(player, item_name_to_num(player.looking(currentLevel_x, currentLevel_y).name), 1);
+                    if (player.touching != 0) {
+                        levels[currentLevel_y][currentLevel_x].map[(player.looking(currentLevel_x, currentLevel_y).pos.y / tileSize)][player.looking(currentLevel_x, currentLevel_y).pos.x / tileSize] = player.looking(currentLevel_x, currentLevel_y).under_tile;
+                    }
+                    robotPlayButton.hide();
+                    robotPauseButton.hide();
+                    robotBoomButton.hide();
+                    player.talking = 0;
+                }
+            }
         }
     });
     robotBoomButton.style("font-family","pixelFont");
@@ -1151,7 +1380,7 @@ function setup() {
     extra_lvls = {map: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], 
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 102, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], 
         [0, 0, 1, 12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 12, 1, 0, 0], 
         [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0], 
         [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0], 
@@ -1240,6 +1469,91 @@ function newWorld(){
         [2, 2, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 2, 2, 2]
     ]
     );
+       level26 = new Level('Swiggy Swamps: 8', [
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 72, 71, 71, 76, 71, 71, 71, 72, 71, 71, 71, 71, 71, 71, 77, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 71, 71, 76, 71, 71, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 72, 71, 71, 71, 71, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 77, 71, 71, 71, 72, 72], 
+        [71, 71, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
+        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
+        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72]
+    ], [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    );
+ level14 = new Level('Poly Park: Lake', [
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 61, 61, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 61, 61, 61, 61, 62, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 57, 57, 57, 57, 61, 61, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 57, 57, 62, 61, 61, 61, 61], 
+        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 57, 57, 57, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 61, 61, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 54, 57, 57, 57, 62, 61, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 62, 61, 61, 61, 61, 61, 61, 61, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57]
+    ], [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    );
+
     //Compost
     level2 = new Level
         ('Cloudy Meadows: Compost', [
@@ -1756,46 +2070,46 @@ function newWorld(){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     );
-    level14 = new Level('Poly Park: Lake', [
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 61, 61, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 61, 61, 61, 61, 62, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 57, 57, 57, 57, 61, 61, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 57, 57, 62, 61, 61, 61, 61], 
-        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 72, 72, 57, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 72, 72, 72, 72, 57, 57, 57, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 72, 72, 72, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 61, 61, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 54, 57, 57, 57, 62, 61, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 62, 61, 61, 61, 61, 61, 61, 61, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57]
+    level34 = new Level('Beach', [
+        [121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 121],
+        [120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120],
+        [120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120],
+        [120, 119, 119, 111, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120],
+        [120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120],
+        [120, 120, 119, 119, 119, 119, 119, 112, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120],
+        [120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120],
+        [120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 113, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 119, 114, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 121, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 120, 119, 119, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 120, 120, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120],
+        [120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120]
     ], [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     ]
     );
     level15 = new Level('Poly Park: Market', [
@@ -1808,7 +2122,7 @@ function newWorld(){
         [57, 57, 57, 57, 57, 62, 57, 57, 1, 1, 1, 1, 43, 1, 44, 1, 1, 57, 57, 57, 57, 57, 57], 
         [57, 57, 57, 57, 57, 62, 57, 57, 1, 1, 1, 1, 1, 1, 1, 1, 1, 57, 57, 62, 61, 61, 61], 
         [57, 57, 57, 57, 57, 62, 57, 57, 1, 1, 1, 1, 1, 17, 1, 1, 1, 57, 57, 62, 57, 57, 57], 
-        [57, 57, 57, 57, 57, 62, 57, 57, 1, 1, 1, 17, 1, 1, 1, 1, 1, 57, 57, 62, 57, 57, 57], 
+        [57, 57, 57, 57, 57, 62, 57, 57, 1, 100, 1, 17, 1, 1, 1, 101, 1, 57, 57, 62, 57, 57, 57], 
         [57, 57, 57, 57, 57, 62, 57, 57, 57, 1, 1, 1, 1, 1, 1, 1, 57, 57, 57, 62, 57, 57, 57], 
         [57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57], 
         [57, 57, 57, 57, 57, 62, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 62, 57, 57, 57], 
@@ -1976,7 +2290,7 @@ function newWorld(){
         [72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71], 
         [72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71], 
         [72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 1, 1, 71, 71, 71, 71, 71], 
-        [72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 78, 71, 71, 71, 71, 1, 79, 71, 71, 71, 71, 71], 
+        [72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 89, 78, 71, 71, 71, 71, 1, 79, 71, 71, 71, 71, 71], 
         [72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71], 
         [72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71], 
         [72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 77, 71, 76, 71, 71, 71, 71, 71], 
@@ -2264,46 +2578,50 @@ function newWorld(){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     );
-    level26 = new Level('Swiggy Swamps: 8', [
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 71, 71, 76, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 72, 71, 71, 76, 71, 71, 71, 72, 71, 71, 71, 71, 71, 71, 77, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 71, 71, 76, 71, 71, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 72, 71, 71, 71, 71, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 72, 72, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 77, 71, 71, 71, 72, 72], 
-        [71, 71, 72, 72, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 72, 72, 72, 72, 72, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72, 72], 
-        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72], 
-        [71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 72]
+    level36 = new Level('The Big City : Downtown', [
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [1,1,1,1,115,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,102,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,116,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,117,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,118,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,100,1,1,1,1,61],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,61],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
     ], [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     ]
     );
     level27 = new Level('Swiggy Swamps: 9', [
@@ -2604,7 +2922,7 @@ function newWorld(){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     );
-    level34 = new Level('Auto Farms: 7', [
+    level37 = new Level('Auto Farms: 7', [
         [58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 60], 
         [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 59], 
         [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 59], 
@@ -2688,7 +3006,7 @@ function newWorld(){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     );
-    level36 = new Level('Auto Farms: 9', [
+    level38 = new Level('Auto Farms: 9', [
         [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 59], 
         [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 59], 
         [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 59], 
@@ -2730,12 +3048,152 @@ function newWorld(){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     );
+
+    //The Big City Districts
+    level39 = new Level('The Big City: Industry 2', [
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,102,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,1,101,103,104,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,1,1,1,1,61,6,6,6,6,61,1,1,1,1,61,6,6,6,6,61,1,1,61],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+    ], [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ]
+    );
+
+    level40 = new Level('The Big City: Industrial Zone', [
+     
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,102,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,105,106,109,1,61,6,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,6,6,6,6,6,6,6,61,1,1,1,61,6,6,6,6,6,6,6,61,1,1,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,6,61],
+        [61,1,1,1,1,1,1,1,61,6,6,6,61,1,1,1,1,1,1,1,61,6,6,61],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+    ], [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ]
+    );
+
+    level41 = new Level('The Big City: Harbor District', [
+     
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,102,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,1,1,6,6,6,61,1,107,108,110,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,6,6,1,1,1,61,6,6,6,6,61,1,1,6,6,61,1,1,1,1,61,6,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [61,1,1,6,6,6,61,1,1,1,1,61,6,6,1,1,61,6,6,6,6,61,1,61],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+        [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+    ], [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ]
+    );
     levels = [[level16, level13, level10, level5, level4, level6],
     [level17, level14, level11, level3, level1, level2],
     [level18, level15, level12, level7, level8, level9],
-    [level28, level31, level34, level19, level22, level25],
+    [level28, level31, level37, level19, level22, level25],
     [level29, level32, level35, level20, level23, level26],
-    [level30, level33, level36, level21, level24, level27],
+    [level30, 0, level38, level21, level24, level27],
+    [level39, level36, level40, level41, 0, 0],
+    [0, 0, 0, 0, 0, level34]
     ];
 
     currentLevel_y = 1;

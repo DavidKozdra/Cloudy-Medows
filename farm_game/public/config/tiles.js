@@ -22,8 +22,8 @@ const TILE_DEFINITIONS = [
     /*3*/   { name: 'plot', png: 2, collide: false, age: 0, class: 'Tile' },
     /*4*/   { name: 'dirt', png: 3, collide: false, age: -1, class: 'Tile' },
     /*5*/   { name: 'junk', png: 4, collide: false, age: -1, class: 'Tile' },
-    /*6*/   { name: 'wall', png: 5, collide: true, age: -1, class: 'Tile' },
-    /*7*/   { name: 'bed', png: 6, collide: false, age: -1, class: 'Tile' },
+    /*6*/   { name: 'wall', png: 5, collide: true, age: -1, under_tile_num: 2, class: 'Tile' },
+    /*7*/   { name: 'bed', png: 6, collide: false, age: -1, under_tile_num: 2, class: 'Tile' },
     /*8*/   { name: 'Bridge', png: 7, collide: false, age: -1, class: 'Tile' },
     /*9*/   { name: 'bridge2', png: 8, collide: false, age: -1, class: 'Tile' },
     /*10*/  { name: 'satilite', png: 9, collide: true, age: -1, class: 'Tile' },
@@ -34,13 +34,17 @@ const TILE_DEFINITIONS = [
     /*15*/  { name: 'cart_s', png: 14, collide: true, age: -1, class: 'Tile' },
     /*16*/  { name: 'Vegetables', png: 15, inv: [{ num: 2, amount: 7}, {num: 5, amount: 6}, {num: 39, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*17*/  { name: 'Ladybugs and Flowers', png: 16, inv: [{num: 10, amount: 6}, {num: 11, amount: 6}], under_tile_num: 1, class: 'Shop' },
-    /*18*/  { name: 'Sprinklers', png: 17, inv: [{num: 12, amount: 6}], under_tile_num: 1, class: 'Shop' },
-    /*19*/  { name: 'Veggie Seeds', png: 18, inv: [{ num: 3, amount: 7}, {num: 6, amount: 6}, {num: 40, amount: 0}], under_tile_num: 1, class: 'Shop' },
+    /*18*/  { name: 'Farming Utils', png: 17, inv: [
+        {num: 1, amount: 2, price: 20}, // Hoe
+        {num: 12, amount: 6}, // Sprinkler
+        {num: 46, amount: 3}  // Composter
+    ], under_tile_num: 1, class: 'Shop' },
+    /*19*/  { name: 'Veggie Seeds', png: 18, inv: [{ num: 3, amount: 7}, {num: 6, amount: 6}, {num: 40, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*20*/  { name: 'sprinkler', png: 19, collide: false, age: -1, class: 'Tile' },
     /*21*/  { name: 'corn', png: 20, collide: false, age: 0, eat_num: 2, waterneed: 0, growthTime: 2000, class: 'Plant' },
     /*22*/  { name: 'sweet_potato', png: 21, collide: false, age: 0, eat_num: 5, waterneed: 0, growthTime: 2200, class: 'Plant' },
-    /*23*/  { name: 'strawberry', png: 22, collide: false, age: 0, eat_num: 7, waterneed: 1, growthTime: 1900, class: 'Plant' },
-    /*24*/  { name: 'tomato', png: 23, collide: false, age: 0, eat_num: 15, waterneed: 1, growthTime: 1300, class: 'Plant' },
+    /*23*/  { name: 'strawberry', png: 22, collide: false, age: 0, eat_num: 7, waterneed: 1, growthTime: 1400, class: 'Plant' },
+    /*24*/  { name: 'tomato', png: 23, collide: false, age: 0, eat_num: 15, waterneed: 2, growthTime: 1300, class: 'Plant' },
     /*25*/  { name: 'flower', png: 24, collide: false, age: 0, eat_num: 0, waterneed: 0, growthTime: 1000, class: 'Plant' },
     /*26*/  { name: 'ladybug', png: 25, collide: false, age: 0, inv: [0], hand: 0, under_tile_num: 2, class: 'Entity' },
     /*27*/  { name: 'Rick', png: 26, inv: [{ num: 7, amount: 2 }], hand: 0, facing: 2, under_tile_num: 1, instructions: ['left', 'left', 'left', 'left', 'left', 'left', 'left', 'up', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'down', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left'], moving_timer: 100, class: 'NPC' },
@@ -85,7 +89,7 @@ const TILE_DEFINITIONS = [
     /*66*/  { name: 'bottom_left_corner_fence', png: 101, collide: true, age: -1, class: 'Tile'},
     /*67*/  { name: 'top_left_corner_fence', png: 102, collide: true, age: -1, class: 'Tile'},
     /*68*/  { name: 'tree_bottom', png: 105, collide: true, age: -1, class: 'Tile'},
-    /*69*/  { name: 'tree_top', png: 106, collide: true, age: -1, class: 'Tile'},
+    /*69*/  { name: 'tree_top', png: 106, collide: false, age: -1, class: 'Tile'},
     /*70*/  { name: 'Hotdog Stand', png: 108, inv: [{num: 35, amount: 4}], under_tile_num: 57, class: 'Shop' },
     /*71*/  { name: 'swamp_grass', png: 110, collide: false, age: -1, class: 'Tile'},
     /*72*/  { name: 'water', png: 109, collide: true, age: -1, class: 'Tile'},
@@ -100,12 +104,16 @@ const TILE_DEFINITIONS = [
     /*81*/  { name: 'kitchen_counter', png: 118, collide: true, age: -1, class: 'Tile'},
     /*82*/  { name: 'bar_counter', png: 119, collide: true, age: -1, class: 'Tile'},
     /*83*/  { name: 'grinder', png: 122, collide: false, age: -1, class: 'Tile' },
-    /*84*/  { name: 'Tile Shop', png: 123, inv: [{num: 36, amount: 3}, {num: 37, amount: 1}, {num: 38, amount: 0}], under_tile_num: 1, class: 'Shop' },
+    /*84*/  { name: 'Tile Shop', png: 123, inv: [{num: 36, amount: 3}, {num: 37, amount: 1}, {num: 38, amount: 1}], under_tile_num: 1, class: 'Shop' },
     /*85*/  { name: 'computer', png: 124, collide: false, age: -1, class: 'Tile'},
-    /*86*/  { name: 'Tool Shop', png: 126, inv: [{num: 1, amount: 2}, {num: 32, amount: 2}], under_tile_num: 57, class: 'Shop'},
+    /*86*/  { name: 'Tool Shop', png: 126, inv: [
+        {num: 1, amount: 2, price: 20}, // Hoe
+        {num: 32, amount: 2, price: 25}, // Shovel
+        {num: 45, amount: 2, price: 40}  // Axe
+    ], under_tile_num: 57, class: 'Shop'},
     /*87*/  { name: 'Rob Botus', png: 127, inv: [{num: 27, amount: 1}, {num: 28, amount: 1}, {num: 18, amount: 1}, {num: 19, amount: 4}, {num: 20, amount: 4}, {num: 21, amount: 4}, {num: 22, amount: 4}, {num: 23, amount: 2}, {num: 29, amount: 4}, {num: 30, amount: 4}, {num: 26, amount: 4}, {num: 34, amount: 4}], under_tile_num: 57, class: 'Shop'},
     /*88*/  { name: 'Jake', png: 128, inv: [{num: 25, amount: 3}, {num: 24, amount: 1}], under_tile_num: 57, class: 'Shop'},
-    /*89*/  { name: 'Dog', png: 129, inv: [0], under_tile_num: 57, instructions: [], moving_timer: 80, class: 'FreeMoveEntity'},
+    /*89*/  { name: 'Dog', png: 129, inv: [0], hand: 0, facing: 2, under_tile_num: 71, instructions: [], moving_timer: 80, random_move: true, class: 'NPC'},
     /*90*/  { name: 'David', png: 130, inv: [0], hand: 0, facing: 2, under_tile_num: 71, instructions: [], moving_timer: 100, class: 'NPC'},
     /*91*/  { name: 'bunny', png: 135, inv: [0], under_tile_num: 3, instructions: [], moving_timer: 80, class: 'FreeMoveEntity'},
     /*92*/  { name: 'carrot', png: 138, collide: false, age: 0, eat_num: 39, waterneed: 1, growthTime: 2200, class: 'Plant' },
@@ -115,7 +123,30 @@ const TILE_DEFINITIONS = [
     /*96*/  { name: 'Adam', png: 140, inv: [0], hand: 0, facing: 2, under_tile_num: 57, instructions: [], moving_timer: 100, class: 'NPC'},
     /*97*/  { name: 'Barry', png: 141, inv: [0], hand: 0, facing: 2, under_tile_num: 57, instructions: [], moving_timer: 100, class: 'NPC'},
     /*98*/  { name: 'Mr.C', png: 142, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: ['down', 'down', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'disappear', 'disappear', 'disappear'], moving_timer: 10, class: 'NPC'},
-    /*99*/  { name: 'Pumpkin', png: 143, collide: false, age: 0, eat_num: 41, waterneed: 0, growthTime: 3000, class: 'Plant' }
+    /*99*/  { name: 'Pumpkin', png: 143, collide: false, age: 0, eat_num: 41, waterneed: 0, growthTime: 3000, class: 'Plant' },
+    /*100*/ { name: 'Building Supplies', png: 42, inv: [{num: 43, amount: 8}, {num: 44, amount: 12}, {num: 45, amount: 5}], under_tile_num: 1, class: 'Shop' },
+    /*101*/ { name: 'Building Supplies', png: 42, inv: [{num: 43, amount: 8}, {num: 44, amount: 12}, {num: 45, amount: 5}], under_tile_num: 1, class: 'Shop' },
+    /*102*/ { name: 'Ticket Master', png: 149, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', places: ['Beach', 'The Big City', 'Cloudy Meadows'], travel_price: 10 },
+    /*103*/ { name: 'Sarah', png: 164, inv: [{num: 36, amount: 5}, {num: 45, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*104*/ { name: 'Elena', png: 167, inv: [{num: 35, amount: 8}, {num: 36, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: ['up', 'right', 'down', 'left'], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*106*/ { name: 'Thomas', png: 165, inv: [{num: 35, amount: 20}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*107*/ { name: 'Victoria', png: 166, inv: [{num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*108*/ { name: 'Dante', png: 26, inv: [{num: 13, amount: 5}, {num: 2, amount: 10}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*109*/ { name: 'Kai', png: 26, inv: [{num: 35, amount: 5}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'Shop', quest_giver: true },
+    /*110*/ { name: 'Job Board', png: 0, class: 'Tile', jobs_available: ['Construction Worker', 'Delivery Driver', 'Cleaner', 'Security Guard', 'Office Assistant'], daily_wages: [25, 30, 20, 35, 40] },
+    /*111*/ { name: 'Coral', png: 155, inv: [{num: 7, amount: 10}], hand: 0, facing: 2, under_tile_num: 119, instructions: [], moving_timer: 120, class: 'NPC', random_move: false },
+    /*112*/ { name: 'Fisher Joe', png: 156, inv: [{num: 17, amount: 5}], hand: 0, facing: 2, under_tile_num: 121, instructions: [], moving_timer: 150, class: 'NPC', random_move: false },
+    /*113*/ { name: 'Sandy', png: 157, inv: [{num: 11, amount: 5}], hand: 0, facing: 2, under_tile_num: 121, instructions: [], moving_timer: 100, class: 'NPC', random_move: false },
+    /*114*/ { name: 'Skipper', png: 158, inv: [{num: 15, amount: 3}], hand: 0, facing: 2, under_tile_num: 121, instructions: [], moving_timer: 130, class: 'NPC', random_move: false },
+    /*115*/ { name: 'Alex Chen', png: 150, inv: [{num: 35, amount: 10}, {num: 31, amount: 2}], hand: 0, facing: 2, under_tile_num: 121, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: false, random_move: false },
+    /*116*/ { name: 'Priya Patel', png: 151, inv: [{num: 36, amount: 5}, {num: 37, amount: 3}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
+    /*117*/ { name: 'Marcus Brown', png: 152, inv: [{num: 35, amount: 15}, {num: 38, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 120, class: 'NPC', quest_giver: true, random_move: false },
+    /*118*/ { name: 'Sophia Moore', png: 153, inv: [{num: 2, amount: 8}, {num: 35, amount: 6}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: true, random_move: false },
+    /*119*/ { name: 'Jordan Kim', png: 154, inv: [{num: 13, amount: 4}, {num: 26, amount: 2}], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 90, class: 'NPC', quest_giver: true, random_move: false },
+    /*120*/ { name: 'sand', png: 159, collide: false, age: -1, class: 'Tile' },
+    /*121*/ { name: 'water12', png: 160, collide: true, age: -1, class: 'Tile' },
+    /*122*/ { name: 'towel', png: 161, collide: false, age: -1, class: 'Tile' },
+    /*123*/ { name: 'Kiah', png: 162, inv: [0], hand: 0, facing: 2, under_tile_num: 1, instructions: [], moving_timer: 100, class: 'NPC', quest_giver: false, random_move: false }
 ];
 
 /*

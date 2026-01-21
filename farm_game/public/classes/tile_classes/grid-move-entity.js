@@ -17,109 +17,153 @@ class GridMoveEntity extends MoveableEntity{
             if (this.instructions[this.current_instruction] == 'up') {
                 this.facing = 0;
                 if (this.pos.y - tileSize < 0) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y-1][x].map[18][this.pos.x / tileSize];
-                    levels[y-1][x].map[18][this.pos.x / tileSize] = temp;
-                    this.pos.y = canvasHeight - tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                    if (levels[y-1] && levels[y-1][x] && typeof levels[y-1][x] === 'object') {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y-1][x].map[18][this.pos.x / tileSize];
+                        levels[y-1][x].map[18][this.pos.x / tileSize] = temp;
+                        this.pos.y = canvasHeight - tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
+                    } else {
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize];
-                    levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize] = temp;
-                    this.pos.y -= tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize];
+                        levels[y][x].map[(this.pos.y / tileSize) - 1][this.pos.x / tileSize] = temp;
+                        this.pos.y -= tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
             else if (this.instructions[this.current_instruction] == 'right') {
                 this.facing = 1;
                 if (this.pos.x + tileSize >= canvasWidth) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x+1].map[this.pos.y / tileSize][0];
-                    levels[y][x+1].map[this.pos.y / tileSize][0] = temp;
-                    this.pos.x = 0;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                    if (levels[y][x+1] && typeof levels[y][x+1] === 'object') {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x+1].map[this.pos.y / tileSize][0];
+                        levels[y][x+1].map[this.pos.y / tileSize][0] = temp;
+                        this.pos.x = 0;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
+                    } else {
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1];
-                    levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1] = temp;
-                    this.pos.x += tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1];
+                        levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) + 1] = temp;
+                        this.pos.x += tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
             else if (this.instructions[this.current_instruction] == 'down') {
                 this.facing = 2;
                 if (this.pos.y + tileSize >= canvasHeight) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y+1][x].map[0][this.pos.x / tileSize];
-                    levels[y+1][x].map[0][this.pos.x / tileSize] = temp;
-                    this.pos.y = 0;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                    if (levels[y+1] && levels[y+1][x] && typeof levels[y+1][x] === 'object') {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y+1][x].map[0][this.pos.x / tileSize];
+                        levels[y+1][x].map[0][this.pos.x / tileSize] = temp;
+                        this.pos.y = 0;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
+                    } else {
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize];
-                    levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize] = temp;
-                    this.pos.y += tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize];
+                        levels[y][x].map[(this.pos.y / tileSize) + 1][this.pos.x / tileSize] = temp;
+                        this.pos.y += tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
             else if (this.instructions[this.current_instruction] == 'left') {
                 this.facing = 3;
                 if (this.pos.x - tileSize < 0) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x-1].map[this.pos.y / tileSize][22];
-                    levels[y][x-1].map[this.pos.y / tileSize][22] = temp;
-                    this.pos.x = canvasWidth - tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                    if (levels[y][x-1] && typeof levels[y][x-1] === 'object') {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x-1].map[this.pos.y / tileSize][22];
+                        levels[y][x-1].map[this.pos.y / tileSize][22] = temp;
+                        this.pos.x = canvasWidth - tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
+                    } else {
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
-                else if (this.looking(x, y) != 0 && this.looking(x, y).collide != true) {
-                    let temp = this;
-                    levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
-                    temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1];
-                    levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1] = temp;
-                    this.pos.x -= tileSize;
-                    this.current_instruction += 1;
-                    if (this.current_instruction >= this.instructions.length) {
-                        this.current_instruction = 0;
+                else {
+                    let look = this.looking(x, y);
+                    if (look !== 0 && typeof look !== 'undefined' && look && look.collide !== true) {
+                        let temp = this;
+                        levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                        temp.under_tile = levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1];
+                        levels[y][x].map[this.pos.y / tileSize][(this.pos.x / tileSize) - 1] = temp;
+                        this.pos.x -= tileSize;
+                        this.current_instruction += 1;
+                        if (this.current_instruction >= this.instructions.length) {
+                            this.current_instruction = 0;
+                        }
                     }
                 }
             }
             else if (this.instructions[this.current_instruction] == 'disappear') {
                 levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize] = this.under_tile;
+                if (this.name === 'Mr.C' && typeof restoreMainQuestNPCs === 'function') {
+                    restoreMainQuestNPCs();
+                }
             }
 
             this.anim += 1;
-            if (this.anim > all_imgs[this.png][this.facing].length) {
+            // Safety check: ensure the image exists before checking length
+            if (all_imgs[this.png] && all_imgs[this.png][this.facing] && this.anim > all_imgs[this.png][this.facing].length) {
                 this.anim = 0;
             }
             this.moving_timer = this.max_moving_timer;

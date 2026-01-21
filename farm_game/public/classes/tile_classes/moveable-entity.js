@@ -15,6 +15,12 @@ class MoveableEntity extends Entity {
         if(this.under_tile != 0){
             this.under_tile.render();
         }
+        // Safety check: ensure the image exists before rendering
+        if (!all_imgs[this.png] || !all_imgs[this.png][this.facing] || !all_imgs[this.png][this.facing][0]) {
+            console.warn('Missing image for entity:', this.name, 'png:', this.png, 'facing:', this.facing);
+            pop();
+            return;
+        }
         image(all_imgs[this.png][this.facing][0], this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2)); // [0] => [this.anim] if we ever get more frames
         pop();
     }
@@ -56,6 +62,22 @@ class MoveableEntity extends Entity {
             if (this.inv[this.hand].price != 0 && this.inv[this.hand] != 0) {
                 addMoney(this.inv[this.hand].price);
                 moneySound.play();
+                // Track what was sold to all shops
+                for(let i = 0; i < levels.length; i++){
+                    for(let j = 0; j < levels[i].length; j++){
+                        const level = levels[i][j];
+                        if(level && level.map){
+                            for(let my = 0; my < level.map.length; my++){
+                                for(let mx = 0; mx < level.map[my].length; mx++){
+                                    const tile = level.map[my][mx];
+                                    if(tile && tile.class == 'Shop'){
+                                        tile.recordItemSold(this.inv[this.hand].name, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 this.inv[this.hand].amount -= 1;
                 if (this.inv[this.hand].amount == 0) {
                     this.inv[this.hand] = 0;
@@ -115,7 +137,7 @@ class MoveableEntity extends Entity {
             }
         }
         else if (this.under_tile.name == 'compost_bucket') {
-            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].name == 'Corn Seed' || this.inv[this.hand].name == 'Sweet Potato Seed' || this.inv[this.hand].name == 'Strawberry Seed') {
+            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed') {
                 if(checkForSpace(this, 9)){
                     this.inv[this.hand].amount -= 1;
                     if (this.inv[this.hand].amount == 0) {

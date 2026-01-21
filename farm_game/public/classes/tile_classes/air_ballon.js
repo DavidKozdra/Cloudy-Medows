@@ -1,7 +1,7 @@
 class AirBallon extends Entity {
 	constructor(name, png, x, y, under_tile) {
 		super(name, png, x, y, -1, [], 0, under_tile);
-        this.places = ['Park', 'Swamp', 'Cloudy Meadows'];
+        this.places = ['Poly Park', 'Swiggy Swamps', 'Cloudy Meadows'];
         this.class = 'AirBallon';
 	}
 
@@ -30,17 +30,25 @@ class AirBallon extends Entity {
         textAlign(CENTER, TOP);
         text('Where to?', (canvasWidth / 2), canvasHeight - 140);
         
-        // Filter out current location from the list
+        // Filter out current location and disabled areas from the list
         const currentLocationName = levels[currentLevel_y][currentLevel_x].name;
         this.availablePlaces = this.places.filter(place => {
             // Check if the place name is in the current level name
-            return !currentLocationName.includes(place);
+            if (currentLocationName.includes(place)) {
+                return false;
+            }
+            // Check if area is blocked in custom rules
+            if (typeof window !== 'undefined' && window.blockedAreas && window.blockedAreas[place]) {
+                return false;
+            }
+            return true;
         });
         
+        const maxLen = this.availablePlaces.reduce((m,p)=>Math.max(m, (p ? p.length : 0)), 10);
         for(let i = 0; i < this.availablePlaces.length; i++){
             fill(149, 108, 65)
             rectMode(CENTER)
-            rect((canvasWidth / 2), (canvasHeight - 110) + (i * 32) + 8 + 8, this.places[2].length*18, 25)
+            rect((canvasWidth / 2), (canvasHeight - 110) + (i * 32) + 8 + 8, maxLen*18, 25)
             if(current_reply == i){
                 fill(255, 255, 0);
             }

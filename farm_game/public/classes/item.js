@@ -56,8 +56,8 @@ class Item {
 }
 
 class Seed extends Item {
-	constructor(name, amount, png, plant_num) {
-		super(name, amount, png, 1);
+	constructor(name, amount, png, plant_num, price=1) {
+		super(name, amount, png, price);
 		this.class = "Seed";
 		this.plant_num = plant_num;
 	}
@@ -111,6 +111,14 @@ class Backpack extends Item {
 	}
 
 	bag_render(){
+        // On mobile, use the DOM-based inventory UI
+        if (typeof isMobile !== 'undefined' && isMobile && typeof openMobileInventory === 'function') {
+            if (typeof mobileInventoryState !== 'undefined' && !mobileInventoryState.isOpen) {
+                openMobileInventory('Backpack', this);
+            }
+            return; // Don't render p5 UI on mobile
+        }
+        
         const chest = UI_BOUNDS.chestGrid;
         const cellSize = chest.cellSize;
         const gridLeft = (canvasWidth/4) + 10;
@@ -137,7 +145,7 @@ class Backpack extends Item {
             for(let j = 0; j < this.inv[i].length; j++){
                 rect(gridLeft + (j * cellSize), gridTop + (i * cellSize), 74, 74)
                 if(this.inv[i][j] != 0){
-                    this.inv[i][j].render(gridLeft + (j * cellSize) + 5, gridTop + (i * cellSize) - 30);
+                    this.inv[i][j].render(gridLeft + (j * cellSize) + 5, gridTop + (i * cellSize) + 10);
                 }
             }
         }

@@ -66,11 +66,16 @@ class Level {
                 if (map[i][j] == 0) {
                     this.map[i][j] = 0;
                 } else {
-                    if (map[i][j] <= all_tiles.length) {
+                    if (map[i][j] > 0 && map[i][j] <= all_tiles.length) {
                         map[i][j] = new_tile_from_num(map[i][j], j * tileSize, i * tileSize);
                     } else {
                         this.map[i][j] = 0;
                         console.error('Tile doesnt exist');
+                    }
+                    // Ensure sprinklers always have a base tile for rendering (covers legacy saves)
+                    if (this.map[i][j] && this.map[i][j].name === 'sprinkler' && !this.map[i][j].under_tile) {
+                        this.map[i][j].under_tile = new_tile_from_num(3, j * tileSize, i * tileSize); // plot
+                        this.map[i][j].last_under_png = this.map[i][j].under_tile.png;
                     }
                     if (this.map[i][j].name == 'lamppost') {
                         append(this.lights, new Light(this.map[i][j].pos.x, this.map[i][j].pos.y, (tileSize * 6), 255, 255, 255));
@@ -89,6 +94,83 @@ class Level {
                         this.map[i][j].light = light;
                         this.map[i][j].lightI = this.lights.length - 1;
                     }
+                }
+            }
+        }
+
+        // After constructing tiles, optionally add extra trees then adjust park grass variants
+        this.sprinkleParkTrees();
+        this.applyParkGrassLeafVariants();
+    }
+
+    sprinkleParkTrees(){
+        // Quickly boost canopy coverage on park grass without hand-editing every map
+        const candidates = [];
+
+        // Start at row 1 so the row above exists for the tree top
+        for (let i = 1; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                if (!this.map[i][j] || !this.map[i - 1] || !this.map[i - 1][j]) continue;
+                if (this.map[i][j].name !== 'park_grass' || this.map[i - 1][j].name !== 'park_grass') continue;
+                candidates.push({ y: i, x: j });
+            }
+        }
+
+        // Skip small non-park levels that happen to use a few park grass tiles
+        if (candidates.length < 15) return;
+
+        // Scale trees to map size, lightly clamped so parks never feel empty or overstuffed
+        const target = Math.round(candidates.length * 0.04);
+        const clampedTarget = Math.min(Math.max(target, 4), 18);
+        const treesToPlace = Math.min(clampedTarget, candidates.length);
+
+        // Shuffle to spread randomness
+        for (let i = candidates.length - 1; i > 0; i--) {
+            const swap = Math.floor(Math.random() * (i + 1));
+            const temp = candidates[i];
+            candidates[i] = candidates[swap];
+            candidates[swap] = temp;
+        }
+
+        let placed = 0;
+        for (let idx = 0; idx < candidates.length && placed < treesToPlace; idx++) {
+            const { y, x } = candidates[idx];
+            const bottom = this.map[y][x];
+            const top = this.map[y - 1][x];
+
+            if (!bottom || !top) continue;
+            if (bottom.name !== 'park_grass' || top.name !== 'park_grass') continue;
+
+            this.map[y][x] = new_tile_from_num(68, x * tileSize, y * tileSize);
+            this.map[y - 1][x] = new_tile_from_num(69, x * tileSize, (y - 1) * tileSize);
+            placed += 1;
+        }
+    }
+
+    applyParkGrassLeafVariants(){
+        const leafIndex = all_imgs[94].length - 1; // Last variant is leaves
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                const tile = this.map[i][j];
+                if (!tile || tile.name !== 'park_grass') continue;
+
+                let nearTree = false;
+                for (let dy = -1; dy <= 1 && !nearTree; dy++) {
+                    for (let dx = -1; dx <= 1 && !nearTree; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        if (this.map[i + dy] && this.map[i + dy][j + dx]) {
+                            const neighbor = this.map[i + dy][j + dx];
+                            if (neighbor.name === 'tree_bottom' || neighbor.name === 'tree_top') {
+                                nearTree = true;
+                            }
+                        }
+                    }
+                }
+
+                if (nearTree) {
+                    tile.variant = leafIndex;
+                } else {
+                    tile.variant = round(random(0, all_imgs[tile.png].length - 2));
                 }
             }
         }
@@ -136,25 +218,31 @@ class Level {
             }
         }
         
-        const panelWidth = (this.name.length * 17) + 6;
-        const panelHeight = 50;
+        // Check for mobile to use smaller dimensions
+        const isMobileOrSmall = (typeof isMobile !== 'undefined' && isMobile) || window.innerWidth <= 768;
+        
+        const charWidth = isMobileOrSmall ? 11 : 17;
+        const panelWidth = (this.name.length * charWidth) + 6;
+        const panelHeight = isMobileOrSmall ? 35 : 50;
+        const fontSize = isMobileOrSmall ? '11px' : '15px';
+        const borderWidth = isMobileOrSmall ? '3px' : '5px';
         
         // Apply styling to match original canvas rendering
         levelPopup.style.width = panelWidth + 'px';
         levelPopup.style.height = panelHeight + 'px';
         levelPopup.style.backgroundColor = 'rgb(187, 132, 75)';
-        levelPopup.style.border = '5px solid rgb(149, 108, 65)';
+        levelPopup.style.border = borderWidth + ' solid rgb(149, 108, 65)';
         levelPopup.style.padding = '0px';
         levelPopup.style.boxSizing = 'border-box';
         levelPopup.style.fontFamily = 'pixelFont, monospace';
         levelPopup.style.color = 'rgb(255, 255, 255)';
-        levelPopup.style.fontSize = '15px';
+        levelPopup.style.fontSize = fontSize;
         levelPopup.style.display = 'flex';
         levelPopup.style.alignItems = 'center';
         levelPopup.style.justifyContent = 'center';
         levelPopup.style.textAlign = 'center';
         levelPopup.style.fontWeight = 'bold';
-        levelPopup.style.textShadow = '4px 4px 0px rgba(0, 0, 0, 0.5)';
+        levelPopup.style.textShadow = (isMobileOrSmall ? '2px 2px' : '4px 4px') + ' 0px rgba(0, 0, 0, 0.5)';
         levelPopup.style.marginBottom = '5px';
         // Animate position based on y value
         levelPopup.style.transform = 'translateY(' + this.y + 'px)';
@@ -205,36 +293,75 @@ class Level {
     render() {
         for (let i = 0; i < this.map.length; i++) {
             for (let j = 0; j < this.map[i].length; j++) {
-                if (this.map[i][j] != 0) {
-                    this.map[i][j].render();
+                const tile = this.map[i][j];
+                if (tile === 0 || tile === undefined) continue;
+                if (tile.name === 'tree_top') continue; // Render canopy in a second pass above player
+
+                tile.render();
+                
+                // Show quest/gift icons above NPCs when not talking
+                if(tile.class === 'NPC' && player.talking === 0) {
+                    push();
+                    imageMode(CENTER);
                     
-                    // Show quest/gift icons above NPCs when not talking
-                    if(this.map[i][j].class === 'NPC' && player.talking === 0) {
-                        push();
-                        textSize(24);
-                        textAlign(CENTER, CENTER);
-                        
-                        if(this.map[i][j].hasQuestForPlayer && this.map[i][j].hasQuestForPlayer()) {
-                            // Quest icon (exclamation mark in yellow circle)
-                            fill(255, 215, 0); // Gold
-                            stroke(0);
-                            strokeWeight(2);
-                            text('!', this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
-                        } else if(this.map[i][j].hasGiftForPlayer && this.map[i][j].hasGiftForPlayer()) {
-                            // Gift icon
-                            fill(255, 100, 180); // Pink
-                            stroke(0);
-                            strokeWeight(2);
-                            text('🎁', this.map[i][j].pos.x + (tileSize / 2), this.map[i][j].pos.y - 16);
-                        }
-                        
-                        pop();
+                    if(tile.hasQuestForPlayer && tile.hasQuestForPlayer()) {
+                        // Quest marker sprite
+                        image(quest_marker_img, tile.pos.x + (tileSize / 2), tile.pos.y - 8);
+                    } else if(tile.hasGiftForPlayer && tile.hasGiftForPlayer()) {
+                        // Gift indication sprite
+                        image(gift_indication_img, tile.pos.x + (tileSize / 2), tile.pos.y - 8);
                     }
+                    
+                    pop();
                 }
             }
         }
+    }
+
+    renderLights() {
+        // Create a graphics buffer for the lighting mask (transient, not saved)
+        if (!this.lightingBuffer) {
+            this.lightingBuffer = createGraphics(canvasWidth, canvasHeight);
+        }
+        
+        // Get camera offset (0 if camera disabled)
+        const camX = (typeof camera !== 'undefined' && camera.enabled) ? camera.x : 0;
+        const camY = (typeof camera !== 'undefined' && camera.enabled) ? camera.y : 0;
+        
+        // Draw to the buffer
+        this.lightingBuffer.clear();
+        this.lightingBuffer.noStroke();
+        
+        // Fill with darkness
+        this.lightingBuffer.fill(0, 0, 0, time);
+        this.lightingBuffer.rect(0, 0, canvasWidth, canvasHeight);
+        
+        // Use erase mode to cut holes for lights
+        this.lightingBuffer.erase(255, 255);
         for (let i = 0; i < this.lights.length; i++) {
-            this.lights[i].render();
+            this.lights[i].renderToBuffer(this.lightingBuffer, camX, camY);
+        }
+        this.lightingBuffer.noErase();
+        
+        // Draw the lighting buffer to main canvas at camera position in world space
+        image(this.lightingBuffer, camX, camY);
+    }
+
+    getReadyForSave() {
+        // Remove non-serializable objects before saving
+        if (this.lightingBuffer) {
+            delete this.lightingBuffer;
+        }
+    }
+
+    renderTreeTops(){
+        // Draw tree canopies in a late pass so they appear above the player
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
+                const tile = this.map[i][j];
+                if (!tile || tile.name !== 'tree_top') continue;
+                tile.render();
+            }
         }
     }
 
@@ -242,26 +369,31 @@ class Level {
         // Iterate through all tiles in this level and update them
         for (let i = 0; i < this.map.length; i++) {
             for (let j = 0; j < this.map[i].length; j++) {
-                if (this.map[i][j] != 0 && this.map[i][j] != undefined) {
+                const tile = this.map[i][j];
+                if (tile && tile != 0 && typeof tile !== 'undefined') {
                     // Handle different tile types
-                    if (this.map[i][j].class == 'Plant') {
-                        this.map[i][j].grow(x, y);
+                    if (tile.class === 'Plant') {
+                        tile.grow(x, y);
                     }
-                    if (this.map[i][j].class == 'NPC') {
-                        this.map[i][j].move(x, y);
+                    if (tile.class === 'NPC') {
+                        tile.move(x, y);
                     }
-                    if (this.map[i][j].class == 'Robot') {
-                        this.map[i][j].move(x, y);
+                    if (tile.class === 'Robot') {
+                        tile.move(x, y);
                     }
-                    if (this.map[i][j].class == 'FreeMoveEntity'){
-                        this.map[i][j].randomMove(x, y);
+                    if (tile.class === 'FreeMoveEntity'){
+                        tile.randomMove(x, y);
                     }
-                    if (this.map[i][j].class == 'LightMoveEntity'){
-                        this.map[i][j].randomMove(x, y);
+                    if (tile.class === 'LightMoveEntity'){
+                        tile.randomMove(x, y);
                     }
-                    if (this.map[i][j].name == 'flower') {
-                        if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
+                    if (tile.name === 'flower') {
+                        // Check if Bees are enabled before spawning
+                        const beesEnabled = !window.customRules || !window.customRules.crittersEnabled || 
+                                           window.customRules.crittersEnabled['Bees'] !== false;
+                        if (beesEnabled && tile.age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
+                            this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
                         }
                     }
@@ -301,8 +433,12 @@ class Level {
                         this.map[i][j].randomMove(j, i);
                     }
                     if (this.map[i][j].name == 'flower') {
-                        if (this.map[i][j].age == 1 && round(random(0,3)) == 2) {
+                        // Check if Bees are enabled before spawning
+                        const beesEnabled = !window.customRules || !window.customRules.crittersEnabled || 
+                                           window.customRules.crittersEnabled['Bees'] !== false;
+                        if (beesEnabled && this.map[i][j].age == 1 && round(random(0,3)) == 2) {
                             this.map[i][j] = new_tile_from_num(49, (j * tileSize), (i * tileSize));
+                            this.map[i][j].age = 0;
                             this.map[i][j].under_tile = new_tile_from_num(50, (j * tileSize), (i * tileSize));
                         }
                     }
@@ -342,7 +478,7 @@ class Level {
                         }
                     }
                     if (this.map[i][j].name == 'Bees') {
-                        if (this.map[i][j].age >= 10) {
+                        if (this.map[i][j].age >= 7) {
                             this.map[i][j] = this.map[i][j].under_tile;
                         }
                     }
@@ -366,9 +502,36 @@ class Light {
         this.b = b;
     }
 
+    renderToBuffer(buffer, camX = 0, camY = 0) {
+        // Draw light circle to cut hole in darkness (in erase mode)
+        // Offset by camera position so lights appear in correct screen position
+        const centerX = this.pos.x - camX + (tileSize / 2);
+        const centerY = this.pos.y - camY + (tileSize / 2);
+        const maxRadius = this.size / 2;
+        const steps = 15;
+        
+        // Only render if light is visible in viewport
+        if (centerX < -maxRadius || centerX > canvasWidth + maxRadius ||
+            centerY < -maxRadius || centerY > canvasHeight + maxRadius) {
+            return;
+        }
+        
+        buffer.noStroke();
+        
+        // Draw gradient from fully erased center to no erasure at edges
+        for (let i = steps; i > 0; i--) {
+            const ratio = i / steps;
+            const radius = maxRadius * ratio;
+            // Erase strength decreases toward edges for smooth gradient
+            const eraseStrength = 255 * (1 - Math.pow(ratio, 1.5));
+            
+            buffer.fill(255, eraseStrength);
+            buffer.circle(centerX, centerY, radius * 2);
+        }
+    }
+
     render() {
-        noStroke();
-        fill(this.r, this.g, this.b, time / 1.5);
-        circle(this.pos.x + (tileSize / 2), this.pos.y + (tileSize / 2), this.size);
+        // Fallback render for main canvas (not used in buffer system)
+        this.renderToBuffer(window, 0, 0);
     }
 }

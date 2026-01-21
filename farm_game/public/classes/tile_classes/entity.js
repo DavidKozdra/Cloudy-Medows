@@ -38,7 +38,10 @@ class Entity extends Tile {
     }
 
     tileTouching(x, y) {
-        return levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize]
+        if (levels[y] && levels[y][x] && typeof levels[y][x] === 'object') {
+            return levels[y][x].map[this.pos.y / tileSize][this.pos.x / tileSize];
+        }
+        return 0;
     }
 
     load(obj){

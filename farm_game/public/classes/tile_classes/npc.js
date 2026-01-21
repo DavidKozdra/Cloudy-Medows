@@ -1,8 +1,10 @@
 class NPC extends GridMoveEntity {
 
-    constructor(name, png, x, y, inv = [], hand = 0, facing = 3, under_tile_num, instructions = [], moving_timer) {
+    constructor(name, png, x, y, inv = [], hand = 0, facing = 3, under_tile_num, instructions = [], moving_timer, random_move = false) {
         super(name, png, x, y, inv, hand, facing, under_tile_num, instructions, moving_timer);
         this.class = 'NPC';
+        this.random_move = random_move;
+        this.options = ['up', 'down', 'left', 'right'];
         if(this.name == 'Mr.C'){
             this.move_bool = false;
         }
@@ -13,16 +15,31 @@ class NPC extends GridMoveEntity {
         this.current_dialouge = 0;
     }
 
+    // Allow NPCs flagged as random movers to wander like FreeMoveEntity while staying talkable
+    move(x, y) {
+        if (typeof player !== 'undefined' && player.talking === this) return;
+        if(this.random_move){
+            if(this.instructions.length < 1){
+                this.instructions.push(random(this.options));
+            }
+            super.move(x, y);
+            this.instructions = [];
+            return;
+        }
+        super.move(x, y);
+    }
+
     // Check if this NPC has a quest the player doesn't have
     hasQuestForPlayer() {
         if(!this.dialouges) return false;
         
         // Check ALL dialogues, not just the current one
         for(let dialogue of this.dialouges) {
-            if(!dialogue.replies) continue;
+            const replies = (dialogue.getActiveReplies && dialogue.getActiveReplies(this.name)) || dialogue.replies;
+            if(!replies) continue;
             
             // Check if any reply has a quest
-            for(let reply of dialogue.replies) {
+            for(let reply of replies) {
                 if(reply.quest && reply.quest != -1) {
                     // Check if player already has this quest
                     const questName = reply.quest.og_name || reply.quest.name;
@@ -60,7 +77,28 @@ class NPC extends GridMoveEntity {
     }
 
     dialouge_render() {
-        this.dialouges[this.current_dialouge].render(this.name, this.inv);
+        if (this.places && this.places.length) {
+            // Ticket Master travel UI
+            // Check if player can afford travel
+            const travel_price = this.travel_price || 10;
+            if (typeof player !== 'undefined' && player.talking === this && player.coins < travel_price) {
+                push();
+                stroke(255,0,0);
+                strokeWeight(1);
+                fill(255, 200, 200);
+                rect(canvasWidth / 4, canvasHeight - 500, 320, 40, 12);
+                textFont(player_2);
+                textSize(10);
+                fill(255,0,0);
+                textAlign(CENTER, CENTER);
+                text('You cannot afford to travel! (Cost: ' + travel_price + ')', canvasWidth / 4 ,  canvasHeight - 480, 320);
+                pop();
+            }
+            AirBallon.prototype.tp_render.call(this);
+        }
+        else {
+            this.dialouges[this.current_dialouge].render(this.name, this.inv);
+        }
     }
 
     load(obj){
@@ -71,14 +109,17 @@ class NPC extends GridMoveEntity {
         this.anim = obj.anim;
         this.facing = obj.facing;
         this.moving_timer = obj.moving_timer;
+        this.random_move = !!obj.random_move;
         this.instructions = obj.instructions;
         this.current_instruction = obj.current_instruction;
+        this.options = obj.options || this.options || ['up', 'down', 'left', 'right'];
         
         for(let i = 0; i < obj.dialouges.length; i++){
             this.dialouges[i].phrase2 = obj.dialouges[i].phrase2;
             this.dialouges[i].amount = obj.dialouges[i].amount;
             this.dialouges[i].replies = obj.dialouges[i].replies;
             for(let j = 0; j < obj.dialouges[i].replies.length; j++){
+                this.dialouges[i].replies[j].consumed = !!obj.dialouges[i].replies[j].consumed;
                 if(obj.dialouges[i].replies[j].quest != -1){
                     this.dialouges[i].replies[j].quest = new Quest(obj.dialouges[i].replies[j].quest.og_name, obj.dialouges[i].replies[j].quest.goals, obj.dialouges[i].replies[j].quest.days, (obj.dialouges[i].replies[j].quest.reward_item == 0 ? 0 : {num: item_name_to_num(obj.dialouges[i].replies[j].quest.reward_item.name), amount: obj.dialouges[i].replies[j].quest.reward_item.amount}), obj.dialouges[i].replies[j].quest.reward_coins);
                     this.dialouges[i].replies[j].quest.load(obj.dialouges[i].replies[j].quest);

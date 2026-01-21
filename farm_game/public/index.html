@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Cloudy Meadows: Deluxe Edition</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.min.js"></script>
 
@@ -74,6 +76,60 @@
 </head>
   <body>
     <div id="game-container"></div>
+    
+    <!-- Mobile Controls Overlay -->
+    <div id="mobile-controls">
+      <!-- Top Left Menu Buttons -->
+      <div id="mobile-menu-buttons">
+        <button id="btn-mobile-pause" class="mobile-menu-btn">⏸</button>
+        <button id="btn-mobile-quests" class="mobile-menu-btn">📋</button>
+      </div>
+      
+      <!-- D-Pad -->
+      <div id="dpad">
+        <button id="dpad-up" class="dpad-btn">▲</button>
+        <button id="dpad-left" class="dpad-btn">◀</button>
+        <button id="dpad-right" class="dpad-btn">▶</button>
+        <button id="dpad-down" class="dpad-btn">▼</button>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div id="action-buttons">
+        <button id="btn-interact" class="action-btn">E</button>
+        <button id="btn-eat" class="action-btn">Q</button>
+      </div>
+      
+      <!-- Hotbar Controls -->
+      <div id="hotbar-controls">
+        <button id="hotbar-prev" class="hotbar-btn">←</button>
+        <button id="hotbar-next" class="hotbar-btn">→</button>
+      </div>
+    </div>
+    
+    <!-- Mobile Inventory UI Overlay -->
+    <div id="mobile-inventory-overlay" style="display: none;">
+      <div id="mobile-inventory-panel">
+        <div id="mobile-inv-header">
+          <span id="mobile-inv-title">Inventory</span>
+          <button id="mobile-inv-close">×</button>
+        </div>
+        <div id="mobile-inv-instructions">Tap an item to select, tap destination to move</div>
+        <div id="mobile-inv-container-section">
+          <div id="mobile-inv-container-label">Container</div>
+          <div id="mobile-inv-container-grid"></div>
+        </div>
+        <div id="mobile-inv-player-section">
+          <div id="mobile-inv-player-label">Your Inventory</div>
+          <div id="mobile-inv-player-grid"></div>
+        </div>
+        <div id="mobile-inv-actions">
+          <button id="mobile-inv-transfer-all" class="mobile-inv-action-btn">Transfer All →</button>
+          <button id="mobile-inv-split" class="mobile-inv-action-btn">Split Stack</button>
+        </div>
+        <div id="mobile-inv-selected-info"></div>
+      </div>
+    </div>
+    
     <div id="travelOverlay">
       <div class="travel-cloud travel-cloud-1"></div>
       <div class="travel-cloud travel-cloud-2"></div>

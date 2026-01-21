@@ -1,7 +1,17 @@
 class Player extends MoveableEntity {
-    constructor(name, png, x, y, inv = [{ num: 1, amount: 1 }, { num: 2, amount: 5 }, { num: 3, amount: 5}, 0, 0, 0, 0, { num: 42, amount: 1}]) {
+    constructor(name, png, x, y, inv = [{ num: 1, amount: 1 }, { num: 2, amount: 5 }, { num: 3, amount: 5}, 0, 0, 0, 0, 0]) {
         super(name, png, x, y, inv, 0, 3, 0, 0);
-        this.quests = [new Quest("Save Cloudy Meadows", [{class: "TalkingGoal", npc_name: "Mr.C", item_name: 0, amount: 0}, {class: "FundingGoal", amount: 10000}], 100, 0, 0),
+        
+        let mainQuestCoins = 10000;
+        let mainQuestDays = 100;
+        let startingCoins = 0;
+        if (window.customRules) {
+            if (window.customRules.mainQuestCoins !== undefined) mainQuestCoins = window.customRules.mainQuestCoins;
+            if (window.customRules.mainQuestDays !== undefined) mainQuestDays = window.customRules.mainQuestDays;
+            if (window.customRules.startingCoins !== undefined) startingCoins = window.customRules.startingCoins;
+        }
+
+        this.quests = [new Quest("Save Cloudy Meadows", [{class: "TalkingGoal", npc_name: "Mr.C", item_name: 0, amount: 0}, {class: "FundingGoal", amount: mainQuestCoins}], mainQuestDays, 0, 0),
         new Quest("Talk to some people", [{class: "TalkingGoal", npc_name: "OldManJ", item_name: 0, amount: 0}, {class: "TalkingGoal", npc_name: "Deb", item_name: 0, amount: 0}, {class: "TalkingGoal", npc_name: "Meb",item_name: 0,amount: 0}, {"class": "TalkingGoal",npc_name: "Rick",item_name: 0,amount: 0}], 0, 0, 10)];
         this.current_quest = 0;
         this.show_quests = false;
@@ -10,7 +20,8 @@ class Player extends MoveableEntity {
         this.lastFoodnum = 2;
         this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
         this.hunger_counter = 0;
-        this.coins = 0;
+        // Starting coins can be configured via custom rules (defaults to 0)
+        this.coins = startingCoins;
         this.hp = 100;
         this.dead = false;
         this.deaths = 0;
@@ -27,6 +38,9 @@ class Player extends MoveableEntity {
         this.money_anim = 0;
         this.money_anim_amount = 0;
         this.inv_warn_anim = 0;
+        this.current_job = null;
+        this.last_work_day = 0;
+        this.days_worked = 0;
         this.class = 'Player';
     }
 
@@ -40,8 +54,45 @@ class Player extends MoveableEntity {
         }
         this.current_quest = obj.current_quest;
         this.hunger = obj.hunger;
-        if(this.hunger < 0){
-            this.hunger = 0;
+        this.lastFoodnum = obj.lastFoodnum;
+        this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
+        this.hunger_counter = 0;
+        this.coins = obj.coins;
+        this.hp = obj.hp;
+        this.dead = false;
+        this.deaths = obj.deaths;
+        this.op = 255;
+        this.touching = 0;
+        this.talking = 0;
+        this.oldlooking_name = 0;
+        this.lastmoveMili = 0;
+        this.lasteatMili = 0;
+        this.lastinteractMili = 0;
+        this.transphase = 0;
+        this.ticks = 0;
+        this.a = 0;
+        this.money_anim = 0;
+        this.money_anim_amount = 0;
+        this.inv_warn_anim = 0;
+        this.current_job = obj.current_job || null;
+        this.last_work_day = obj.last_work_day || 0;
+        this.days_worked = obj.days_worked || 0;
+        for(let i = 0; i < obj.inv.length; i++){
+            if(obj.inv[i] != 0 && this.inv[i] != 0){
+                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), obj.inv[i].amount);
+                if(this.inv[i].class == 'Backpack'){
+                    this.inv[i].load(obj.inv[i])
+                }
+            }
+            else if (obj.inv[i] != 0 && this.inv[i] == 0){
+                this.inv[i] = new_item_from_num(item_name_to_num(obj.inv[i].name), obj.inv[i].amount);
+                if(this.inv[i].class == 'Backpack'){
+                    this.inv[i].load(obj.inv[i])
+                }
+            }
+            else if (obj.inv[i] == 0 && this.inv[i] != 0){
+                this.inv[i] = 0;
+            }
         }
         this.lastFoodnum = obj.lastFoodnum;
         this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
@@ -93,7 +144,7 @@ class Player extends MoveableEntity {
             if(this.hunger < 0){
                 this.hunger = 0;
             }
-            this.hunger_timer = all_items[this.lastFoodnum].hunger_timer;
+        this.hunger_timer = (typeof all_items !== 'undefined' && all_items[this.lastFoodnum]) ? all_items[this.lastFoodnum].hunger_timer : 2000;
         }
         push();
         imageMode(CENTER);
@@ -136,31 +187,19 @@ class Player extends MoveableEntity {
         pop();
         if (this.hp <= 0) { // Player Death
             //turn player death screen on
-            
-            push();
-            
             robotPlayButton.hide();
             robotPauseButton.hide();
             robotBoomButton.hide();
             questSlider.hide();
-
-            fill(10, this.a);
-            rect(0, 0, canvasWidth, canvasHeight);
-            tint(255, this.a);
-            imageMode(CENTER);
-            image(skull_img, canvasWidth/2, canvasHeight/2);
-            textSize(90);
-            fill(255, 0, 0, this.a);
-            textAlign(CENTER, CENTER);
-            textFont(player_2);
-            text('YOU DIED', canvasWidth/2, canvasHeight/4);
-            textSize(20);
             if(!paused){
                 this.ticks += 1;
                 if(this.transphase == 0){
                     if(this.ticks == 1){
                         onDeathSound.play();
                         this.dead = true;
+                        if (typeof this.touching !== 'object' || this.touching === null) {
+                            this.touching = this.tileTouching(currentLevel_x, currentLevel_y);
+                        }
                         this.touching.collide = false;
                     }
                     if(this.ticks >= 51){
@@ -168,7 +207,6 @@ class Player extends MoveableEntity {
                         this.ticks = 0;
                     }
                     this.a += 5;
-                    text('Respawn in 10', canvasWidth/2, (3*canvasHeight)/4);
                 }
                 if(this.transphase == 1){
                     if(this.ticks >= 600){
@@ -186,7 +224,6 @@ class Player extends MoveableEntity {
                         saveAll(); // Auto-save after respawn
                         this.deathConsequence(dificulty)
                     }
-                    text('Respawn in ' + floor((600-this.ticks)/60), canvasWidth/2, (3*canvasHeight)/4);
                 }
                 if(this.transphase == 2){
                     this.a -= 5;
@@ -199,12 +236,37 @@ class Player extends MoveableEntity {
                 }
                 
             }
-            pop();
             
         }
+        // Hunger overlay now renders in render_ui() for correct layering above night overlay
     }
 
     deathConsequence(dif){
+        if(dif == 3 && window.customRules){
+            if(window.customRules.permaDeath){
+                title_screen = true;
+                localStorage.clear();
+                newWorld();
+                return;
+            }
+            if(window.customRules.moneyLoss){
+                this.coins -= ceil(this.coins * 0.1);
+            }
+            if(window.customRules.foodRot){
+                for(let i = 0; i < this.inv.length; i++){
+                    if(this.inv[i].class == 'Eat'){
+                        let rand_rot = round(random(0, this.inv[i].amount-2));
+                        if (rand_rot > 0){
+                            this.inv[i].amount -= rand_rot;
+                            if(checkForSpace(this, 4)){
+                                addItem(this, 4, rand_rot);
+                            }
+                        }
+                    }
+                }
+            }
+            return;
+        }
         if(dif == 0){
             this.coins -= ceil(this.coins * 0.1);
         }
@@ -231,12 +293,22 @@ class Player extends MoveableEntity {
 
     move() {
         if(!this.dead){
-            if (keyIsDown(move_right_button)) {
+            if (keyIsDown(move_right_button) || virtualInput.right) {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 1;
                     if (this.pos.x + tileSize >= canvasWidth) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y] ? levels[currentLevel_y][currentLevel_x + 1] : null;
+                        // For RIGHT, we allow undefined (creates extra levels) but not 0
+                        if (nextLevel === 0) {
+                            // Level slot is 0 (blocked) - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -269,7 +341,9 @@ class Player extends MoveableEntity {
                                 levels[currentLevel_y][currentLevel_x].map[15][11] = new_tile_from_num(9, 11*tileSize, 15*tileSize);
                             }
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.x = 0;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -287,18 +361,29 @@ class Player extends MoveableEntity {
                     this.lastmoveMili = millis();
                 }
             }
-            if (keyIsDown(move_left_button)) {
+            if (keyIsDown(move_left_button) || virtualInput.left) {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 3;
                     if (this.pos.x - tileSize < 0) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y] ? levels[currentLevel_y][currentLevel_x - 1] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level to the left - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
                         levels[currentLevel_y][currentLevel_x].ticks = 0;
                         currentLevel_x -= 1;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.x = canvasWidth - tileSize;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -316,12 +401,21 @@ class Player extends MoveableEntity {
                     this.lastmoveMili = millis();
                 }
             }
-            if (keyIsDown(move_up_button)) {
+            if (keyIsDown(move_up_button) || virtualInput.up) {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 0;
                     if (this.pos.y - tileSize < 0) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y - 1] ? levels[currentLevel_y - 1][currentLevel_x] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level above - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -337,7 +431,9 @@ class Player extends MoveableEntity {
                             levels[currentLevel_y][currentLevel_x].map[8][22] = new_tile_from_num(93, 22*tileSize, 8*tileSize);
                             levels[currentLevel_y][currentLevel_x].map[8][21] = new_tile_from_num(8, 21*tileSize, 8*tileSize);
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.y = canvasHeight - tileSize;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -355,12 +451,21 @@ class Player extends MoveableEntity {
                     this.lastmoveMili = millis();
                 }
             }
-            if (keyIsDown(move_down_button)) {
+            if (keyIsDown(move_down_button) || virtualInput.down) {
                 if (millis() - this.lastmoveMili > 130) {
                     this.facing = 2;
                     if (this.pos.y + tileSize >= canvasHeight) {
+                        // Check if the next level exists and is valid before transitioning
+                        const nextLevel = levels[currentLevel_y + 1] ? levels[currentLevel_y + 1][currentLevel_x] : null;
+                        if (!nextLevel || typeof nextLevel !== 'object') {
+                            // No valid level below - don't transition
+                            this.lastmoveMili = millis();
+                            return;
+                        }
                         this.touching.collide = false;
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = false;
+                        }
                         levels[currentLevel_y][currentLevel_x].y = -50;
                         levels[currentLevel_y][currentLevel_x].done = false;
                         levels[currentLevel_y][currentLevel_x].movephase = 0;
@@ -374,7 +479,9 @@ class Player extends MoveableEntity {
                             levels[currentLevel_y][currentLevel_x].map[8][22] = new_tile_from_num(93, 22*tileSize, 8*tileSize);
                             levels[currentLevel_y][currentLevel_x].map[8][21] = new_tile_from_num(8, 21*tileSize, 8*tileSize);
                         }
-                        levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                        }
                         this.pos.y = 0;
                     }
                     else if (this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.looking(currentLevel_x, currentLevel_y).collide != true) {
@@ -397,7 +504,7 @@ class Player extends MoveableEntity {
     }
 
     eat() {
-        if (millis() - this.lasteatMili > 100) {
+        if (!this.dead && millis() - this.lasteatMili > 100) {
             if (this.hunger < maxHunger) {  // player only eats when hungry
                 if(this.inv[this.hand].class == 'Eat' && this.inv[this.hand].amount == 1){
                     EatSound.play();
@@ -413,7 +520,11 @@ class Player extends MoveableEntity {
                     if (this.inv[this.hand].amount == 0) {
                         this.inv[this.hand] = 0;
                     }
-                    addItem(this, seed_obj_num, random([1, 1, 1, 1, 2, 2, 2, 3]));
+                    // Use item's seed_min/seed_max or defaults
+                    let seed_min = this.inv[this.hand].seed_min || 1;
+                    let seed_max = this.inv[this.hand].seed_max || 3;
+                    let seed_amount = floor(random(seed_min, seed_max + 1));
+                    addItem(this, seed_obj_num, seed_amount);
                 }
                 else if (this.inv[this.hand].class == 'Eat' && (checkForSpace(this, this.inv[this.hand].seed_num))) {
                     EatSound.play();
@@ -429,12 +540,96 @@ class Player extends MoveableEntity {
                     if (this.inv[this.hand].amount == 0) {
                         this.inv[this.hand] = 0;
                     }
-                    addItem(this, seed_obj_num, random([1, 1, 1, 1, 2, 2, 2, 3]));
+                    // Use item's seed_min/seed_max or defaults
+                    let seed_min = this.inv[this.hand].seed_min || 1;
+                    let seed_max = this.inv[this.hand].seed_max || 3;
+                    let seed_amount = floor(random(seed_min, seed_max + 1));
+                    addItem(this, seed_obj_num, seed_amount);
                 }
             }
         }
         this.lasteatMili = millis();
     }
+
+    /*
+    handleJobBoard() {
+        const jobBoard = this.looking(currentLevel_x, currentLevel_y);
+        const currentDay = days; // Use game days instead of real time
+        
+        // Check if player can work today
+        if (this.current_job && currentDay <= this.last_work_day) {
+            this.talking = {
+                name: 'Job Board',
+                dialouges: [{
+                    phrase: `You already worked today as a ${this.current_job}. Come back tomorrow for more work!`,
+                    replies: [{
+                        phrase: "I'll come back tomorrow.",
+                        dialouge_num: -1,
+                        quest: -1
+                    }],
+                    hand_num: -1,
+                    amount: 0
+                }]
+            };
+            return;
+        }
+        
+        // Create job selection dialogue
+        let jobOptions = jobBoard.jobs_available.map((job, index) => ({
+            phrase: `Work as ${job} (${jobBoard.daily_wages[index]} coins/day)`,
+            dialouge_num: -1,
+            quest: -1,
+            jobIndex: index
+        }));
+        
+        jobOptions.push({
+            phrase: "Maybe later",
+            dialouge_num: -1,
+            quest: -1
+        });
+        
+        this.talking = {
+            name: 'Job Board',
+            dialouges: [{
+                phrase: "Available jobs in the Big City. Each job pays daily wages:",
+                replies: jobOptions,
+                hand_num: -1,
+                amount: 0
+            }],
+            jobBoard: jobBoard
+        };
+    }
+    */
+
+    /*
+    acceptJob(jobIndex) {
+        const jobBoard = this.looking(currentLevel_x, currentLevel_y);
+        const job = jobBoard.jobs_available[jobIndex];
+        const wage = jobBoard.daily_wages[jobIndex];
+        const currentDay = days;
+        
+        this.current_job = job;
+        this.last_work_day = currentDay;
+        this.coins += wage;
+        this.days_worked++;
+        
+        moneySound.play();
+        
+        this.talking = {
+            name: 'Job Board',
+            dialouges: [{
+                phrase: `Great! You worked as a ${job} today and earned ${wage} coins. Total days worked: ${this.days_worked}`,
+                replies: [{
+                    phrase: "Thanks! I'll be back tomorrow.",
+                    dialouge_num: -1,
+                    quest: -1
+                }],
+                hand_num: -1,
+                amount: 0
+            }]
+        };
+    }
+    */
 
     interactCall() {
         
@@ -450,11 +645,17 @@ class Player extends MoveableEntity {
             this.talking = this.inv[this.hand];
             return;
         }
-        if(this.looking(currentLevel_x, currentLevel_y) != undefined && this.looking(currentLevel_x, currentLevel_y) != 0 && this.talking == 0){
-            if(((this.looking(currentLevel_x, currentLevel_y).class == 'NPC' || this.looking(currentLevel_x, currentLevel_y).class == 'Shop' || this.looking(currentLevel_x, currentLevel_y).class == 'Chest' || this.looking(currentLevel_x, currentLevel_y).class == 'Robot' || this.looking(currentLevel_x, currentLevel_y).class == 'AirBallon'))){
-                temp_move_bool = this.looking(currentLevel_x, currentLevel_y).move_bool;
-                this.talking = this.looking(currentLevel_x, currentLevel_y);
-                this.oldlooking_name = this.looking(currentLevel_x, currentLevel_y).name;
+        const lookingAt = this.looking(currentLevel_x, currentLevel_y);
+        if(lookingAt != undefined && lookingAt != 0 && this.talking == 0){
+            // Handle Job Board specifically
+            if(lookingAt.name == 'Job Board' && lookingAt.jobs_available){
+                // this.handleJobBoard();
+                return;
+            }
+            if((lookingAt.class == 'NPC' || lookingAt.class == 'Shop' || lookingAt.class == 'Chest' || lookingAt.class == 'Robot' || lookingAt.class == 'AirBallon')){
+                temp_move_bool = lookingAt.move_bool;
+                this.talking = lookingAt;
+                this.oldlooking_name = lookingAt.name;
                 
                 // Dispatch NPC interaction event for quest system
                 if(this.talking.class == 'NPC' || this.talking.class == 'Shop'){
@@ -464,12 +665,12 @@ class Player extends MoveableEntity {
                 }
                 return;
             }
-            else if(this.looking(currentLevel_x, currentLevel_y).class == "PayToMoveEntity"){
-                if(this.coins >= this.looking(currentLevel_x, currentLevel_y).price){
-                    player.coins -= this.looking(currentLevel_x, currentLevel_y).price;
+            else if(lookingAt.class == "PayToMoveEntity"){
+                if(this.coins >= lookingAt.price){
+                    player.coins -= lookingAt.price;
                     this.touching = this.tileTouching(x, y);
                     if (this.touching != 0) {
-                        levels[currentLevel_y][currentLevel_x].map[(player.looking(currentLevel_x, currentLevel_y).pos.y / tileSize)][player.looking(currentLevel_x, currentLevel_y).pos.x / tileSize] = this.looking(currentLevel_x, currentLevel_y).under_tile;
+                        levels[currentLevel_y][currentLevel_x].map[(lookingAt.pos.y / tileSize)][lookingAt.pos.x / tileSize] = lookingAt.under_tile;
                     }
                     moneySound.play();
                 }
@@ -478,7 +679,11 @@ class Player extends MoveableEntity {
         if (this.touching.class == 'Plant') {
             if(this.touching.age == all_imgs[this.touching.png].length - 2){
                 if(checkForSpace(this, this.touching.eat_num)){
-                    addItem(this, this.touching.eat_num, 1 + round(random((levels[y][x].ladybugs > 4 ? 1:0), levels[y][x].ladybugs)));
+                    let baseYield = 1;
+                    if(typeof this.touching.getHarvestYield === 'function') {
+                         baseYield = this.touching.getHarvestYield();
+                    }
+                    addItem(this, this.touching.eat_num, baseYield + round(random((levels[y][x].ladybugs > 4 ? 1:0), levels[y][x].ladybugs)));
                     levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile_from_num(3, this.touching.pos.x, this.touching.pos.y);
                     PlantingSound.play()
                 }
@@ -491,12 +696,51 @@ class Player extends MoveableEntity {
         if (this.looking(x, y) != undefined && this.looking(x, y).name == 'cart_s') {
             var current_amount = 1
             if (this.inv[this.hand].price != 0 && this.inv[this.hand] != 0) {
-                if(keyIsDown(special_key)){
+                if(keyIsDown(special_key) || virtualInput.special){
                     current_amount = this.inv[this.hand].amount;
                 }
-                const moneyGained = this.inv[this.hand].price * current_amount;
+                
+                // Find the current shop's sell price for this item (25% discount on BASE price)
+                let sellPrice = round(this.inv[this.hand].price * 0.75); // Default fallback
+                const currentLevel = levels[currentLevel_y][currentLevel_x];
+                if(currentLevel && currentLevel.map) {
+                    for(let my = 0; my < currentLevel.map.length; my++){
+                        for(let mx = 0; mx < currentLevel.map[my].length; mx++){
+                            const tile = currentLevel.map[my][mx];
+                            if(tile && tile.class == 'Shop'){
+                                // Use shop's getSellPrice method (uses base price)
+                                let price = tile.getSellPrice(this.inv[this.hand].name);
+                                if(price > 0) {
+                                    sellPrice = price;
+                                    break;
+                                }
+                            }
+                        }
+                        // Break outer loop if found
+                        if(sellPrice !== round(this.inv[this.hand].price * 0.75)) break;
+                    }
+                }
+                
+                const moneyGained = sellPrice * current_amount;
                 addMoney(moneyGained);
                 moneySound.play();
+                
+                // Track what was sold to all shops and update their prices
+                for(let i = 0; i < levels.length; i++){
+                    for(let j = 0; j < levels[i].length; j++){
+                        const level = levels[i][j];
+                        if(level && level.map){
+                            for(let my = 0; my < level.map.length; my++){
+                                for(let mx = 0; mx < level.map[my].length; mx++){
+                                    const tile = level.map[my][mx];
+                                    if(tile && tile.class == 'Shop'){
+                                        tile.recordItemSold(this.inv[this.hand].name, current_amount);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 this.inv[this.hand].amount -= current_amount;
                 if(this.quests != undefined && this.quests.length > 0){
                 if(this.current_quest != undefined && this.quests[this.current_quest].goals[this.quests[this.current_quest].current_Goal] != undefined){
@@ -514,6 +758,11 @@ class Player extends MoveableEntity {
         }
         if (this.inv[this.hand] != 0 && this.inv[this.hand].class == 'Placeable') {
             if (tile_name_to_num(this.touching.name) == this.inv[this.hand].tile_need_num || this.inv[this.hand].tile_need_num == 0) {
+                 // Prevent placing Sprinkler on top of an existing Plant
+                 if (this.inv[this.hand].name == 'Sprinkler' && this.touching.class == 'Plant') {
+                     return;
+                 }
+
                 if(this.inv[this.hand].name == 'Robot1' || this.inv[this.hand].name == 'Robot2' || this.inv[this.hand].name == 'Robot3' || this.inv[this.hand].name == 'Chest'){
                     if(this.looking(x, y) != undefined && this.looking(x, y).collide == false){
                         let temp = this.looking(x, y);
@@ -531,7 +780,14 @@ class Player extends MoveableEntity {
                     }
                 }
                 else{
-                    levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile_from_num(this.inv[this.hand].tile_num, this.touching.pos.x, this.touching.pos.y);
+                    let old_tile = levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize];
+                    let new_tile = new_tile_from_num(this.inv[this.hand].tile_num, this.touching.pos.x, this.touching.pos.y);
+                    new_tile.under_tile = old_tile;
+                    if(new_tile.name === 'sprinkler' && old_tile){
+                        new_tile.last_under_png = old_tile.png; // remember base for render fallback
+                        new_tile.last_under_variant = old_tile.variant; // remember variant too
+                    }
+                    levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile;
                     if (this.inv[this.hand].name == 'Ladybugs') {
                         levels[y][x].ladybugs += 1;
                     }
@@ -557,6 +813,19 @@ class Player extends MoveableEntity {
                 }
             }
         }
+
+        else if (this.inv[this.hand].name == 'Axe'){
+            if (this.looking(x, y) != undefined && (this.looking(x, y).name == 'wall' || this.looking(x, y).name == 'bed')){
+                let item_to_add = this.looking(x, y).name == 'wall' ? 44 : 43;
+                let broken_tile = this.looking(currentLevel_x, currentLevel_y);
+                if(checkForSpace(this, item_to_add)){
+                    addItem(this, item_to_add, 1);
+                    let under_tile = broken_tile.under_tile ? broken_tile.under_tile : new_tile_from_num(1, broken_tile.pos.x, broken_tile.pos.y);
+                    levels[currentLevel_y][currentLevel_x].map[(broken_tile.pos.y / tileSize)][broken_tile.pos.x / tileSize] = under_tile;
+                    shovelSound.play();
+                }
+            }
+        }
         else if (this.touching.name == 'plot') {
             if (this.inv[this.hand].class == 'Seed') {
                 levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = new_tile_from_num(this.inv[this.hand].plant_num, this.touching.pos.x, this.touching.pos.y);
@@ -568,42 +837,153 @@ class Player extends MoveableEntity {
             }
         }
         else if (this.touching.name == 'compost_bucket') {
-            if (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed') {
-                if(checkForSpace(this, 9)){
-                    this.inv[this.hand].amount -= 1;
-                    if (this.inv[this.hand].amount == 0) {
-                        this.inv[this.hand] = 0;
-                    }
-                    addItem(this, 9, 1);
+               if (this.inv[this.hand].name == 'Shovel'){
+                if(checkForSpace(this, 46)){
+                    addItem(this, 46, 1);
+                    let under_tile = this.touching.under_tile ? this.touching.under_tile : new_tile_from_num(2, this.touching.pos.x, this.touching.pos.y);
+                    levels[y][x].map[this.touching.pos.y / tileSize][this.touching.pos.x / tileSize] = under_tile;
+                    shovelSound.play();
                 }
+            }
+            if (this.inv[this.hand] && (this.inv[this.hand].name == 'Junk' || this.inv[this.hand].class == 'Seed')) {
+                console.log('✅ Item is valid for composting:', this.inv[this.hand].name);
+                
+                let amountToProcess = 1;
+                // SPECIAL KEY: Process all items
+                if (keyIsDown(special_key) || virtualInput.special) {
+                    amountToProcess = this.inv[this.hand].amount;
+                }
+                
+                let processed = 0;
+                while(processed < amountToProcess && this.inv[this.hand] != 0){
+                    if(checkForSpace(this, 9)){
+                        console.log('📦 Converting to compost! (item 9)');
+                        this.inv[this.hand].amount -= 1;
+                        if (this.inv[this.hand].amount == 0) {
+                            this.inv[this.hand] = 0;
+                        }
+                        addItem(this, 9, 1);
+                        processed++;
+                    }
+                    else {
+                        console.log('❌ No space in inventory for compost!');
+                        break;
+                    }
+                }
+            }
+            else {
+                console.log('❌ Item is not valid for composting. Need Junk or Seed.');
             }
         }
         else if (this.touching.name == 'Veggie_Press') {
             if (this.inv[this.hand].class == 'Eat') {
-                if(checkForSpace(this, 31)){
-                    this.inv[this.hand].amount -= 1;
-                    if (this.inv[this.hand].amount == 0) {
-                        this.inv[this.hand] = 0;
+                let amountToProcess = 1;
+
+                // SPECIAL KEY: Process all items
+                if (keyIsDown(special_key) || virtualInput.special) {
+                    amountToProcess = this.inv[this.hand].amount;
+                }
+
+                // Hemp flower produces hemp oil
+                if (this.inv[this.hand].name == 'Hemp Flower') {
+                    if(checkForSpace(this, 47)){
+                        let processed = 0;
+                        while(processed < amountToProcess && this.inv[this.hand] != 0){
+                           this.inv[this.hand].amount -= 1;
+                           if (this.inv[this.hand].amount == 0) {
+                               this.inv[this.hand] = 0;
+                           }
+                           addItem(this, 47, 1);
+                           processed++;
+                        }
                     }
-                    addItem(this, 31, 1);
+                }
+                // Fruits produce fruit juice
+                else if (['Strawberries', 'Tomato', 'Watermelon'].includes(this.inv[this.hand].name)) {
+                     if(checkForSpace(this, 48)){
+                        let processed = 0;
+                        while(processed < amountToProcess && this.inv[this.hand] != 0){
+                            this.inv[this.hand].amount -= 1;
+                            if (this.inv[this.hand].amount == 0) {
+                                this.inv[this.hand] = 0;
+                            }
+                            addItem(this, 48, 1);
+                            processed++;
+                        }
+                    }
+                }
+                // Pumpkin produces oil
+                else if (this.inv[this.hand].name == 'Pumpkin') {
+                    if(checkForSpace(this, 31)){
+                        let processed = 0;
+                        while(processed < amountToProcess && this.inv[this.hand] != 0){
+                            this.inv[this.hand].amount -= 1;
+                            if (this.inv[this.hand].amount == 0) {
+                                this.inv[this.hand] = 0;
+                            }
+                            addItem(this, 31, 2); // Produces 2 oil
+                            processed++;
+                        }
+                    }
+                }
+                // Other eat items produce veggie oil
+                else {
+                    if(checkForSpace(this, 31)){
+                        let processed = 0;
+                        while(processed < amountToProcess && this.inv[this.hand] != 0){
+                            this.inv[this.hand].amount -= 1;
+                            if (this.inv[this.hand].amount == 0) {
+                                this.inv[this.hand] = 0;
+                            }
+                            addItem(this, 31, 1);
+                            processed++;
+                        }
+                    }
                 }
             }
         }
         else if (this.touching.name == 'grinder'){
             if (this.inv[this.hand].class == 'Eat'){
                 if(this.inv[this.hand].seed_num != 0){
-                    if(this.inv[this.hand].amount == 1){
-                        this.inv[this.hand].amount -= 1;
-                        addItem(this, this.inv[this.hand].seed_num, random([1, 2, 2, 2, 2, 3, 3, 4]));
-                        if (this.inv[this.hand].amount == 0) {
-                            this.inv[this.hand] = 0;
-                        }
+                    let amountToProcess = 1;
+                    
+                    // SPECIAL KEY: Process all items
+                    if (keyIsDown(special_key) || virtualInput.special) {
+                        amountToProcess = this.inv[this.hand].amount;
                     }
-                    else if(checkForSpace(this, this.inv[this.hand].seed_num)){
-                        this.inv[this.hand].amount -= 1;
-                        addItem(this, this.inv[this.hand].seed_num, random([1, 2, 2, 2, 2, 3, 3, 4]));
-                        if (this.inv[this.hand].amount == 0) {
-                            this.inv[this.hand] = 0;
+                    
+                    // Loop up to amountToProcess, breaking if output inventory gets full or ran out of input
+                    // We check if we can process one unit at a time.
+                    let processed = 0;
+                    while(processed < amountToProcess && this.inv[this.hand] != 0){
+                        // Logic refactored to handle single unit processing per loop
+                        if(this.inv[this.hand].amount == 1){
+                            this.inv[this.hand].amount -= 1;
+                            // Grinder gives bonus: +1 to min and +2 to max
+                            let seed_min = (this.inv[this.hand].seed_min || 1) + 1;
+                            let seed_max = (this.inv[this.hand].seed_max || 3) + 2;
+                            let seed_amount = floor(random(seed_min, seed_max + 1));
+                            addItem(this, this.inv[this.hand].seed_num, seed_amount);
+                            if (this.inv[this.hand].amount == 0) {
+                                this.inv[this.hand] = 0;
+                            }
+                            processed++;
+                        }
+                        else if(checkForSpace(this, this.inv[this.hand].seed_num)){
+                            this.inv[this.hand].amount -= 1;
+                            // Grinder gives bonus: +1 to min and +2 to max
+                            let seed_min = (this.inv[this.hand].seed_min || 1) + 1;
+                            let seed_max = (this.inv[this.hand].seed_max || 3) + 2;
+                            let seed_amount = floor(random(seed_min, seed_max + 1));
+                            addItem(this, this.inv[this.hand].seed_num, seed_amount);
+                            if (this.inv[this.hand].amount == 0) {
+                                this.inv[this.hand] = 0;
+                            }
+                            processed++;
+                        }
+                        else {
+                            // No space for more seeds
+                            break;
                         }
                     }
                 }
@@ -781,7 +1161,7 @@ function takeInput() {
             saveOptions();
         }
         else if (control_set == 0){
-            if (keyIsDown(interact_button) && !showOptions) {
+            if ((keyIsDown(interact_button) || virtualInput.interact) && !showOptions) {
                 title_screen = false;
             }
         }
@@ -835,7 +1215,7 @@ function takeInput() {
             control_set = 0;
             saveOptions();
         }
-        if(keyIsDown(pause_button)){
+        if(keyIsDown(pause_button) || virtualInput.pause){
             if (millis() - lastMili > 200) {
                 paused = false;
                 lastMili = millis();
@@ -843,13 +1223,13 @@ function takeInput() {
         }
     }
     else if(player.talking != 0){
-        if(keyIsDown(pause_button)){
+        if(keyIsDown(pause_button) || virtualInput.pause){
             if (millis() - lastMili > 200 && !player.dead) {
                 paused = true;
                 lastMili = millis();
             }
         }
-        if (keyIsDown(eat_button)) {
+        if (keyIsDown(eat_button) || virtualInput.eat) {
             if (millis() - lastMili > 200) {
                 if(player.talking.class == 'NPC'){
                     player.talking.move_bool = true;
@@ -868,7 +1248,7 @@ function takeInput() {
                             }
                             player.talking.dialouges[i].new_replies = -1;
                         }
-                        if(player.talking.name == 'Mr.C'){
+                        if(player.talking.name == 'Mr.C' && !window.mainQuestNPCs){
                             if(days >= 99){
                                 player.talking.move_bool = false;
                                 if(player.quests[0].done){
@@ -886,6 +1266,12 @@ function takeInput() {
                     }
                 }
                 else if(player.talking.class == 'Chest' || player.talking.class == 'Backpack'){
+                    // On mobile, close the mobile inventory overlay
+                    if (typeof isMobile !== 'undefined' && isMobile && typeof closeMobileInventory === 'function') {
+                        closeMobileInventory();
+                        return; // closeMobileInventory handles the cleanup
+                    }
+                    
                     if(mouse_item != 0){
                         if(checkForSpace(player, item_name_to_num(mouse_item.name))){
                             addItem(player, item_name_to_num(mouse_item.name), mouse_item.amount);
@@ -918,9 +1304,16 @@ function takeInput() {
                             }
                         }
                     }
+                    player.talking = 0;
                     robotBoomButton.hide();
                 }
                 else if (player.talking.class == 'Robot'){
+                    // On mobile, close the mobile inventory overlay
+                    if (typeof isMobile !== 'undefined' && isMobile && typeof closeMobileInventory === 'function') {
+                        closeMobileInventory();
+                        return; // closeMobileInventory handles the cleanup
+                    }
+                    
                     player.talking.fuel_timer = player.talking.max_fuel_timer;
                     player.talking.move_bool = temp_move_bool;
                     robotPlayButton.hide();
@@ -928,42 +1321,148 @@ function takeInput() {
                     robotBoomButton.hide();
                 }
                 player.oldlooking_name = player.talking.name;
+                if (player.talking.name === 'Mr.C' && window.mainQuestNPCs) {
+                    restoreMainQuestNPCs();
+                }
                 player.talking = 0;
                 current_reply = 0;
                 lastMili = millis();
                 player.lasteatMili = millis();
             }
         }
-        if (keyIsDown(move_up_button)){
+        if (keyIsDown(move_up_button) || virtualInput.up){
             if ((millis() - lastMili > 200) && player.talking.class != 'Chest') {
                 current_reply -= 1;
                 if (current_reply < 0){
-                    current_reply = 0;
+                    // Check if NPC has fast travel places (Ticket Master)
+                    if (player.talking.class == 'NPC' && player.talking.places && player.talking.places.length) {
+                        current_reply = 0;
+                    }
+                    else {
+                        current_reply = 0;
+                    }
                 }
                 lastMili = millis();
             }
         }
-        if (keyIsDown(move_down_button)){
+        if (keyIsDown(move_down_button) || virtualInput.down){
             if (millis() - lastMili > 200) {
                 current_reply += 1;
                 if (player.talking.class == 'NPC'){
-                    if (current_reply > player.talking.dialouges[player.talking.current_dialouge].replies.length-1){
-                        current_reply = player.talking.dialouges[player.talking.current_dialouge].replies.length-1;
+                    // Check if NPC has fast travel places (Ticket Master)
+                    if (player.talking.places && player.talking.places.length) {
+                        const availablePlaces = player.talking.availablePlaces || player.talking.places;
+                        if (current_reply > availablePlaces.length - 1) {
+                            current_reply = max(0, availablePlaces.length - 1);
+                        }
+                    }
+                    else {
+                        const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
+                        if (current_reply > activeReplies.length-1){
+                            current_reply = max(0, activeReplies.length-1);
+                        }
                     }
                 }
                 else if (player.talking.class == 'Shop'){
-                    if (current_reply > player.talking.inv.length-1){
-                        current_reply = player.talking.inv.length-1;
+                    const enabledCount = player.talking.getEnabledCount();
+                    if (current_reply > enabledCount - 1){
+                        current_reply = max(0, enabledCount - 1);
                     }
                 }
                 lastMili = millis();
             }
         }
-        if (keyIsDown(interact_button)){
+        if (keyIsDown(interact_button) || virtualInput.interact){
             if (millis() - player.lastinteractMili > 200) {
-                if (player.talking.class == 'NPC'){
-                    if(player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].quest != -1){
-                        let newQuest = player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].quest;
+                // Handle Ticket Master fast travel FIRST (before regular NPC dialogue)
+                if (player.talking.class == 'NPC' && player.talking.places && player.talking.places.length) {
+                    const selectedPlace = player.talking.availablePlaces ? player.talking.availablePlaces[current_reply] : player.talking.places[current_reply];
+                    const price = player.talking.travel_price || 10;
+                    if (player.coins < price) {
+                        player.talking.dialouges[player.talking.current_dialouge].new_phrase = [];
+                        let phrase = "You don't have enough coins.";
+                        for(let i = 0; i < phrase.length; i++){
+                            player.talking.dialouges[player.talking.current_dialouge].new_phrase[i] = phrase[i];
+                        }
+                        player.talking.dialouges[player.talking.current_dialouge].new_replies = [{phrase: 'Oh', dialouge_num: -1, quest: -1}];
+                        player.talking.dialouges[player.talking.current_dialouge].done = false;
+                        player.talking.dialouges[player.talking.current_dialouge].text_i = -1;
+                        player.talking.dialouges[player.talking.current_dialouge].phrase = [];
+                        current_reply = 0;
+                    }
+                    else {
+                        player.coins -= price;
+                        moneySound.play();
+                        if (selectedPlace == 'Beach'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*5;
+                                player.pos.y = tileSize*6;
+                                currentLevel_x = 5;
+                                currentLevel_y = 7;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'Beach');
+                        }
+                        else if (selectedPlace == 'The Big City'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*10;
+                                player.pos.y = tileSize*6;
+                                currentLevel_x = 1;
+                                currentLevel_y = 6;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'The Big City');
+                        }
+                        else if (selectedPlace == 'Cloudy Meadows'){
+                            triggerTravelTransition(() => {
+                                player.touching.collide = false;
+                                player.pos.x = tileSize*5;
+                                player.pos.y = tileSize*7;
+                                currentLevel_x = 4;
+                                currentLevel_y = 1;
+                                player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
+                                if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                    levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                                }
+                                player.oldlooking_name = player.talking.name;
+                                player.talking = 0;
+                                current_reply = 0;
+                            }, 'Cloudy Meadows');
+                        }
+                    }
+                    lastMili = millis();
+                    player.lastinteractMili = millis();
+                }
+                else if (player.talking.class == 'NPC'){
+                    const activeReplies = player.talking.dialouges[player.talking.current_dialouge].getActiveReplies(player.talking.name);
+                    if (activeReplies.length === 0) {
+                        lastMili = millis();
+                        player.lastinteractMili = millis();
+                        return;
+                    }
+                    if (current_reply > activeReplies.length - 1) {
+                        current_reply = max(0, activeReplies.length - 1);
+                    }
+                    const selectedReply = activeReplies[current_reply];
+                    // Fire replyUsed so TellGoals can listen for it
+                    window.dispatchEvent(new CustomEvent('replyUsed', {
+                        detail: { npcName: player.talking.name, reply: selectedReply.phrase }
+                    }));
+
+                    if(selectedReply.quest != -1){
+                        let newQuest = selectedReply.quest;
                         player.quests.push(newQuest);
                         player.current_quest = player.quests.length - 1;
                         // Check if any goals were already completed in the past
@@ -983,16 +1482,29 @@ function takeInput() {
                         player.talking.dialouges[player.talking.current_dialouge].new_phrase = -1;
                     }
                     if(player.talking.dialouges[player.talking.current_dialouge].new_replies != -1){
-                        for(let j = 0; j < player.talking.dialouges[player.talking.current_dialouge].new_replies.length; j++){
-                            player.talking.dialouges[player.talking.current_dialouge].replies[j] = player.talking.dialouges[player.talking.current_dialouge].new_replies[j];
-                        }
+                        const newReplies = player.talking.dialouges[player.talking.current_dialouge].new_replies;
+                        player.talking.dialouges[player.talking.current_dialouge].replies = newReplies.map(r => {
+                            const clone = Object.assign({}, r);
+                            clone.consumed = !!clone.consumed;
+                            return clone;
+                        });
                         player.talking.dialouges[player.talking.current_dialouge].new_replies = -1;
                     }
-                    if(player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].dialouge_num == -1){
+                    if(selectedReply.dialouge_num == -1){
+                        // Handle job selection
+                        if(selectedReply.jobIndex !== undefined && player.talking.name === 'Job Board'){
+                            // Add bounds checking
+                            const jobBoard = player.looking(currentLevel_x, currentLevel_y);
+                            if(jobBoard && jobBoard.jobs_available && selectedReply.jobIndex >= 0 && selectedReply.jobIndex < jobBoard.jobs_available.length){
+                                player.acceptJob(selectedReply.jobIndex);
+                            }
+                            return;
+                        }
+                        
                         player.talking.move_bool = true;
                         player.talking.current_dialouge = 0;
                         player.oldlooking_name = player.talking.name;
-                        if(player.talking.name == 'Mr.C'){
+                        if(player.talking.name == 'Mr.C' && !window.mainQuestNPCs){
                             if(days >= 99){
                                 player.talking.move_bool = false;
                                 if(player.quests[0].done){
@@ -1007,27 +1519,34 @@ function takeInput() {
                                 player.talking.move_bool = true;
                             }
                         }
+                        if (player.talking.name === 'Mr.C' && window.mainQuestNPCs) {
+                            restoreMainQuestNPCs();
+                        }
                         player.talking = 0;
                         current_reply = 0;
                     }
                     else{
-                        player.talking.current_dialouge = player.talking.dialouges[player.talking.current_dialouge].replies[current_reply].dialouge_num;
+                        player.talking.current_dialouge = selectedReply.dialouge_num;
                         current_reply = 0;
                     }
                 }
                 else if (player.talking.class == 'Shop'){
-                    if(player.talking.inv[current_reply].amount >= 1){
-                        if(player.coins >= player.talking.inv[current_reply].price && checkForSpace(player, item_name_to_num(player.talking.inv[current_reply].name))){    //check if you have the money
+                    // Map visible index (current_reply) to actual inventory index
+                    const actualIdx = player.talking.getActualIndex(current_reply);
+                    if(actualIdx >= 0 && player.talking.inv[actualIdx].amount >= 1){
+                        // Use getBuyPrice for market-based pricing with 10% markup
+                        const buyPrice = player.talking.getBuyPrice(player.talking.inv[actualIdx].name);
+                        if(player.coins >= buyPrice && checkForSpace(player, item_name_to_num(player.talking.inv[actualIdx].name))){    //check if you have the money
                             moneySound.play()
-                            addItem(player, item_name_to_num(player.talking.inv[current_reply].name), 1);
-                            player.coins -= player.talking.inv[current_reply].price; //reduce money
-                            player.talking.inv[current_reply].amount -= 1; //shop.inv -1 amount
+                            addItem(player, item_name_to_num(player.talking.inv[actualIdx].name), 1);
+                            player.coins -= buyPrice; //reduce money by buy price
+                            player.talking.updateItemStock(player.talking.inv[actualIdx].name, player.talking.inv[actualIdx].amount - 1); //shop.inv -1 and recalc prices
                         }
                     }
                 }
                 else if (player.talking.class == 'AirBallon'){
                     const selectedPlace = player.talking.availablePlaces[current_reply];
-                    if(selectedPlace == 'Park'){
+                    if(selectedPlace == 'Poly Park'){
                         triggerTravelTransition(() => {
                             player.touching.collide = false;
                             player.pos.x = tileSize*17;
@@ -1035,13 +1554,15 @@ function takeInput() {
                             currentLevel_x = 2;
                             currentLevel_y = 0;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
-                        }, 'Park');
+                        }, 'Poly Park');
                     }
-                    else if (selectedPlace == 'Swamp'){
+                    else if (selectedPlace == 'Swiggy Swamps'){
                         triggerTravelTransition(() => {
                             player.touching.collide = false;
                             player.pos.x = tileSize*17;
@@ -1049,11 +1570,13 @@ function takeInput() {
                             currentLevel_x = 3;
                             currentLevel_y = 3;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
-                        }, 'Swamp');
+                        }, 'Swiggy Swamps');
                     }
                     else if (selectedPlace == 'Cloudy Meadows'){
                         triggerTravelTransition(() => {
@@ -1063,7 +1586,9 @@ function takeInput() {
                             currentLevel_x = 3;
                             currentLevel_y = 0;
                             player.tileTouching(currentLevel_x, currentLevel_y).collide = true;
-                            levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            if (levels[currentLevel_y][currentLevel_x] && typeof levels[currentLevel_y][currentLevel_x] === 'object') {
+                                levels[currentLevel_y][currentLevel_x].level_name_popup = true;
+                            }
                             player.oldlooking_name = player.talking.name;
                             player.talking = 0;
                             current_reply = 0;
@@ -1078,7 +1603,7 @@ function takeInput() {
     }
     else{
         if(!player.show_quests){
-            if(keyIsDown(pause_button)){
+            if(keyIsDown(pause_button) || virtualInput.pause){
                 if (millis() - lastMili > 200 && !player.dead) {
                     paused = true;
                     lastMili = millis();
@@ -1086,10 +1611,10 @@ function takeInput() {
             }
             //basic movement  
             player.move();
-            if (keyIsDown(eat_button)) {
+            if (keyIsDown(eat_button) || virtualInput.eat) {
                 player.eat();
             }
-            if (keyIsDown(interact_button)) {
+            if (keyIsDown(interact_button) || virtualInput.interact) {
                 player.interactCall();
             }
             //mc style hotbar
