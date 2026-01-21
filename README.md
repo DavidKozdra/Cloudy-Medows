@@ -1,8 +1,9 @@
-# Cloudy-Medows
+# Cloudy-Medows Deluxe 
 
-![kOdkTD](https://user-images.githubusercontent.com/81502387/182727437-b59943af-e0be-40c1-a8d8-db9871e71d62.gif)
+<img width="654" height="565" alt="image" src="https://github.com/user-attachments/assets/a6805f92-efdd-4a78-b8fc-9635b6964a9e" />
 
-https://virtualnerd1.itch.io/cloudy-meadows
+Play
+https://magentaautumn.itch.io/cloudy-meadows-deluxe
 
 ## Description
 
@@ -10,9 +11,7 @@ Cloudy meadows is an urban vertical farming community. Meet interesting people, 
 far enough buy robots to do the work for you. When the big mean investment banker forces a buyout of the land the farms are on, the community 
 is only given 100 days to gain 10,000 coins.
 
-## Video
 
-video here
 
 ## A little bit about the work
 Cloudy Meadows is a project we have worked on for the majority of the summer, and started as a small jam game. 
@@ -26,3 +25,7 @@ We worked with:
 - HTML 
 - CSS 
 - Local Storage
+
+
+More on this project 
+https://magentaautumn.itch.io/cloudy-meadows-deluxe/devlog/1322034/cloudy-deluxe-v1
